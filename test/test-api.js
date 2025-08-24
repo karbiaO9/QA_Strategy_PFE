@@ -309,18 +309,6 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-// Check if server is running before starting tests
-async function checkServerHealth() {
-  try {
-    await axios.get(`${BASE_URL}/health`, { timeout: 5000 });
-    log('✅ Server is running and healthy', 'success');
-    return true;
-  } catch (error) {
-    log('❌ Server is not running or not accessible', 'error');
-    log('Please start the server first with: npm start', 'warning');
-    return false;
-  }
-}
 
 // Main execution
 async function main() {

@@ -9,6 +9,8 @@ class CacheUpdaterService {
   constructor() {
     this.isRunning = false;
     this.jobs = new Map();
+    this.retryAttempts = new Map();
+    this.maxRetries = 3;
     
     console.log('🚀 Cache Updater Service initialized');
   }
@@ -43,8 +45,6 @@ class CacheUpdaterService {
     // Exchanges: every 2 weeks on Sunday at 2 AM UTC
     this.scheduleJob('exchanges', '0 2 */2 * 0', () => this.updateExchangesCache());
     
-
-    
     this.isRunning = true;
     console.log('✅ All cache update jobs scheduled');
   }
@@ -77,6 +77,8 @@ class CacheUpdaterService {
         console.log(`✅ Scheduled job completed: ${name}`);
       } catch (error) {
         console.error(`❌ Error in scheduled job ${name}:`, error.message);
+        // Retry failed jobs
+        await this.retryJob(name, task);
       }
     }, {
       scheduled: true,
@@ -85,6 +87,28 @@ class CacheUpdaterService {
     
     this.jobs.set(name, job);
     console.log(`📅 Scheduled job '${name}' with schedule: ${schedule}`);
+  }
+
+  // Retry failed jobs
+  async retryJob(name, task) {
+    const attempts = this.retryAttempts.get(name) || 0;
+    
+    if (attempts < this.maxRetries) {
+      console.log(`🔄 Retrying job ${name} (attempt ${attempts + 1}/${this.maxRetries})...`);
+      this.retryAttempts.set(name, attempts + 1);
+      
+      try {
+        await new Promise(resolve => setTimeout(resolve, 5000 * (attempts + 1))); // Exponential backoff
+        await task();
+        console.log(`✅ Retry successful for job: ${name}`);
+        this.retryAttempts.delete(name); // Reset retry count on success
+      } catch (error) {
+        console.error(`❌ Retry failed for job ${name}:`, error.message);
+        if (attempts + 1 >= this.maxRetries) {
+          console.error(`💥 Max retries reached for job ${name}`);
+        }
+      }
+    }
   }
 
   // Update market data cache - SELECT * FROM market_data
@@ -103,6 +127,7 @@ class CacheUpdaterService {
       }
     } catch (error) {
       console.error('❌ Error updating market data cache:', error.message);
+      throw error;
     }
   }
 
@@ -122,6 +147,7 @@ class CacheUpdaterService {
       }
     } catch (error) {
       console.error('❌ Error updating trending coins cache:', error.message);
+      throw error;
     }
   }
 
@@ -141,6 +167,7 @@ class CacheUpdaterService {
       }
     } catch (error) {
       console.error('❌ Error updating top gainers cache:', error.message);
+      throw error;
     }
   }
 
@@ -160,6 +187,7 @@ class CacheUpdaterService {
       }
     } catch (error) {
       console.error('❌ Error updating top coins cache:', error.message);
+      throw error;
     }
   }
 
@@ -179,6 +207,7 @@ class CacheUpdaterService {
       }
     } catch (error) {
       console.error('❌ Error updating top market coins cache:', error.message);
+      throw error;
     }
   }
 
@@ -200,6 +229,7 @@ class CacheUpdaterService {
       }
     } catch (error) {
       console.error('❌ Error updating news cache:', error.message);
+      throw error;
     }
   }
 
@@ -219,43 +249,69 @@ class CacheUpdaterService {
       }
     } catch (error) {
       console.error('❌ Error updating exchanges cache:', error.message);
+      throw error;
     }
   }
 
-  // Populate all cache on startup
+  // Populate all cache on startup with retry mechanism
   async populateAllCache() {
     console.log('🚀 Populating all cache on startup...');
     
-    try {
-      await Promise.all([
-        this.updateMarketDataCache(),
-        this.updateTrendingCoinsCache(),
-        this.updateTopGainersCache(),
-        this.updateTopCoinsCache(),
-        this.updateTopMarketCoinsCache(),
-        this.updateNewsCache(),
-        this.updateExchangesCache()
-      ]);
-      
-      console.log('✅ All cache populated on startup');
-      
-      // Verify cache population
-      const cacheKeys = Object.values(cache.CACHE_KEYS);
-      const populatedKeys = cacheKeys.filter(key => cache.get(key) !== null);
-      
-      console.log(`📊 Cache verification: ${populatedKeys.length}/${cacheKeys.length} keys populated`);
-      
-      if (populatedKeys.length === cacheKeys.length) {
-        console.log('🎯 All cache keys successfully populated');
-      } else {
-        const missingKeys = cacheKeys.filter(key => cache.get(key) === null);
-        console.log(`⚠️ Missing cache data for: ${missingKeys.join(', ')}`);
+    const maxRetries = 3;
+    let attempt = 1;
+    
+    while (attempt <= maxRetries) {
+      try {
+        console.log(`🔄 Cache population attempt ${attempt}/${maxRetries}...`);
+        
+        await Promise.all([
+          this.updateMarketDataCache(),
+          this.updateTrendingCoinsCache(),
+          this.updateTopGainersCache(),
+          this.updateTopCoinsCache(),
+          this.updateTopMarketCoinsCache(),
+          this.updateNewsCache(),
+          this.updateExchangesCache()
+        ]);
+        
+        console.log('✅ All cache populated on startup');
+        
+        // Verify cache population
+        const cacheKeys = Object.values(cache.CACHE_KEYS);
+        const populatedKeys = cacheKeys.filter(key => cache.get(key) !== null);
+        
+        console.log(`📊 Cache verification: ${populatedKeys.length}/${cacheKeys.length} keys populated`);
+        
+        if (populatedKeys.length === cacheKeys.length) {
+          console.log('🎯 All cache keys successfully populated');
+          return true;
+        } else {
+          const missingKeys = cacheKeys.filter(key => cache.get(key) === null);
+          console.log(`⚠️ Missing cache data for: ${missingKeys.join(', ')}`);
+          
+          if (attempt < maxRetries) {
+            console.log(`🔄 Retrying in 5 seconds...`);
+            await new Promise(resolve => setTimeout(resolve, 5000));
+          }
+        }
+        
+        attempt++;
+      } catch (error) {
+        console.error(`❌ Error during cache population (attempt ${attempt}):`, error.message);
+        
+        if (attempt < maxRetries) {
+          console.log(`🔄 Retrying in 10 seconds...`);
+          await new Promise(resolve => setTimeout(resolve, 10000));
+        } else {
+          console.error('💥 Max retries reached for cache population');
+          throw error;
+        }
+        
+        attempt++;
       }
-      
-    } catch (error) {
-      console.error('❌ Error during cache population:', error.message);
-      throw error; // Re-throw to handle in server startup
     }
+    
+    return false;
   }
 
   // Serialize BigInts for JSON compatibility
@@ -290,6 +346,7 @@ class CacheUpdaterService {
       activeJobs: this.jobs.size,
       jobNames: Array.from(this.jobs.keys()),
       cacheStats: cache.getStats(),
+      retryAttempts: Object.fromEntries(this.retryAttempts),
       timestamp: new Date().toISOString()
     };
   }

@@ -13,7 +13,8 @@
     "test:api": "node test/run-tests.js --api",
     "test:perf": "node test/performance-test.js",
     "test:perf:local": "node test/performance-test.js --url http://localhost:5055",
-    "test:perf:remote": "node test/performance-test.js --url https://market-server-blockstat.onrender.com"
+    "test:perf:remote": "node test/performance-test.js --url https://market-server-blockstat.onrender.com",
+    "test:fallback": "node test/fallback-test.js"
   },
   "keywords": [
     "crypto",

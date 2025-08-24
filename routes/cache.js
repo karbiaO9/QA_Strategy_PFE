@@ -3,23 +3,14 @@ const router = express.Router();
 const cache = require('../lib/cache');
 const cacheUpdater = require('../services/cache-updater');
 
-// Cache management endpoints
+// Get cache statistics
 router.get('/stats', (req, res) => {
   try {
     const stats = cache.getStats();
-    
-    // Calculate cache size in MB
-    const cacheSizeInMB = (process.memoryUsage().heapUsed / (1024 * 1024)).toFixed(2);
-    
     res.json({
       success: true,
-      cache: {
-        status: 'active',
-        ...stats,
-        cacheSize: parseFloat(cacheSizeInMB),
-        cacheSizeUnit: 'MB',
-        timestamp: new Date().toISOString()
-      }
+      data: stats,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     res.status(500).json({
@@ -30,16 +21,14 @@ router.get('/stats', (req, res) => {
   }
 });
 
+// Get cache health
 router.get('/health', (req, res) => {
   try {
     const health = cache.getHealth();
     res.json({
       success: true,
-      cache: {
-        status: 'healthy',
-        ...health,
-        timestamp: new Date().toISOString()
-      }
+      data: health,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     res.status(500).json({
@@ -50,34 +39,124 @@ router.get('/health', (req, res) => {
   }
 });
 
-router.post('/clear', (req, res) => {
+// Get cache readiness status
+router.get('/status', (req, res) => {
   try {
-    const { type } = req.body;
+    const status = cacheUpdater.getCacheReadinessStatus();
+    res.json({
+      success: true,
+      data: status,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get cache status',
+      message: error.message
+    });
+  }
+});
+
+// Warm up cache manually (useful for production maintenance)
+router.post('/warm', async (req, res) => {
+  try {
+    console.log('🔥 Manual cache warming requested...');
     
-    if (type === 'all') {
-      const clearedCount = cache.clear();
-      res.json({
-        success: true,
-        message: 'All cache cleared successfully',
-        cleared: clearedCount,
-        timestamp: new Date().toISOString()
+    // Check if cache updater is running
+    if (!cacheUpdater.isRunning) {
+      return res.status(503).json({
+        success: false,
+        error: 'Cache updater service not running',
+        message: 'Cannot warm cache while service is stopped'
       });
-    } else if (type && cache.CACHE_KEYS[type.toUpperCase()]) {
-      const key = cache.CACHE_KEYS[type.toUpperCase()];
-      cache.delete(key);
+    }
+    
+    // Start warming process
+    const warmed = await cacheUpdater.populateAllCache();
+    
+    if (warmed) {
       res.json({
         success: true,
-        message: `${type} cache cleared successfully`,
-        cleared: 1,
+        message: 'Cache warmed successfully',
         timestamp: new Date().toISOString()
       });
     } else {
-      res.status(400).json({
+      res.status(500).json({
         success: false,
-        error: 'Invalid cache type',
-        message: 'Please provide a valid cache type or "all"'
+        error: 'Cache warming failed',
+        message: 'Failed to populate all cache data after retries'
       });
     }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to warm cache',
+      message: error.message
+    });
+  }
+});
+
+// Refresh specific cache key
+router.post('/refresh/:key', async (req, res) => {
+  try {
+    const { key } = req.params;
+    const cacheKeys = Object.values(cache.CACHE_KEYS);
+    
+    if (!cacheKeys.includes(key)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid cache key',
+        message: `Valid keys are: ${cacheKeys.join(', ')}`
+      });
+    }
+    
+    console.log(`🔄 Manual cache refresh requested for: ${key}`);
+    
+    // Map key to update function
+    const updateFunctions = {
+      [cache.CACHE_KEYS.MARKET_DATA]: () => cacheUpdater.updateMarketDataCache(),
+      [cache.CACHE_KEYS.TRENDING_COINS]: () => cacheUpdater.updateTrendingCoinsCache(),
+      [cache.CACHE_KEYS.TOP_GAINERS]: () => cacheUpdater.updateTopGainersCache(),
+      [cache.CACHE_KEYS.TOP_COINS]: () => cacheUpdater.updateTopCoinsCache(),
+      [cache.CACHE_KEYS.TOP_MARKET_COINS]: () => cacheUpdater.updateTopMarketCoinsCache(),
+      [cache.CACHE_KEYS.NEWS]: () => cacheUpdater.updateNewsCache(),
+      [cache.CACHE_KEYS.EXCHANGES]: () => cacheUpdater.updateExchangesCache()
+    };
+    
+    const updateFunction = updateFunctions[key];
+    if (updateFunction) {
+      await updateFunction();
+      
+      res.json({
+        success: true,
+        message: `Cache refreshed for ${key}`,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: 'Update function not found',
+        message: `No update function available for key: ${key}`
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to refresh cache',
+      message: error.message
+    });
+  }
+});
+
+// Clear all cache
+router.delete('/clear', (req, res) => {
+  try {
+    const clearedCount = cache.clear();
+    res.json({
+      success: true,
+      message: `Cleared ${clearedCount} cache items`,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -87,43 +166,19 @@ router.post('/clear', (req, res) => {
   }
 });
 
-// Force cache refresh endpoint
-router.post('/refresh', async (req, res) => {
+// Get service status
+router.get('/service', (req, res) => {
   try {
-    const { type } = req.body;
-    
-    if (type === 'all') {
-      await cacheUpdater.populateAllCache();
-      res.json({
-        success: true,
-        message: 'All cache refreshed successfully',
-        timestamp: new Date().toISOString()
-      });
-    } else if (type === 'market-data') {
-      await cacheUpdater.updateMarketDataCache();
-      res.json({
-        success: true,
-        message: 'Market data cache refreshed',
-        timestamp: new Date().toISOString()
-      });
-    } else if (type === 'news') {
-      await cacheUpdater.updateNewsCache();
-      res.json({
-        success: true,
-        message: 'News cache refreshed',
-        timestamp: new Date().toISOString()
-      });
-    } else {
-      res.status(400).json({
-        success: false,
-        error: 'Invalid cache type',
-        message: 'Please provide a valid cache type or "all"'
-      });
-    }
+    const status = cacheUpdater.getStatus();
+    res.json({
+      success: true,
+      data: status,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to refresh cache',
+      error: 'Failed to get service status',
       message: error.message
     });
   }

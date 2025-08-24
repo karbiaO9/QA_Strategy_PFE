@@ -11,7 +11,7 @@ const cacheUpdater = require('./services/cache-updater');
 const routes = require('./routes');
 
 // Configuration
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5050;
 const app = express();
 
 // Performance optimizations
@@ -79,27 +79,6 @@ app.use((req, res, next) => {
       console.log(`🐌 Slow request: ${req.method} ${req.path} - ${duration.toFixed(2)}ms`);
     }
   });
-  
-  next();
-});
-
-// Server readiness middleware - check if cache is populated before serving API requests
-let serverReady = false;
-app.use((req, res, next) => {
-  // Allow health and cache endpoints even if server is not ready
-  if (req.path === '/health' || req.path === '/cache/stats' || req.path === '/cache/health' || req.path === '/') {
-    return next();
-  }
-  
-  // For API endpoints, check if server is ready
-  if (req.path.startsWith('/api/') && !serverReady) {
-    return res.status(503).json({
-      success: false,
-      error: 'Server not ready',
-      message: 'Server is still initializing cache. Please try again in a few moments.',
-      status: 'initializing'
-    });
-  }
   
   next();
 });
@@ -186,7 +165,6 @@ const start = async () => {
       
       if (cacheReadiness.allReady) {
         console.log('🚀 Server is ready to serve API requests!');
-        serverReady = true; // Set server as ready
       }
     });
     
