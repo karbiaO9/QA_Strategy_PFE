@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model MarketData {
+    id                     Int      @id @default(autoincrement())
+    timestamp              DateTime @default(now())
+    totalCoins             Int      @map("total_coins")
+    totalExchanges         Int      @map("total_exchanges")
+    totalMarketCapUsd      Float    @map("total_market_cap_usd")
+    totalVolume24hUsd      Float    @map("total_volume_24h_usd")
+    btcDominancePercentage Float    @map("btc_dominance_percentage")
+    ethDominancePercentage Float    @map("eth_dominance_percentage")
+    gasPrice               Float    @map("gas_price")
+    safeGasPrice           Float    @map("safe_gas_price")
+    standardGasPrice       Float    @map("standard_gas_price")
+    fastGasPrice           Float    @map("fast_gas_price")
+    marketCapChange24h     Float    @map("market_cap_change_24h")
+    sentiment              Int      @map("sentiment")
+    sentimentText          String   @map("sentiment_text")
+    apiResponseStatus      String   @map("api_response_status")
+
+    @@map("market_data")
+}
+
+model TrendingCoin {
+    id             Int      @id @default(autoincrement())
+    timestamp      DateTime @default(now())
+    coinId         String   @map("coin_id")
+    symbol         String
+    name           String
+    price          Float
+    priceChange24h Float    @map("price_change_24h")
+    icon           String
+
+    @@map("trending_coins")
+}
+
+model TopGainer {
+    id             Int      @id @default(autoincrement())
+    timestamp      DateTime @default(now())
+    coinId         String   @map("coin_id")
+    symbol         String
+    name           String
+    price          Float
+    priceChange24h Float    @map("price_change_24h")
+    marketCap      Float    @map("market_cap")
+    volume24h      Float    @map("volume_24h")
+    icon           String
+    rank           Int
+
+    @@map("top_gainers")
+}
+
+model TopCoins {
+    id             Int      @id @default(autoincrement())
+    timestamp      DateTime @default(now())
+    coinId         String   @map("coin_id")
+    symbol         String
+    name           String
+    price          Float
+    priceChange24h Float    @map("price_change_24h")
+    volume24h      Float    @map("volume_24h")
+    marketCap      Float    @map("market_cap")
+    icon           String
+    rank           Int
+
+    @@map("top_coins")
+}
+
+model Exchange {
+    id                      Int      @id @default(autoincrement())
+    timestamp               DateTime @default(now())
+    exchangeId              String   @map("exchange_id")
+    name                    String
+    trustScore              Int      @map("trust_score")
+    trustScoreRank          Int      @map("trust_score_rank")
+    volume24h               Float    @map("volume_24h")
+    volume7d                Float    @map("volume_7d")
+    yearEstablished         Int      @map("year_established")
+    country                 String?
+    description             String?
+    url                     String?
+    image                   String?
+    hasTradingIncentive     Boolean  @default(false) @map("has_trading_incentive")
+    centralized             Boolean  @default(false)
+    publicInterestScore     Float    @default(0) @map("public_interest_score")
+    publicInterestScoreRank Int      @default(0) @map("public_interest_score_rank")
+
+    @@map("exchanges")
+}
+
+model TopMarketCoins {
+    id                           Int       @id @default(autoincrement())
+    timestamp                    DateTime  @default(now())
+    coinId                       String    @map("coin_id")
+    symbol                       String
+    name                         String
+    image                        String
+    currentPrice                 Float     @map("current_price")
+    marketCap                    Float     @map("market_cap")
+    marketCapRank                Int       @map("market_cap_rank")
+    fullyDilutedValuation        Float?    @map("fully_diluted_valuation")
+    totalVolume                  Float     @map("total_volume")
+    high24h                      Float     @map("high_24h")
+    low24h                       Float     @map("low_24h")
+    priceChange24h               Float     @map("price_change_24h")
+    priceChangePercentage24h     Float     @map("price_change_percentage_24h")
+    marketCapChange24h           Float     @map("market_cap_change_24h")
+    marketCapChangePercentage24h Float     @map("market_cap_change_percentage_24h")
+    circulatingSupply            Float     @map("circulating_supply")
+    totalSupply                  Float?    @map("total_supply")
+    maxSupply                    Float?    @map("max_supply")
+    ath                          Float
+    athChangePercentage          Float     @map("ath_change_percentage")
+    athDate                      DateTime? @map("ath_date")
+    atl                          Float
+    atlChangePercentage          Float     @map("atl_change_percentage")
+    atlDate                      DateTime? @map("atl_date")
+    priceChangePercentage1h      Float?    @map("price_change_percentage_1h")
+    priceChangePercentage7d      Float?    @map("price_change_percentage_7d")
+    sparkline7d                  Json      @map("sparkline_7d")
+    lastUpdated                  DateTime  @map("last_updated")
+
+    @@map("top_market_coins")
+}
+
+model News {
+    id                 Int      @id @default(autoincrement())
+    timestamp          DateTime @default(now())
+    newsId             String   @unique @map("news_id")
+    title              String
+    body               String   @db.Text
+    url                String
+    imageUrl           String   @map("image_url")
+    source             String
+    categories         String[] @default([])
+    publishedOn        DateTime @map("published_on")
+    publishedTimestamp BigInt   @map("published_timestamp")
+    lang               String   @default("EN")
+
+    @@map("news")
+}
