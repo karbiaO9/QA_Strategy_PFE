@@ -10,7 +10,10 @@
     "test:all": "node test/test-api.js",
     "test:health": "node test/run-tests.js --health",
     "test:cache": "node test/run-tests.js --cache",
-    "test:api": "node test/run-tests.js --api"
+    "test:api": "node test/run-tests.js --api",
+    "test:perf": "node test/performance-test.js",
+    "test:perf:local": "node test/performance-test.js --url http://localhost:5055",
+    "test:perf:remote": "node test/performance-test.js --url https://market-server-blockstat.onrender.com"
   },
   "keywords": [
     "crypto",

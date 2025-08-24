@@ -14,6 +14,10 @@ const routes = require('./routes');
 const PORT = process.env.PORT || 5050;
 const app = express();
 
+// Performance optimizations
+app.set('trust proxy', 1);
+app.set('x-powered-by', false);
+
 // Comprehensive CORS configuration - allow all origins
 app.use(cors({
   origin: '*', // Allow all origins
@@ -27,24 +31,55 @@ app.use(cors({
 // Security and middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
-  contentSecurityPolicy: false // Disable CSP for development
+  contentSecurityPolicy: false, // Disable CSP for development
+  hsts: false // Disable HSTS for development
 }));
-app.use(compression());
-app.use(express.json());
 
-// Rate limiting
+// Optimize compression for better performance
+app.use(compression({
+  level: 6, // Balanced compression level
+  threshold: 1024, // Only compress responses > 1KB
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    return compression.filter(req, res);
+  }
+}));
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Rate limiting - adjusted for high load testing
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 1000 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  max: 5000, // Increased limit for load testing
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.path === '/health' || req.path === '/cache/stats'
 });
 app.use('/api/', limiter);
 
-// Request timeout middleware
+// Request timeout middleware - reduced for better performance
 app.use((req, res, next) => {
-  req.setTimeout(30000, () => {
+  req.setTimeout(15000, () => { // Reduced from 30s to 15s
     res.status(408).json({ error: 'Request timeout' });
   });
+  next();
+});
+
+// Performance monitoring middleware
+app.use((req, res, next) => {
+  const start = process.hrtime.bigint();
+  
+  res.on('finish', () => {
+    const duration = Number(process.hrtime.bigint() - start) / 1000000; // Convert to milliseconds
+    if (duration > 100) { // Log slow requests
+      console.log(`🐌 Slow request: ${req.method} ${req.path} - ${duration.toFixed(2)}ms`);
+    }
+  });
+  
   next();
 });
 
