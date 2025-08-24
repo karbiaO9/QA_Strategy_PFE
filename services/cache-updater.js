@@ -2,15 +2,11 @@
 // This service runs cron jobs to fetch data from database and update cache
 
 const cron = require('node-cron');
-const { PrismaClient } = require('@prisma/client');
+const db = require('../lib/database');
 const cache = require('../lib/cache');
 
 class CacheUpdaterService {
   constructor() {
-    this.prisma = new PrismaClient({
-      log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error']
-    });
-    
     this.isRunning = false;
     this.jobs = new Map();
     
@@ -97,11 +93,11 @@ class CacheUpdaterService {
       console.log('🔄 Updating market data cache...');
       
       // Simple SELECT * - no filters, no ordering
-      const data = await this.prisma.marketData.findMany();
+      const result = await db.query('SELECT * FROM market_data');
       
-      if (data && data.length > 0) {
-        cache.set(cache.CACHE_KEYS.MARKET_DATA, data);
-        console.log(`✅ Market data cache updated: ${data.length} records`);
+      if (result.rows && result.rows.length > 0) {
+        cache.set(cache.CACHE_KEYS.MARKET_DATA, result.rows);
+        console.log(`✅ Market data cache updated: ${result.rows.length} records`);
       } else {
         console.log('⚠️ No market data found in database');
       }
@@ -116,11 +112,11 @@ class CacheUpdaterService {
       console.log('🔄 Updating trending coins cache...');
       
       // Simple SELECT * - no filters, no ordering
-      const data = await this.prisma.trendingCoin.findMany();
+      const result = await db.query('SELECT * FROM trending_coins');
       
-      if (data && data.length > 0) {
-        cache.set(cache.CACHE_KEYS.TRENDING_COINS, data);
-        console.log(`✅ Trending coins cache updated: ${data.length} records`);
+      if (result.rows && result.rows.length > 0) {
+        cache.set(cache.CACHE_KEYS.TRENDING_COINS, result.rows);
+        console.log(`✅ Trending coins cache updated: ${result.rows.length} records`);
       } else {
         console.log('⚠️ No trending coins found in database');
       }
@@ -135,11 +131,11 @@ class CacheUpdaterService {
       console.log('🔄 Updating top gainers cache...');
       
       // Simple SELECT * - no filters, no ordering
-      const data = await this.prisma.topGainer.findMany();
+      const result = await db.query('SELECT * FROM top_gainers');
       
-      if (data && data.length > 0) {
-        cache.set(cache.CACHE_KEYS.TOP_GAINERS, data);
-        console.log(`✅ Top gainers cache updated: ${data.length} records`);
+      if (result.rows && result.rows.length > 0) {
+        cache.set(cache.CACHE_KEYS.TOP_GAINERS, result.rows);
+        console.log(`✅ Top gainers cache updated: ${result.rows.length} records`);
       } else {
         console.log('⚠️ No top gainers found in database');
       }
@@ -154,11 +150,11 @@ class CacheUpdaterService {
       console.log('🔄 Updating top coins cache...');
       
       // Simple SELECT * - no filters, no ordering
-      const data = await this.prisma.topCoins.findMany();
+      const result = await db.query('SELECT * FROM top_coins');
       
-      if (data && data.length > 0) {
-        cache.set(cache.CACHE_KEYS.TOP_COINS, data);
-        console.log(`✅ Top coins cache updated: ${data.length} records`);
+      if (result.rows && result.rows.length > 0) {
+        cache.set(cache.CACHE_KEYS.TOP_COINS, result.rows);
+        console.log(`✅ Top coins cache updated: ${result.rows.length} records`);
       } else {
         console.log('⚠️ No top coins found in database');
       }
@@ -173,11 +169,11 @@ class CacheUpdaterService {
       console.log('🔄 Updating top market coins cache...');
       
       // Simple SELECT * - no filters, no ordering
-      const data = await this.prisma.topMarketCoins.findMany();
+      const result = await db.query('SELECT * FROM top_market_coins');
       
-      if (data && data.length > 0) {
-        cache.set(cache.CACHE_KEYS.TOP_MARKET_COINS, data);
-        console.log(`✅ Top market coins cache updated: ${data.length} records`);
+      if (result.rows && result.rows.length > 0) {
+        cache.set(cache.CACHE_KEYS.TOP_MARKET_COINS, result.rows);
+        console.log(`✅ Top market coins cache updated: ${result.rows.length} records`);
       } else {
         console.log('⚠️ No top market coins found in database');
       }
@@ -192,13 +188,13 @@ class CacheUpdaterService {
       console.log('🔄 Updating news cache...');
       
       // Simple SELECT * - no filters, no ordering, no field selection
-      const data = await this.prisma.news.findMany();
+      const result = await db.query('SELECT * FROM news');
       
-      if (data && data.length > 0) {
+      if (result.rows && result.rows.length > 0) {
         // Serialize BigInts for JSON compatibility
-        const serializedData = this.serializeBigInts(data);
+        const serializedData = this.serializeBigInts(result.rows);
         cache.set(cache.CACHE_KEYS.NEWS, serializedData);
-        console.log(`✅ News cache updated: ${data.length} records`);
+        console.log(`✅ News cache updated: ${result.rows.length} records`);
       } else {
         console.log('⚠️ No news found in database');
       }
@@ -213,11 +209,11 @@ class CacheUpdaterService {
       console.log('🔄 Updating exchanges cache...');
       
       // Simple SELECT * - no filters, no ordering
-      const data = await this.prisma.exchange.findMany();
+      const result = await db.query('SELECT * FROM exchanges');
       
-      if (data && data.length > 0) {
-        cache.set(cache.CACHE_KEYS.EXCHANGES, data);
-        console.log(`✅ Exchanges cache updated: ${data.length} records`);
+      if (result.rows && result.rows.length > 0) {
+        cache.set(cache.CACHE_KEYS.EXCHANGES, result.rows);
+        console.log(`✅ Exchanges cache updated: ${result.rows.length} records`);
       } else {
         console.log('⚠️ No exchanges found in database');
       }
@@ -301,7 +297,7 @@ class CacheUpdaterService {
   // Test database connection
   async testConnection() {
     try {
-      await this.prisma.$queryRaw`SELECT 1`;
+      await db.query('SELECT 1');
       return true;
     } catch (error) {
       console.error('❌ Database connection test failed:', error.message);
@@ -345,10 +341,10 @@ class CacheUpdaterService {
     this.stop();
     
     try {
-      await this.prisma.$disconnect();
-      console.log('✅ Prisma disconnected');
+      await db.close();
+      console.log('✅ Database connection closed');
     } catch (error) {
-      console.log('⚠️ Error disconnecting Prisma:', error.message);
+      console.log('⚠️ Error closing database connection:', error.message);
     }
     
     console.log('✅ Cache updater service shutdown complete');

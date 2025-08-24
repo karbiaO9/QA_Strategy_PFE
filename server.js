@@ -11,7 +11,7 @@ const cacheUpdater = require('./services/cache-updater');
 const routes = require('./routes');
 
 // Configuration
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT;
 const app = express();
 
 // Performance optimizations

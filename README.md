@@ -22,7 +22,7 @@ A high-performance cryptocurrency data server that serves data exclusively from 
 - **Express Server** - Handles HTTP requests and responses
 - **In-Memory Cache** - Stores all database data in server memory
 - **Cache Updater Service** - Runs cron jobs to refresh cache from database
-- **Prisma Client** - Database connection for cache updates only
+- **PostgreSQL Connection** - Simple, robust database connection for cache updates only
 
 ### **Cache Update Schedule:**
 - **📊 Market Data:** Every 2 hours
