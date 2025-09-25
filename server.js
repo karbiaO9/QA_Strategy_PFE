@@ -7,38 +7,31 @@ const rateLimit = require('express-rate-limit');
 
 const cacheUpdater = require('./services/cache-updater');
 
-// Import routes
 const routes = require('./routes');
-
-// Configuration
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 5051;
 const app = express();
 
-// Performance optimizations
 app.set('trust proxy', 1);
 app.set('x-powered-by', false);
 
-// Comprehensive CORS configuration - allow all origins
 app.use(cors({
-  origin: '*', // Allow all origins
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
-  credentials: false, // Set to false when origin is *
+  credentials: false,
   optionsSuccessStatus: 200,
   preflightContinue: false
 }));
 
-// Security and middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
-  contentSecurityPolicy: false, // Disable CSP for development
-  hsts: false // Disable HSTS for development
+  contentSecurityPolicy: false,
+  hsts: false
 }));
 
-// Optimize compression for better performance
 app.use(compression({
-  level: 6, // Balanced compression level
-  threshold: 1024, // Only compress responses > 1KB
+  level: 6,
+  threshold: 1024,
   filter: (req, res) => {
     if (req.headers['x-no-compression']) {
       return false;
@@ -50,10 +43,9 @@ app.use(compression({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Rate limiting - adjusted for high load testing
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5000, // Increased limit for load testing
+  windowMs: 15 * 60 * 1000,
+  max: 5000,
   message: 'Too many requests from this IP, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -61,21 +53,19 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// Request timeout middleware - reduced for better performance
 app.use((req, res, next) => {
-  req.setTimeout(15000, () => { // Reduced from 30s to 15s
+  req.setTimeout(15000, () => {
     res.status(408).json({ error: 'Request timeout' });
   });
   next();
 });
 
-// Performance monitoring middleware
 app.use((req, res, next) => {
   const start = process.hrtime.bigint();
   
   res.on('finish', () => {
-    const duration = Number(process.hrtime.bigint() - start) / 1000000; // Convert to milliseconds
-    if (duration > 100) { // Log slow requests
+    const duration = Number(process.hrtime.bigint() - start) / 1000000;
+    if (duration > 100) {
       console.log(`🐌 Slow request: ${req.method} ${req.path} - ${duration.toFixed(2)}ms`);
     }
   });
@@ -83,10 +73,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Mount all routes
 app.use('/', routes);
 
-// Error handling middleware
 app.use((error, req, res, next) => {
   console.error('Unhandled error:', error);
   res.status(500).json({
@@ -96,13 +84,11 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Start the server
 const start = async () => {
   try {
     console.log('🚀 Starting MarketSaver Cache-First Server...');
     console.log('💾 Initializing cache population...');
     
-    // Test database connection first
     console.log('🔌 Testing database connection...');
     const dbConnected = await cacheUpdater.testConnection();
     if (!dbConnected) {
@@ -110,12 +96,10 @@ const start = async () => {
     }
     console.log('✅ Database connection successful');
     
-    // First, populate all cache data before starting cron jobs
     console.log('📊 Populating all cache data from database...');
     await cacheUpdater.populateAllCache();
     console.log('✅ All cache data populated successfully');
     
-    // Verify cache is ready
     const cacheReadiness = cacheUpdater.getCacheReadinessStatus();
     if (!cacheReadiness.allReady) {
       console.log('⚠️ Cache readiness status:', cacheReadiness);
@@ -123,11 +107,9 @@ const start = async () => {
     }
     console.log('🎯 All cache data verified and ready');
     
-    // Now start the cache updater service with cron jobs
     console.log('📅 Starting cache update cron jobs...');
     cacheUpdater.start();
     
-    // Start the Express server
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 MarketSaver Cache-First Server started on port ${PORT}`);
       console.log(`📊 Server ID: ${process.env.SERVER_ID || 'cache-first-v3'}`);
@@ -175,12 +157,10 @@ const start = async () => {
   }
 };
 
-// Graceful shutdown
 const gracefulShutdown = async (signal) => {
   console.log(`\n🔄 Received ${signal}, shutting down gracefully...`);
   
   try {
-    // Stop cache updater service
     await cacheUpdater.shutdown();
     console.log('✅ Cache updater service stopped');
     
@@ -195,7 +175,6 @@ const gracefulShutdown = async (signal) => {
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
   console.error('💥 Uncaught Exception:', error);
   gracefulShutdown('uncaughtException');
@@ -206,5 +185,4 @@ process.on('unhandledRejection', (reason, promise) => {
   gracefulShutdown('unhandledRejection');
 });
 
-// Start the server
 start();

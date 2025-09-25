@@ -1,6 +1,3 @@
-// Cache Updater Service
-// This service runs cron jobs to fetch data from database and update cache
-
 const cron = require('node-cron');
 const db = require('../lib/database');
 const cache = require('../lib/cache');
@@ -15,7 +12,6 @@ class CacheUpdaterService {
     console.log('🚀 Cache Updater Service initialized');
   }
 
-  // Start all cron jobs
   start() {
     if (this.isRunning) {
       console.log('⚠️ Cache updater is already running');
@@ -24,32 +20,24 @@ class CacheUpdaterService {
 
     console.log('📅 Starting cache update cron jobs...');
     
-    // Market data: every 2 hours
     this.scheduleJob('market-data', '0 */2 * * *', () => this.updateMarketDataCache());
     
-    // Trending coins: every 8 hours
     this.scheduleJob('trending-coins', '0 */8 * * *', () => this.updateTrendingCoinsCache());
     
-    // Top gainers: every 12 hours
     this.scheduleJob('top-gainers', '0 */12 * * *', () => this.updateTopGainersCache());
     
-    // Top coins: every 4 hours
     this.scheduleJob('top-coins', '0 */4 * * *', () => this.updateTopCoinsCache());
     
-    // Top market coins: every 4 hours
     this.scheduleJob('top-market-coins', '0 */4 * * *', () => this.updateTopMarketCoinsCache());
     
-    // News: every 6 hours
     this.scheduleJob('news', '0 */6 * * *', () => this.updateNewsCache());
     
-    // Exchanges: every 2 weeks on Sunday at 2 AM UTC
     this.scheduleJob('exchanges', '0 2 */2 * 0', () => this.updateExchangesCache());
     
     this.isRunning = true;
     console.log('✅ All cache update jobs scheduled');
   }
 
-  // Stop all cron jobs
   stop() {
     console.log('🛑 Stopping cache update jobs...');
     
@@ -63,7 +51,6 @@ class CacheUpdaterService {
     console.log('✅ All cache update jobs stopped');
   }
 
-  // Schedule a single job
   scheduleJob(name, schedule, task) {
     if (process.env.NODE_ENV === 'development') {
       console.log(`📅 Job '${name}' would run on schedule: ${schedule} (disabled in development)`);
@@ -77,7 +64,6 @@ class CacheUpdaterService {
         console.log(`✅ Scheduled job completed: ${name}`);
       } catch (error) {
         console.error(`❌ Error in scheduled job ${name}:`, error.message);
-        // Retry failed jobs
         await this.retryJob(name, task);
       }
     }, {
@@ -89,7 +75,6 @@ class CacheUpdaterService {
     console.log(`📅 Scheduled job '${name}' with schedule: ${schedule}`);
   }
 
-  // Retry failed jobs
   async retryJob(name, task) {
     const attempts = this.retryAttempts.get(name) || 0;
     
@@ -98,10 +83,10 @@ class CacheUpdaterService {
       this.retryAttempts.set(name, attempts + 1);
       
       try {
-        await new Promise(resolve => setTimeout(resolve, 5000 * (attempts + 1))); // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, 5000 * (attempts + 1)));
         await task();
         console.log(`✅ Retry successful for job: ${name}`);
-        this.retryAttempts.delete(name); // Reset retry count on success
+        this.retryAttempts.delete(name);
       } catch (error) {
         console.error(`❌ Retry failed for job ${name}:`, error.message);
         if (attempts + 1 >= this.maxRetries) {
@@ -111,12 +96,10 @@ class CacheUpdaterService {
     }
   }
 
-  // Update market data cache - SELECT * FROM market_data
   async updateMarketDataCache() {
     try {
       console.log('🔄 Updating market data cache...');
       
-      // Simple SELECT * - no filters, no ordering
       const result = await db.query('SELECT * FROM market_data');
       
       if (result.rows && result.rows.length > 0) {
@@ -131,12 +114,10 @@ class CacheUpdaterService {
     }
   }
 
-  // Update trending coins cache - SELECT * FROM trending_coins
   async updateTrendingCoinsCache() {
     try {
       console.log('🔄 Updating trending coins cache...');
       
-      // Simple SELECT * - no filters, no ordering
       const result = await db.query('SELECT * FROM trending_coins');
       
       if (result.rows && result.rows.length > 0) {
@@ -151,12 +132,10 @@ class CacheUpdaterService {
     }
   }
 
-  // Update top gainers cache - SELECT * FROM top_gainers
   async updateTopGainersCache() {
     try {
       console.log('🔄 Updating top gainers cache...');
       
-      // Simple SELECT * - no filters, no ordering
       const result = await db.query('SELECT * FROM top_gainers');
       
       if (result.rows && result.rows.length > 0) {
@@ -171,12 +150,10 @@ class CacheUpdaterService {
     }
   }
 
-  // Update top coins cache - SELECT * FROM top_coins
   async updateTopCoinsCache() {
     try {
       console.log('🔄 Updating top coins cache...');
       
-      // Simple SELECT * - no filters, no ordering
       const result = await db.query('SELECT * FROM top_coins');
       
       if (result.rows && result.rows.length > 0) {
@@ -191,12 +168,10 @@ class CacheUpdaterService {
     }
   }
 
-  // Update top market coins cache - SELECT * FROM top_market_coins
   async updateTopMarketCoinsCache() {
     try {
       console.log('🔄 Updating top market coins cache...');
       
-      // Simple SELECT * - no filters, no ordering
       const result = await db.query('SELECT * FROM top_market_coins');
       
       if (result.rows && result.rows.length > 0) {
@@ -211,16 +186,13 @@ class CacheUpdaterService {
     }
   }
 
-  // Update news cache - SELECT * FROM news
   async updateNewsCache() {
     try {
       console.log('🔄 Updating news cache...');
       
-      // Simple SELECT * - no filters, no ordering, no field selection
       const result = await db.query('SELECT * FROM news');
       
       if (result.rows && result.rows.length > 0) {
-        // Serialize BigInts for JSON compatibility
         const serializedData = this.serializeBigInts(result.rows);
         cache.set(cache.CACHE_KEYS.NEWS, serializedData);
         console.log(`✅ News cache updated: ${result.rows.length} records`);
@@ -233,12 +205,10 @@ class CacheUpdaterService {
     }
   }
 
-  // Update exchanges cache - SELECT * FROM exchanges
   async updateExchangesCache() {
     try {
       console.log('🔄 Updating exchanges cache...');
       
-      // Simple SELECT * - no filters, no ordering
       const result = await db.query('SELECT * FROM exchanges');
       
       if (result.rows && result.rows.length > 0) {
@@ -253,7 +223,6 @@ class CacheUpdaterService {
     }
   }
 
-  // Populate all cache on startup with retry mechanism
   async populateAllCache() {
     console.log('🚀 Populating all cache on startup...');
     
@@ -276,7 +245,6 @@ class CacheUpdaterService {
         
         console.log('✅ All cache populated on startup');
         
-        // Verify cache population
         const cacheKeys = Object.values(cache.CACHE_KEYS);
         const populatedKeys = cacheKeys.filter(key => cache.get(key) !== null);
         
@@ -314,7 +282,6 @@ class CacheUpdaterService {
     return false;
   }
 
-  // Serialize BigInts for JSON compatibility
   serializeBigInts(obj) {
     if (obj === null || obj === undefined) {
       return obj;
@@ -339,7 +306,6 @@ class CacheUpdaterService {
     return obj;
   }
 
-  // Get service status
   getStatus() {
     return {
       running: this.isRunning,
@@ -351,7 +317,6 @@ class CacheUpdaterService {
     };
   }
 
-  // Test database connection
   async testConnection() {
     try {
       await db.query('SELECT 1');
@@ -362,14 +327,12 @@ class CacheUpdaterService {
     }
   }
 
-  // Check if all cache is populated and ready
   isCacheReady() {
     const cacheKeys = Object.values(cache.CACHE_KEYS);
     const populatedKeys = cacheKeys.filter(key => cache.get(key) !== null);
     return populatedKeys.length === cacheKeys.length;
   }
 
-  // Get cache readiness status
   getCacheReadinessStatus() {
     const cacheKeys = Object.values(cache.CACHE_KEYS);
     const status = {};
@@ -391,7 +354,6 @@ class CacheUpdaterService {
     };
   }
 
-  // Graceful shutdown
   async shutdown() {
     console.log('🔄 Shutting down cache updater service...');
     
@@ -408,7 +370,6 @@ class CacheUpdaterService {
   }
 }
 
-// Create singleton instance
 const cacheUpdaterService = new CacheUpdaterService();
 
 module.exports = cacheUpdaterService;
