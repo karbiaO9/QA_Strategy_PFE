@@ -1,0 +1,342 @@
+{
+  "info": {
+    "_postman_id": "82133600-96c2-49c0-9543-e92a8f44b8b7",
+    "name": "blockstat",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "36332926"
+  },
+  "item": [
+    {
+      "name": "MARKET DATA SERVER",
+      "item": [
+        {
+          "name": "HEALTH",
+          "item": [
+            {
+              "name": "GET /health",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET 'http://localhost/health'"
+              },
+              "response": []
+            },
+            {
+              "name": "GET /health/detailed",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/api/top-gainers",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "api",
+                    "top-gainers"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET 'http://localhost/health/detailed'"
+              },
+              "response": []
+            },
+            {
+              "name": "GET /health/cache-ready",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/health/cache-ready",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "health",
+                    "cache-ready"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET 'http://localhost/health/cache-ready'"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Cache Management",
+          "item": [
+            {
+              "name": "GET /cache/stats",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/cache/stats",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "cache",
+                    "stats"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET --url '{{baseUrl}}/cache/stats'"
+              },
+              "response": []
+            },
+            {
+              "name": "GET /cache/health",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/cache/health",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "cache",
+                    "health"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET --url '{{baseUrl}}/cache/health'"
+              },
+              "response": []
+            },
+            {
+              "name": "GET /cache/status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/cache/status",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "cache",
+                    "status"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET --url '{{baseUrl}}/cache/status'"
+              },
+              "response": []
+            },
+            {
+              "name": "GET /cache/service",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/cache/service",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "cache",
+                    "service"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET --url '{{baseUrl}}/cache/service'"
+              },
+              "response": []
+            },
+            {
+              "name": "POST /cache/warm",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/cache/warm",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "cache",
+                    "warm"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request POST --url '{{baseUrl}}/cache/warm'"
+              },
+              "response": []
+            },
+            {
+              "name": "DELETE /cache/clear",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.coms/cache/clear",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "coms"
+                  ],
+                  "path": [
+                    "cache",
+                    "clear"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request DELETE --url '{{baseUrl}}/cache/clear'"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "API Data",
+          "item": [
+            {
+              "name": "GET /api/market-data",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/api/market-data",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "api",
+                    "market-data"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET --url '{{baseUrl}}/api/market-data'"
+              },
+              "response": []
+            },
+            {
+              "name": "GET /api/news",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/api/news",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "api",
+                    "news"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET --url '{{baseUrl}}/api/news'"
+              },
+              "response": []
+            },
+            {
+              "name": "GET /api/trending-coins",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/api/trending-coins",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "api",
+                    "trending-coins"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET --url '{{baseUrl}}/api/trending-coins'"
+              },
+              "response": []
+            },
+            {
+              "name": "GET /api/top-gainers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://market-server-blockstat.onrender.com/api/top-gainers",
+                  "protocol": "https",
+                  "host": [
+                    "market-server-blockstat",
+                    "onrender",
+                    "com"
+                  ],
+                  "path": [
+                    "api",
+                    "top-gainers"
+                  ]
+                },
+                "description": "Generated from cURL: curl --request GET --url '{{baseUrl}}/api/top-gainers'"
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://market-server-blockstat.onrender.com"
+    }
+  ]
+}
