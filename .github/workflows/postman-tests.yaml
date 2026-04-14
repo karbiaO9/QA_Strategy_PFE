@@ -2,9 +2,9 @@ name: Run Postman API Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, postman-ci-test ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, postman-ci-test ]
   workflow_dispatch:
 
 jobs:
