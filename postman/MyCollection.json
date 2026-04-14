@@ -200,7 +200,7 @@
                   "host": [
                     "market-server-blockstat",
                     "onrender",
-                    "coms"
+                    "com"
                   ],
                   "path": [
                     "cache",
