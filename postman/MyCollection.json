@@ -195,7 +195,7 @@
                 "method": "DELETE",
                 "header": [],
                 "url": {
-                  "raw": "https://market-server-blockstat.onrender.coms/cache/clear",
+                  "raw": "https://market-server-blockstat.onrender.com/cache/clear",
                   "protocol": "https",
                   "host": [
                     "market-server-blockstat",
