@@ -9,7 +9,7 @@ on:
 
 jobs:
   newman-tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -43,6 +43,7 @@ jobs:
 
       - name: Post HTML report to webhook
         if: always()
+        continue-on-error: true
         run: |
           if [ -f reports/newman-report.html ]; then
             curl -X POST "http://localhost:5678/webhook-test/005c4499-fbf3-48d6-948d-16447ac14a99" \
