@@ -46,7 +46,7 @@ jobs:
         continue-on-error: true
         run: |
           if [ -f reports/newman-report.html ]; then
-            curl -X POST "http://localhost:5678/webhook-test/005c4499-fbf3-48d6-948d-16447ac14a99" \
+            curl -X POST "http://localhost:5678/webhook/005c4499-fbf3-48d6-948d-16447ac14a99" \
               -F "file=@reports/newman-report.html;type=text/html" \
               -F "source=github-actions" \
               -F "workflow=${{ github.workflow }}" \
