@@ -34,7 +34,19 @@ jobs:
             --reporters cli,htmlextra,junit \
             --reporter-htmlextra-export reports/newman-report.html \
             --reporter-junit-export reports/newman-report.xml
-
+      - name: Post HTML report to webhook
+        if: always()
+        run: |
+          if [ -f reports/newman-report.html ]; then
+            curl -X POST "http://localhost:5678/webhook-test/005c4499-fbf3-48d6-948d-16447ac14a99" \
+              -F "file=@reports/newman-report.html;type=text/html" \
+              -F "source=github-actions" \
+              -F "workflow=${{ github.workflow }}" \
+              -F "run_id=${{ github.run_id }}"
+          else
+            echo "Report file not found: reports/newman-report.html"
+            exit 1
+          fi
       - name: Upload test reports
         uses: actions/upload-artifact@v4
         with:
