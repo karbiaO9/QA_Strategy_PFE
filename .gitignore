@@ -113,3 +113,6 @@ coverage/
 # Cache directories
 .cache/
 .parcel-cache/
+
+# Postman tests
+reports/
