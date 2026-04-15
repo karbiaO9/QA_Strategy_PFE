@@ -114,5 +114,3 @@ coverage/
 .cache/
 .parcel-cache/
 
-# Postman tests
-reports/
