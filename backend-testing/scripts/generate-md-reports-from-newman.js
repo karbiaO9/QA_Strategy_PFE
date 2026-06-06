@@ -49,9 +49,20 @@ function exists(filePath) {
 function resolveNewmanReportPath() {
   const arg = process.argv[2];
   if (arg) {
-    const p = path.isAbsolute(arg) ? arg : path.join(ROOT, arg);
-    if (exists(p)) return p;
-    throw new Error(`Newman JSON not found: ${p}`);
+    const candidates = [];
+    if (path.isAbsolute(arg)) {
+      candidates.push(arg);
+    } else {
+      candidates.push(path.join(ROOT, arg));
+      const normalized = arg.replace(/^backend-testing[\\/]/, '');
+      if (normalized !== arg) {
+        candidates.push(path.join(ROOT, normalized));
+      }
+    }
+    for (const p of candidates) {
+      if (exists(p)) return p;
+    }
+    throw new Error(`Newman JSON not found. Tried: ${candidates.join(', ')}`);
   }
   return PATHS.newman;
 }

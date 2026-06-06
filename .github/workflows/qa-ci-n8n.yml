@@ -1,11 +1,11 @@
 # QA automation: Newman + Playwright ? Markdown reports ? n8n webhook
 #
 # Required GitHub Secrets (Settings ? Secrets and variables ? Actions):
-#   N8N_WEBHOOK_URL          Production webhook (or test URL during development)
+#   N8N_WEBHOOK_URL          Public/tunnel webhook URL (NOT localhost from cloud runners)
 #   KINE_EMAIL / KINE_PASSWORD / KINE_ADMIN_EMAIL / KINE_ADMIN_PASSWORD (frontend)
 #
 # Note: localhost:5678 is NOT reachable from GitHub-hosted runners.
-# Use a public n8n URL, a tunnel (ngrok), or a self-hosted runner on the same host as n8n.
+# Use ngrok/Cloudflare Tunnel, deploy n8n publicly, or a self-hosted runner.
 
 name: QA CI — Tests & n8n Reports
 
@@ -30,6 +30,9 @@ on:
       - '.github/workflows/qa-ci-n8n.yml'
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: qa-ci-${{ github.ref }}
   cancel-in-progress: true
@@ -47,13 +50,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: npm
 
       - name: Install root dependencies
         run: npm ci
 
       - name: Run Physio Newman chain
+        continue-on-error: true
+        id: newman
         run: npm run test:physio:chain
 
       - name: Generate Markdown STC / bug reports
@@ -61,13 +66,20 @@ jobs:
         run: npm run report:md:physio
 
       - name: Upload backend Markdown reports to n8n
-        if: always() && env.N8N_WEBHOOK_URL != ''
+        if: always()
+        continue-on-error: true
+        id: webhook
         env:
           N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
           WEBHOOK_MARKDOWN_URL: ${{ secrets.N8N_WEBHOOK_URL }}
         run: |
           if [ -z "$N8N_WEBHOOK_URL" ]; then
-            echo "N8N_WEBHOOK_URL secret not set — skipping webhook upload."
+            echo "::notice::N8N_WEBHOOK_URL secret not set — skipping webhook upload."
+            exit 0
+          fi
+          if echo "$N8N_WEBHOOK_URL" | grep -qiE 'localhost|127\.0\.0\.1'; then
+            echo "::warning::N8N_WEBHOOK_URL points to localhost. GitHub-hosted runners cannot reach it."
+            echo "::warning::Use a tunnel (ngrok), public n8n URL, or a self-hosted runner."
             exit 0
           fi
           node backend-testing/scripts/upload-stc-bugs-markdown-webhook-curl.js
@@ -82,12 +94,25 @@ jobs:
             backend-testing/reports/newman/**
           if-no-files-found: ignore
 
+      - name: Job summary
+        if: always()
+        run: |
+          echo "## Backend QA summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Newman chain: ${{ steps.newman.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Markdown reports: generated under backend-testing/reports/markdown" >> "$GITHUB_STEP_SUMMARY"
+          echo "- n8n webhook: ${{ steps.webhook.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail job if Newman tests failed
+        if: steps.newman.outcome == 'failure'
+        run: |
+          echo "Newman chain reported failures. Download artifacts for STC/bug Markdown reports."
+          exit 1
+
   frontend-e2e-tests:
     name: Frontend E2E (Playwright + Markdown)
     runs-on: ubuntu-latest
     timeout-minutes: 45
     needs: backend-api-tests
-    # Remove `needs` if you want backend and frontend jobs to run in parallel.
 
     steps:
       - name: Checkout repository
@@ -96,7 +121,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: npm
           cache-dependency-path: frontend-testing/package-lock.json
 
@@ -109,6 +134,8 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
+        continue-on-error: true
+        id: playwright
         working-directory: frontend-testing
         env:
           CI: 'true'
@@ -120,15 +147,20 @@ jobs:
           PROJECT_NAME: Physio & Connect
           TESTER_NAME: GitHub Actions
         run: npm run test:smoke
-        # For full auth STC coverage in CI, replace with: npm run test:auth
 
       - name: Upload frontend Markdown reports to n8n (cURL)
-        if: always() && env.N8N_WEBHOOK_URL != ''
+        if: always()
+        continue-on-error: true
+        id: webhook
         env:
           N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
         run: |
           if [ -z "$N8N_WEBHOOK_URL" ]; then
-            echo "N8N_WEBHOOK_URL secret not set — skipping webhook upload."
+            echo "::notice::N8N_WEBHOOK_URL secret not set — skipping webhook upload."
+            exit 0
+          fi
+          if echo "$N8N_WEBHOOK_URL" | grep -qiE 'localhost|127\.0\.0\.1'; then
+            echo "::warning::N8N_WEBHOOK_URL points to localhost. Skipping upload from cloud runner."
             exit 0
           fi
           shopt -s globstar nullglob
@@ -153,3 +185,7 @@ jobs:
             frontend-testing/reports/**
             frontend-testing/test-results/**
           if-no-files-found: ignore
+
+      - name: Fail job if Playwright tests failed
+        if: steps.playwright.outcome == 'failure'
+        run: exit 1
