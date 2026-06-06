@@ -1,0 +1,10 @@
+<svg viewBox="0 0 37 28" fill="none" width="42.285714" height="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>left-arrow-two</title>
+    <style>
+        :root, .palette0 {color: currentColor;
+            --color0: #414246;
+            --color1: #292d32;
+        }
+    </style>
+    <path stroke-width="1.5" stroke="currentColor" stroke-linecap="round" d="M0.75 13.8816 13.8816 0.75M0.75 13.8816 13.8816 27.0132M0.75 13.8816h22.9803M35.7676 13.8816h-5.4715" />
+</svg>

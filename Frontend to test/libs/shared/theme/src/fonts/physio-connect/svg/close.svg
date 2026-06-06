@@ -1,0 +1,10 @@
+<svg viewBox="0 0 36 36" fill="none" width="32" height="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>close</title>
+    <style>
+        :root, .palette0 {color: currentColor;
+            --color0: #414246;
+            --color1: #292d32;
+        }
+    </style>
+    <path fill="currentColor" d="M35.0176 3.5268 31.4908 0 17.5088 13.982 3.5268 0 0 3.5268l13.982 13.982L0 31.4908l3.5268 3.5268 13.982-13.982 13.982 13.982 3.5268-3.5268-13.982-13.982z" />
+</svg>

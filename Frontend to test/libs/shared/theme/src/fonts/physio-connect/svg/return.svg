@@ -1,0 +1,13 @@
+<svg viewBox="0 0 36 36" fill="none" width="32" height="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>return</title>
+    <style>
+        :root, .palette0 {color: currentColor;
+            --color0: #414246;
+            --color1: #292d32;
+        }
+    </style>
+    <path fill="url(#return_pattern0_1696_219289)" d="M35.0176 0H0v35.0176h35.0176z" />
+    <defs>
+        <pattern id="return_pattern0_1696_219289" width="1" height="1" patternContentUnits="objectBoundingBox" />
+    </defs>
+</svg>

@@ -1,0 +1,21 @@
+export const ROUTES = {
+  DASHBOARD: "/",
+  ACCESS_MODULES: "/access-management/modules",
+  ACCESS_PERMISSIONS: "/access-management/permissions",
+  ACCESS_ACTIONS: "/access-management/actions",
+  ROLES: "/roles",
+  USERS: "/users",
+  CLINICS: "/clinics",
+  LIBRARY: "/library",
+  NOTIFICATIONS: "/notifications",
+  AI_SUPERVISION: "/ai-supervision",
+  PLANS: "/plans",
+  FAQS: "/faqs",
+  SUPPORT: "/support",
+  SETTINGS: "/settings",
+  // Auth
+  LOGIN: "/login",
+  FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_OTP: "/verify-otp",
+  RESET_PASSWORD: "/reset-password",
+};

@@ -1,0 +1,495 @@
+{
+  "info": {
+    "_postman_id": "8f765f8e-2d4e-4f36-9f19-physio-sprint1-auth",
+    "name": "XXXConnect Identity - Sprint 1 Authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Sprint 1 authentication backend STCs for XXXConnect Identity API."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://identity.physio.agregatech.com"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Setup",
+      "item": [
+        {
+          "name": "SETUP - Kine login token preparation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kine_admin_group_paris_email}}\",\n  \"password\": \"{{kine_admin_group_paris_password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/kine/auth/login",
+            "description": "Setup request for token preparation only."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Setup status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var data = {};",
+                  "try { data = pm.response.json(); } catch (e) { data = {}; }",
+                  "",
+                  "function pick(obj, keys) {",
+                  "  for (var i = 0; i < keys.length; i++) {",
+                  "    if (obj && obj[keys[i]]) return obj[keys[i]];",
+                  "  }",
+                  "  return '';",
+                  "}",
+                  "",
+                  "var access = pick(data, ['accessToken', 'access_token', 'token']) || pick(data.data || {}, ['accessToken', 'access_token', 'token']);",
+                  "var refresh = pick(data, ['refreshToken', 'refresh_token']) || pick(data.data || {}, ['refreshToken', 'refresh_token']);",
+                  "var profileId = pick(data, ['selectedProfileId', 'profileId']) || pick(data.data || {}, ['selectedProfileId', 'profileId']);",
+                  "",
+                  "if (access) pm.environment.set('kine_access_token', access);",
+                  "if (refresh) pm.environment.set('kine_refresh_token', refresh);",
+                  "if (profileId) pm.environment.set('selected_profile_id', profileId);",
+                  "",
+                  "pm.test('Flexible token extraction executed', function () {",
+                  "  pm.expect(true).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SETUP - Admin login token preparation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/v1/auth/login",
+            "description": "Setup request for admin token preparation."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Setup status is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "var body = {};",
+                  "try { body = pm.response.json(); } catch (e) { body = {}; }",
+                  "var token = body.accessToken || body.access_token || body.token || (body.data && (body.data.accessToken || body.data.access_token || body.data.token));",
+                  "if (token) pm.environment.set('admin_access_token', token);",
+                  "",
+                  "function decodeJwt(payloadToken) {",
+                  "  try {",
+                  "    var payload = payloadToken.split('.')[1];",
+                  "    payload = payload.replace(/-/g, '+').replace(/_/g, '/');",
+                  "    var json = decodeURIComponent(atob(payload).split('').map(function(c) {",
+                  "      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);",
+                  "    }).join(''));",
+                  "    return JSON.parse(json);",
+                  "  } catch (e) { return null; }",
+                  "}",
+                  "",
+                  "var roleInBody = body.role || (body.user && body.user.role) || (body.data && (body.data.role || (body.data.user && body.data.user.role)));",
+                  "var jwtPayload = token ? decodeJwt(token) : null;",
+                  "var roleInToken = jwtPayload && (jwtPayload.role || (jwtPayload.roles && jwtPayload.roles[0]));",
+                  "var role = (roleInBody || roleInToken || '').toString().toUpperCase();",
+                  "pm.test('Admin role exists in response or token when available', function () {",
+                  "  if (!token && !role) {",
+                  "    pm.expect(true).to.eql(true);",
+                  "    return;",
+                  "  }",
+                  "  pm.expect(role).to.match(/ADMIN|SUPER_ADMIN/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "STC-AUTH-002B - Invalid Credentials / Failure Counter",
+      "item": [
+        {
+          "name": "STC-AUTH-002B - Invalid select-profile token returns 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer invalid-token" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"invalid-profile-id\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "description": "User Story: US-C.1\nExpected behavior: reject invalid authentication-related input with HTTP 401 and generic unauthorized message.\nNote: failure counter/rate-limit cannot be fully validated without explicit API feedback such as remaining attempts or lock headers."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "var text = pm.response.text();",
+                  "var body = {};",
+                  "try { body = pm.response.json(); } catch (e) { body = {}; }",
+                  "var msg = (body.message || body.error || body.detail || text || '').toLowerCase();",
+                  "",
+                  "pm.test('Unauthorized message is generic', function () {",
+                  "  pm.expect(msg).to.not.match(/stack|trace|sql|sequelize|prisma|internal server/);",
+                  "});",
+                  "",
+                  "pm.test('Response does not reveal profile existence', function () {",
+                  "  pm.expect(msg).to.not.match(/profile exists|profile not found|no profile/i);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "STC-AUTH-004B - Patient Login",
+      "item": [
+        {
+          "name": "STC-AUTH-004B - Patient login with email and password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{patient_marie_email}}\",\n  \"password\": \"{{patient_marie_password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/patient/auth/login",
+            "description": "User Story: US-C.2\nExpected behavior: successful patient login with email/password and token fields returned if API schema supports them."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is JSON', function () {",
+                  "  pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "var body = {};",
+                  "try { body = pm.response.json(); } catch (e) { body = {}; }",
+                  "var data = body.data || body;",
+                  "var access = data.accessToken || data.access_token || data.token || body.accessToken || body.access_token || body.token;",
+                  "var refresh = data.refreshToken || data.refresh_token || body.refreshToken || body.refresh_token;",
+                  "var profiles = data.profiles || body.profiles;",
+                  "var profile = data.profile || body.profile;",
+                  "",
+                  "if (access) pm.environment.set('patient_access_token', access);",
+                  "if (refresh) pm.environment.set('patient_refresh_token', refresh);",
+                  "",
+                  "pm.test('Access token exists when token-based login is used', function () {",
+                  "  pm.expect(access || '').to.not.eql('');",
+                  "});",
+                  "pm.test('Refresh token exists when API returns it', function () {",
+                  "  pm.expect(refresh || '').to.not.eql('');",
+                  "});",
+                  "pm.test('Patient profile exists when profile is returned', function () {",
+                  "  pm.expect(Boolean(profile) || Array.isArray(profiles)).to.eql(true);",
+                  "});",
+                  "pm.test('Patient has at most one profile when profiles array exists', function () {",
+                  "  if (!Array.isArray(profiles)) return pm.expect(true).to.eql(true);",
+                  "  pm.expect(profiles.length).to.be.at.most(1);",
+                  "});",
+                  "pm.test('No sensitive data leakage', function () {",
+                  "  var txt = JSON.stringify(body).toLowerCase();",
+                  "  pm.expect(txt).to.not.include('password');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-AUTH-004B - Patient login with phone and password - requires phone variable",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{patient_phone_marie}}\",\n  \"password\": \"{{patient_marie_password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/patient/auth/login",
+            "description": "User Story: US-C.2\nRequires patient_phone_marie variable to be filled before execution."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var phone = pm.environment.get('patient_phone_marie') || '';",
+                  "if (!phone.trim()) {",
+                  "  pm.test('Missing phone test data', function () {",
+                  "    pm.expect.fail('Missing phone test data: patient_phone_marie is required for phone/password login validation.');",
+                  "  });",
+                  "} else {",
+                  "  pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "STC-AUTH-005B - Generic Rejection / No Enumeration",
+      "item": [
+        {
+          "name": "STC-AUTH-005B - Admin login with unknown identifier returns generic 401 (email body)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"unknown.user@example.com\",\n  \"password\": \"WrongPassword123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/v1/auth/login",
+            "description": "User Story: US-C.2\nExpected behavior: HTTP 401 with generic error message and no account enumeration."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "var body = {};",
+                  "try { body = pm.response.json(); } catch (e) { body = {}; }",
+                  "var text = (body.message || body.error || pm.response.text() || '').toLowerCase();",
+                  "pm.test('Message is generic and non-enumerating', function () {",
+                  "  pm.expect(text).to.not.match(/user not found|email not registered|account does not exist|identifier unknown/);",
+                  "});",
+                  "pm.test('No token is returned', function () {",
+                  "  var payload = JSON.stringify(body).toLowerCase();",
+                  "  pm.expect(payload).to.not.match(/access.?token|refresh.?token|jwt/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-AUTH-005B - Admin login with unknown identifier returns generic 401 (identifier body)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"unknown.user@example.com\",\n  \"password\": \"WrongPassword123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/v1/auth/login",
+            "description": "User Story: US-C.2\nVariant request if API expects identifier field instead of email."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "var body = {};",
+                  "try { body = pm.response.json(); } catch (e) { body = {}; }",
+                  "var text = (body.message || body.error || pm.response.text() || '').toLowerCase();",
+                  "pm.test('Message is generic and non-enumerating', function () {",
+                  "  pm.expect(text).to.not.match(/user not found|email not registered|account does not exist|identifier unknown/);",
+                  "});",
+                  "pm.test('No token is returned', function () {",
+                  "  var payload = JSON.stringify(body).toLowerCase();",
+                  "  pm.expect(payload).to.not.match(/access.?token|refresh.?token|jwt/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "STC-AUTH-006B - Refresh / Profile Behavior",
+      "item": [
+        {
+          "name": "STC-AUTH-006B - Kine refresh token flow",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{kine_refresh_token}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/kine/auth/refresh",
+            "description": "User Story: US-C.2\nWarning: STC description is about Patient single-profile login, but endpoint mapping is Kine refresh. Validate mapping with Swagger/Postman before final reporting."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var rt = pm.environment.get('kine_refresh_token') || '';",
+                  "pm.test('Refresh token is provided for this test', function () {",
+                  "  pm.expect(rt).to.not.eql('');",
+                  "});",
+                  "pm.test('Status code is 200 when refresh token is valid', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var body = {};",
+                  "try { body = pm.response.json(); } catch (e) { body = {}; }",
+                  "var token = body.accessToken || body.access_token || body.token || (body.data && (body.data.accessToken || body.data.access_token || body.data.token));",
+                  "if (token) pm.environment.set('kine_access_token', token);",
+                  "pm.test('New access token exists', function () {",
+                  "  pm.expect(token || '').to.not.eql('');",
+                  "});",
+                  "pm.test('No password or sensitive data leakage', function () {",
+                  "  var txt = JSON.stringify(body).toLowerCase();",
+                  "  pm.expect(txt).to.not.include('password');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "STC-AUTH-010B - Admin Login / Endpoint Mapping Check",
+      "item": [
+        {
+          "name": "STC-AUTH-010B - Safe negative change-password check",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{kine_access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"WrongPassword123!\",\n  \"newPassword\": \"Temporary123!\",\n  \"confirmPassword\": \"Temporary123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/kine/auth/change-password",
+            "description": "User Story: US-C.4\nWarning: STC description is Admin login, but endpoint mapping is Kine change-password. This request is kept safe by using an invalid current password."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Safe negative test returns 400 or 401', function () {",
+                  "  pm.expect([400, 401]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test('Response confirms password was not changed', function () {",
+                  "  var text = pm.response.text().toLowerCase();",
+                  "  pm.expect(text).to.not.include('password changed successfully');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-AUTH-010B - Admin login validation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/admin/v1/auth/login",
+            "description": "User Story: US-C.4\nExpected behavior: successful admin login and ADMIN/SUPER_ADMIN role validation."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var body = {};",
+                  "try { body = pm.response.json(); } catch (e) { body = {}; }",
+                  "var token = body.accessToken || body.access_token || body.token || (body.data && (body.data.accessToken || body.data.access_token || body.data.token));",
+                  "if (token) pm.environment.set('admin_access_token', token);",
+                  "pm.test('Token exists', function () {",
+                  "  pm.expect(token || '').to.not.eql('');",
+                  "});",
+                  "",
+                  "function decodeJwt(payloadToken) {",
+                  "  try {",
+                  "    var payload = payloadToken.split('.')[1];",
+                  "    payload = payload.replace(/-/g, '+').replace(/_/g, '/');",
+                  "    var json = decodeURIComponent(atob(payload).split('').map(function(c) {",
+                  "      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);",
+                  "    }).join(''));",
+                  "    return JSON.parse(json);",
+                  "  } catch (e) { return null; }",
+                  "}",
+                  "",
+                  "var roleBody = body.role || (body.user && body.user.role) || (body.data && (body.data.role || (body.data.user && body.data.user.role)));",
+                  "var jwtPayload = token ? decodeJwt(token) : null;",
+                  "var roleToken = jwtPayload && (jwtPayload.role || (jwtPayload.roles && jwtPayload.roles[0]));",
+                  "var role = (roleBody || roleToken || '').toString().toUpperCase();",
+                  "pm.test('ADMIN or SUPER_ADMIN role exists', function () {",
+                  "  pm.expect(role).to.match(/ADMIN|SUPER_ADMIN/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

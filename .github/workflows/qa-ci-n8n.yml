@@ -1,0 +1,155 @@
+# QA automation: Newman + Playwright ? Markdown reports ? n8n webhook
+#
+# Required GitHub Secrets (Settings ? Secrets and variables ? Actions):
+#   N8N_WEBHOOK_URL          Production webhook (or test URL during development)
+#   KINE_EMAIL / KINE_PASSWORD / KINE_ADMIN_EMAIL / KINE_ADMIN_PASSWORD (frontend)
+#
+# Note: localhost:5678 is NOT reachable from GitHub-hosted runners.
+# Use a public n8n URL, a tunnel (ngrok), or a self-hosted runner on the same host as n8n.
+
+name: QA CI — Tests & n8n Reports
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend-testing/**'
+      - 'frontend-testing/**'
+      - 'Backend to test/**'
+      - 'Frontend to test/**'
+      - 'package.json'
+      - '.github/workflows/qa-ci-n8n.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'backend-testing/**'
+      - 'frontend-testing/**'
+      - 'Backend to test/**'
+      - 'Frontend to test/**'
+      - 'package.json'
+      - '.github/workflows/qa-ci-n8n.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: qa-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-api-tests:
+    name: Backend API (Newman + Markdown)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Run Physio Newman chain
+        run: npm run test:physio:chain
+
+      - name: Generate Markdown STC / bug reports
+        if: always()
+        run: npm run report:md:physio
+
+      - name: Upload backend Markdown reports to n8n
+        if: always() && env.N8N_WEBHOOK_URL != ''
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+          WEBHOOK_MARKDOWN_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+        run: |
+          if [ -z "$N8N_WEBHOOK_URL" ]; then
+            echo "N8N_WEBHOOK_URL secret not set — skipping webhook upload."
+            exit 0
+          fi
+          node backend-testing/scripts/upload-stc-bugs-markdown-webhook-curl.js
+
+      - name: Archive backend reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-markdown-reports
+          path: |
+            backend-testing/reports/markdown/**
+            backend-testing/reports/newman/**
+          if-no-files-found: ignore
+
+  frontend-e2e-tests:
+    name: Frontend E2E (Playwright + Markdown)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: backend-api-tests
+    # Remove `needs` if you want backend and frontend jobs to run in parallel.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend-testing/package-lock.json
+
+      - name: Install frontend-testing dependencies
+        working-directory: frontend-testing
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: frontend-testing
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        working-directory: frontend-testing
+        env:
+          CI: 'true'
+          BASE_URL: ${{ vars.BASE_URL || 'https://kine.physio.agregatech.com' }}
+          KINE_EMAIL: ${{ secrets.KINE_EMAIL }}
+          KINE_PASSWORD: ${{ secrets.KINE_PASSWORD }}
+          KINE_ADMIN_EMAIL: ${{ secrets.KINE_ADMIN_EMAIL }}
+          KINE_ADMIN_PASSWORD: ${{ secrets.KINE_ADMIN_PASSWORD }}
+          PROJECT_NAME: Physio & Connect
+          TESTER_NAME: GitHub Actions
+        run: npm run test:smoke
+        # For full auth STC coverage in CI, replace with: npm run test:auth
+
+      - name: Upload frontend Markdown reports to n8n (cURL)
+        if: always() && env.N8N_WEBHOOK_URL != ''
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+        run: |
+          if [ -z "$N8N_WEBHOOK_URL" ]; then
+            echo "N8N_WEBHOOK_URL secret not set — skipping webhook upload."
+            exit 0
+          fi
+          shopt -s globstar nullglob
+          mapfile -t FILES < <(find frontend-testing/reports/markdown -name '*.md' -type f 2>/dev/null | sort)
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo "No frontend Markdown reports found."
+            exit 0
+          fi
+          CURL_ARGS=(--location -sS "$N8N_WEBHOOK_URL")
+          for f in "${FILES[@]}"; do
+            CURL_ARGS+=(-F "file=@${f}")
+          done
+          echo "POST ${#FILES[@]} file(s) ? $N8N_WEBHOOK_URL"
+          curl "${CURL_ARGS[@]}"
+
+      - name: Archive Playwright reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-playwright-reports
+          path: |
+            frontend-testing/reports/**
+            frontend-testing/test-results/**
+          if-no-files-found: ignore

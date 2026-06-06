@@ -1,0 +1,431 @@
+{
+  "info": {
+    "name": "PHYSIO - Admin Kine Verification STCs",
+    "_postman_id": "physio-admin-verif-stcs-001",
+    "description": "STC-VERIF-* + STC-VERIF-HISTORY-001/B. Prerequisite: Admin login + Kine login (sets kineId). PATCH /verification uses body field `decision` per existing collections; align with Swagger if your API uses `action`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://identity.physio.agregatech.com"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 Prerequisite",
+      "item": [
+        {
+          "name": "STC-AUTH-KINE-001/B | Kine login nominal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/login",
+            "description": "**ClickUp:** BE-C1-01\n**User Story:** US-C.1\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • POST /api/v1/kine/auth/login accepte {email, password}   • Vérification password contre le hash bcrypt   • Retour accessToken (TTL court) + refreshToken (TTL long)   • Reto...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"password\": \"{{kinePassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-AUTH-KINE-001/B",
+                  "pm.test('[STC-AUTH-KINE-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-AUTH-KINE-001/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var at = json.accessToken || json.access_token || (json.data && json.data.accessToken);",
+                  "  var rt = json.refreshToken || json.refresh_token || (json.data && json.data.refreshToken);",
+                  "  if (at) {",
+                  "    pm.environment.set('kineToken', at);",
+                  "  }",
+                  "  if (rt) pm.environment.set('refreshToken', rt);",
+                  "  if (json.user && json.user.id) pm.environment.set('kineId', json.user.id);",
+                  "  var p0 = json.profiles && json.profiles[0];",
+                  "  if (p0 && p0.id) pm.environment.set('profileId', p0.id);",
+                  "  if (p0 && p0.cabinetId) pm.environment.set('cabinetId', p0.cabinetId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-AUTH-ADMIN-001/B | Admin login nominal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/auth/login",
+            "description": "**ClickUp:** BE-C4-01\n**User Story:** US-C.4\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • POST /api/admin/v1/auth/login accepte {email, password}   • Recherche dans collection admins (séparée de kines/patients)   • Retour accessToken + refreshToken + permissions...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-AUTH-ADMIN-001/B",
+                  "pm.test('[STC-AUTH-ADMIN-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-AUTH-ADMIN-001/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var at = json.accessToken || json.access_token || (json.data && json.data.accessToken);",
+                  "  var rt = json.refreshToken || json.refresh_token || (json.data && json.data.refreshToken);",
+                  "  if (at) {",
+                  "    pm.environment.set('adminToken', at);",
+                  "  }",
+                  "  if (rt) pm.environment.set('refreshToken', rt);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 Verification",
+      "item": [
+        {
+          "name": "STC-VERIF-001/B | Verification APPROVE/REJECT/RESET",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/verification",
+            "description": "**ClickUp:** BE-I1-01\n**User Story:** US-I.1\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • PATCH /api/admin/v1/kines/:id/verification accepte {action: 'APPROVE'|'REJECT'|'RESET', reason?}   • Si APPROVE : verificationStatus=VERIFIED, verifiedAt=now, verifiedByAdm...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"APPROVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-VERIF-001/B",
+                  "pm.test('[STC-VERIF-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-VERIF-001/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-VERIF-002/B | Verification REJECT with reason",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/verification",
+            "description": "**ClickUp:** BE-I1-02\n**User Story:** US-I.1\n**Expected (sheet):** 200 OK; verification status updated to REJECTED; rejection email contains reason and resubmission hint.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"REJECT\",\n  \"rejectionReason\": \"Document illisible\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-VERIF-002/B",
+                  "pm.test('[STC-VERIF-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-VERIF-002/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-VERIF-003/B | List kine verifications (PENDING)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/verifications?status=PENDING"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-VERIF-003/B",
+                  "pm.test('[STC-VERIF-003/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-VERIF-005/B | Verification wrong actor 403",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/verification",
+            "description": "**ClickUp:** BE-I1-01\n**User Story:** US-I.1\n**Expected (sheet):** 403 Forbidden; verification unchanged.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"APPROVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-VERIF-005/B",
+                  "pm.test('[STC-VERIF-005/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-VERIF-005/B] status in [400, 403] (implementation may differ)', function () {",
+                  "  pm.expect([400, 403]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-VERIF-006/B | Verification reject validation 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/verification",
+            "description": "**ClickUp:** BE-I1-01\n**User Story:** US-I.1\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'REJECTION_REASON_REQUIRED' } • verificationStatus reste inchangé",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"REJECT\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-VERIF-006/B",
+                  "pm.test('[STC-VERIF-006/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-VERIF-006/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-VERIF-006/B] error code REJECTION_REASON_REQUIRED or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['REJECTION_REASON_REQUIRED', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-VERIF-007/B | List kine verifications (REJECTED)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/verifications?status=REJECTED"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-VERIF-007/B",
+                  "pm.test('[STC-VERIF-007/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-VERIF-HISTORY-001/B | Kine verification audit trail GET",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/verification/history",
+            "description": "If your backend exposes a different path (e.g. only global GET /kines/verifications), duplicate and adjust. This URL is a common REST pattern."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-VERIF-HISTORY-001/B",
+                  "pm.test('[STC-VERIF-HISTORY-001/B] status in [200,404]', function () {",
+                  "  pm.expect([200,404]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

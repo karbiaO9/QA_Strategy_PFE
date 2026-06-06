@@ -1,53 +1,39 @@
 {
-  "name": "marketsaver-server",
+  "name": "market-data-testing-workspace",
   "version": "1.0.0",
-  "description": "MarketSaver API Server - Serves crypto market data from cache",
-  "main": "src/app.js",
+  "description": "XXXConnect backend API testing and reporting workspace",
+  "main": "backend-testing/scripts/test-endpoints.js",
   "scripts": {
-    "start": "node --no-deprecation src/app.js",
-    "dev": "nodemon --exec \"node --no-deprecation\" src/app.js",
-    "test:endpoints": "node scripts/test-endpoints.js",
-    "test": "node test/test-api.js",
-    "test:all": "node test/test-api.js",
-    "test:health": "node test/run-tests.js --health",
-    "test:cache": "node test/run-tests.js --cache",
-    "test:api": "node test/run-tests.js --api",
-    "test:perf": "node test/performance-test.js",
-    "test:perf:local": "node test/performance-test.js --url http://localhost:5055",
-    "test:perf:remote": "node test/performance-test.js --url https://market-server-blockstat.onrender.com",
-    "test:fallback": "node test/fallback-test.js"
+    "test:endpoints": "node backend-testing/scripts/test-endpoints.js",
+    "report:newman": "node backend-testing/scripts/generate-newman-markdown.js backend-testing/reports/newman-report.json backend-testing/reports/newman-report.md",
+    "test:api:auth": "newman run backend-testing/postman/XXXConnect-Identity-Sprint1-Auth.postman_collection.json -e backend-testing/postman/XXXConnect-Identity-local.postman_environment.json --reporters cli,json,html --reporter-json-export backend-testing/reports/newman/auth-results.json --reporter-html-export backend-testing/reports/newman/auth-report.html",
+    "report:md": "node backend-testing/scripts/generate-md-reports-from-newman.js",
+    "report:md:physio": "node backend-testing/scripts/generate-md-reports-from-newman.js backend-testing/reports/newman/physio-merged.json",
+    "stc:prefill": "node backend-testing/scripts/generate-stc-prefill-from-excel.js",
+    "postman:physio-backend": "node backend-testing/scripts/build-physio-postman-from-excel.js",
+    "test:physio:chain": "node backend-testing/scripts/run-physio-newman-chain.js",
+    "test:physio:all:report": "node backend-testing/scripts/run-all-physio-newman-and-md.js",
+    "report:md:physio:full": "node backend-testing/scripts/merge-newman-chain-split-dedupe.js && node backend-testing/scripts/generate-md-reports-from-newman.js backend-testing/reports/newman/physio-chain-split-full-deduped.json",
+    "test:api:auth:report": "npm run test:api:auth && npm run report:md",
+    "qa:newman:md:webhook": "node backend-testing/scripts/run-newman-report-and-upload-webhook.js",
+    "qa:upload-markdown:webhook": "node backend-testing/scripts/upload-markdown-webhook-only.js",
+    "qa:upload-stc-bugs:webhook": "node backend-testing/scripts/upload-stc-bugs-markdown-webhook-curl.js"
   },
   "keywords": [
-    "crypto",
-    "api",
-    "markets",
-    "news",
-    "sentiment"
+    "api-testing",
+    "newman",
+    "reporting"
   ],
   "author": "MarketSaver Team",
   "license": "MIT",
-  "dependencies": {
-    "@fastify/cors": "^11.1.0",
-    "@fastify/helmet": "^13.0.1",
-    "@fastify/rate-limit": "^10.3.0",
-    "autocannon": "^8.0.0",
-    "compression": "^1.8.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.1",
-    "express-slow-down": "^2.0.1",
-    "fastify": "^5.5.0",
-    "helmet": "^7.2.0",
-    "http-proxy": "^1.18.1",
-    "node-cron": "^3.0.3",
-    "@supabase/supabase-js": "^2.39.0"
-  },
   "devDependencies": {
-    "axios": "^1.11.0",
-    "nodemon": "^3.0.2"
+    "newman": "latest",
+    "newman-reporter-html": "latest"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
   }
 }

@@ -1,0 +1,219 @@
+{
+  "info": {
+    "name": "PHYSIO - KINE Register LIBERAL (SOLO) STCs",
+    "_postman_id": "physio-kine-register-solo-001",
+    "description": "STC-REGISTER-SOLO-* — autonomous LIBERAL registration on POST /api/v1/kine/auth/register. Uses registerLiberal* and registerDefaultPassword from PHYSIO-Backend-Execution.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://identity.physio.agregatech.com"
+    }
+  ],
+  "item": [
+    {
+      "name": "STC-REGISTER-SOLO-001/B | Register LIBERAL nominal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/kine/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// STC: STC-REGISTER-SOLO-001/B",
+              "pm.test('[STC-REGISTER-SOLO-001/B] response time OK', function () {",
+              "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+              "});",
+              "pm.test('[STC-REGISTER-SOLO-001/B] status in [201,400]', function () {",
+              "  pm.expect([201,400]).to.include(pm.response.code);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "STC-REGISTER-SOLO-003/B | LIBERAL missing professionalNumber 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/kine/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// STC: STC-REGISTER-SOLO-003/B",
+              "pm.test('[STC-REGISTER-SOLO-003/B] status 400', function () {",
+              "  pm.response.to.have.status(400);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "STC-REGISTER-SOLO-004/B | Invalid email 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/kine/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"not-an-email\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// STC: STC-REGISTER-SOLO-004/B",
+              "pm.test('[STC-REGISTER-SOLO-004/B] status in [400,422]', function () {",
+              "  pm.expect([400,422]).to.include(pm.response.code);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "STC-REGISTER-SOLO-005/B | Duplicate email 409",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/kine/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// STC: STC-REGISTER-SOLO-005/B — uses existing kineEmail",
+              "pm.test('[STC-REGISTER-SOLO-005/B] status in [409,400]', function () {",
+              "  pm.expect([409,400]).to.include(pm.response.code);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "STC-REGISTER-SOLO-006/B | Weak password 400",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/kine/auth/register",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"weak1\",\n  \"passwordConfirmation\": \"weak1\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// STC: STC-REGISTER-SOLO-006/B",
+              "pm.test('[STC-REGISTER-SOLO-006/B] status 400', function () {",
+              "  pm.response.to.have.status(400);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

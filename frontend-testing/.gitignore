@@ -1,0 +1,37 @@
+node_modules/
+dist/
+.env.local
+.env.*.local
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Auth state (generated)
+/playwright/.auth/*.json
+!/playwright/.auth/.gitkeep
+
+# Reports (generated artifacts)
+/reports/html/
+/reports/allure-results/
+/reports/allure-report/
+/reports/junit/
+/reports/markdown/*.md
+!/reports/markdown/.gitkeep
+
+# Evidence
+/screenshots/*
+!/screenshots/.gitkeep
+/videos/*
+!/videos/.gitkeep
+/traces/*
+!/traces/.gitkeep
+
+# IDE / OS
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db

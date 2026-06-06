@@ -78,6 +78,10 @@ public
 tmp/
 temp/
 
+# Local IDE / agent config
+.claude/
+prompts.txt
+
 # Editor directories and files
 .vscode/
 .idea/
@@ -113,4 +117,8 @@ coverage/
 # Cache directories
 .cache/
 .parcel-cache/
+
+# Postman local credentials
+backend-testing/postman/XXXConnect-Identity-local.postman_environment.json
+backend-testing/postman/physio-backend/_runtime.postman_environment.json
 

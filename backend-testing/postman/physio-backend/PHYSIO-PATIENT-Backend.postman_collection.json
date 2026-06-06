@@ -1,0 +1,114 @@
+{
+  "info": {
+    "name": "PHYSIO - PATIENT Backend",
+    "_postman_id": "physio-patient-backend-001",
+    "description": "PHYSIO backend API — PATIENT routes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "STC-AUTH-PAT-001/B | Patient login nominal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/patient/auth/login",
+            "description": "**ClickUp:** BE-C2-01\n**User Story:** US-C.2\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • POST /api/v1/patient/auth/login accepte {emailOrPhone, password}   • Recherche flexible (email ou téléphone)   • Retour accessToken + refreshToken + profilee (un seul, pas ...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"{{patientPassword}}\",\n  \"email\": \"{{patientEmail}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-AUTH-PAT-001/B",
+                  "pm.test('[STC-AUTH-PAT-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-AUTH-PAT-001/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var at = json.accessToken || json.access_token || (json.data && json.data.accessToken);",
+                  "  var rt = json.refreshToken || json.refresh_token || (json.data && json.data.refreshToken);",
+                  "  if (at) {",
+                  "    pm.environment.set('patientToken', at);",
+                  "  }",
+                  "  if (rt) pm.environment.set('refreshToken', rt);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-AUTH-PAT-002/B | Patient login wrong password 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/patient/auth/login",
+            "description": "**ClickUp:** BE-C2-01\n**User Story:** US-C.2\n**Expected (sheet):** 401 Unauthorized with generic auth error; no tokens issued.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{patientEmail}}\",\n  \"password\": \"WrongP@ssword1!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-AUTH-PAT-002/B",
+                  "pm.test('[STC-AUTH-PAT-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-AUTH-PAT-002/B] status 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

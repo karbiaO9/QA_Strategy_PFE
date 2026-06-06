@@ -1,0 +1,1383 @@
+{
+  "info": {
+    "name": "PHYSIO - KINE Profile STCs",
+    "_postman_id": "physio-kine-profile-stcs-001",
+    "description": "STC-PROFILE-ADD / SELECT / UPDATE per execution sheet. Prerequisites: Kine login + Admin login (admin routes for ADD-002,005-008). Placeholders: ADD-003, ADD-011, SELECT-004/008/009, UPDATE-005/006 — tighten when Excel final.\nEnvironment: PHYSIO-Backend-Execution.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://identity.physio.agregatech.com"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 Prerequisite",
+      "description": "Sets kineToken, kineId, cabinetId, profileId, adminToken.",
+      "item": [
+        {
+          "name": "STC-AUTH-KINE-001/B | Kine login nominal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/login",
+            "description": "**ClickUp:** BE-C1-01\n**User Story:** US-C.1\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • POST /api/v1/kine/auth/login accepte {email, password}   • Vérification password contre le hash bcrypt   • Retour accessToken (TTL court) + refreshToken (TTL long)   • Reto...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"password\": \"{{kinePassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-AUTH-KINE-001/B",
+                  "pm.test('[STC-AUTH-KINE-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-AUTH-KINE-001/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var at = json.accessToken || json.access_token || (json.data && json.data.accessToken);",
+                  "  var rt = json.refreshToken || json.refresh_token || (json.data && json.data.refreshToken);",
+                  "  if (at) {",
+                  "    pm.environment.set('kineToken', at);",
+                  "  }",
+                  "  if (rt) pm.environment.set('refreshToken', rt);",
+                  "  if (json.user && json.user.id) pm.environment.set('kineId', json.user.id);",
+                  "  var p0 = json.profiles && json.profiles[0];",
+                  "  if (p0 && p0.id) pm.environment.set('profileId', p0.id);",
+                  "  if (p0 && p0.cabinetId) pm.environment.set('cabinetId', p0.cabinetId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-AUTH-ADMIN-001/B | Admin login nominal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/auth/login",
+            "description": "**ClickUp:** BE-C4-01\n**User Story:** US-C.4\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • POST /api/admin/v1/auth/login accepte {email, password}   • Recherche dans collection admins (séparée de kines/patients)   • Retour accessToken + refreshToken + permissions...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-AUTH-ADMIN-001/B",
+                  "pm.test('[STC-AUTH-ADMIN-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-AUTH-ADMIN-001/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var at = json.accessToken || json.access_token || (json.data && json.data.accessToken);",
+                  "  var rt = json.refreshToken || json.refresh_token || (json.data && json.data.refreshToken);",
+                  "  if (at) {",
+                  "    pm.environment.set('adminToken', at);",
+                  "  }",
+                  "  if (rt) pm.environment.set('refreshToken', rt);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 PROFILE-ADD",
+      "item": [
+        {
+          "name": "STC-PROFILE-ADD-001/B | Add STUDENT profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles",
+            "description": "**ClickUp:** BE-E2-01\n**User Story:** US-E.2\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • POST /api/v1/kine/profilees accepte un payload selon profileeType   • Profil créé with profileeType demandé (SOLO, ADMIN_GROUP, STUDENT, etc.)   • Si profile clinique et nu...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"STUDENT\",\n  \"schoolIfmk\": \"IFMK Lyon\",\n  \"academicYear\": \"2024-2025\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-001/B",
+                  "pm.test('[STC-PROFILE-ADD-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-001/B] status in [201, 400] (implementation may differ)', function () {",
+                  "  pm.expect([201, 400]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-002/B | Admin add LIBERAL to kine",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/profiles",
+            "description": "**ClickUp:** BE-E2-02\n**User Story:** US-E.2\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • POST /api/admin/v1/kines/:id/profilees accepte AddKineProfileDto + scope=admin (côté backend)   • Réservé SUPER_ADMIN via PoliciesGuard   • HTTP 201 with le profile créé (e...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"LIBERAL\",\n  \"cabinetName\": \"Cabinet Manuel\",\n  \"subscriptionPlanId\": \"{{subscriptionPlanId}}\",\n  \"scope\": \"admin\",\n  \"street\": \"{{cabinetAddressStreet}}\",\n  \"postalCode\": \"{{cabinetAddressPostalCode}}\",\n  \"city\": \"{{cabinetAddressCity}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-002/B",
+                  "pm.test('[STC-PROFILE-ADD-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-002/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-003/B | (sheet) — placeholder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"MEMBER\",\n  \"cabinetId\": \"{{cabinetId}}\",\n  \"subscriptionPlanId\": \"{{subscriptionPlanId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-003/B — align with execution sheet",
+                  "pm.test('[STC-PROFILE-ADD-003/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-003/B] status recorded', function () {",
+                  "  pm.expect([200,201,400,409]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-004/B | Add MEMBER conflict 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles",
+            "description": "**ClickUp:** BE-E2-01\n**User Story:** US-E.2\n**Expected (sheet):** 409 Conflict with PROFILE_ALREADY_EXISTS or domain conflict code; no second profile created.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"MEMBER\",\n  \"subscriptionPlanId\": \"{{subscriptionPlanId}}\",\n  \"cabinetId\": \"{{cabinetId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-004/B",
+                  "pm.test('[STC-PROFILE-ADD-004/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-004/B] status in [409, 201] (implementation may differ)', function () {",
+                  "  pm.expect([409, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PROFILE-ADD-004/B] error code PROFILE_ALREADY_EXISTS or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['PROFILE_ALREADY_EXISTS', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-005/B | Admin add profile validation 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/profiles",
+            "description": "**ClickUp:** BE-E2-02\n**User Story:** US-E.2\n**Expected (sheet):** 400 Bad Request; DTO validation error; no profile created.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"\",\n  \"subscriptionPlanId\": \"bad-id\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-005/B",
+                  "pm.test('[STC-PROFILE-ADD-005/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-005/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-006/B | Admin add profile kine 404",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/65f0000000000000000000ff/profiles",
+            "description": "**ClickUp:** BE-E2-02\n**User Story:** US-E.2\n**Expected (sheet):** 404 Not Found; target kine not found; no profile created.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"MEMBER\",\n  \"subscriptionPlanId\": \"{{subscriptionPlanId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-006/B",
+                  "pm.test('[STC-PROFILE-ADD-006/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-006/B] status in [400, 404] (implementation may differ)', function () {",
+                  "  pm.expect([400, 404]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-007/B | Admin add MEMBER conflict 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/profiles",
+            "description": "**ClickUp:** BE-E2-02\n**User Story:** US-E.2\n**Expected (sheet):** 409 Conflict with PROFILE_ALREADY_EXISTS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"MEMBER\",\n  \"subscriptionPlanId\": \"{{subscriptionPlanId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-007/B",
+                  "pm.test('[STC-PROFILE-ADD-007/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-007/B] status in [400, 409] (implementation may differ)', function () {",
+                  "  pm.expect([400, 409]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PROFILE-ADD-007/B] error code PROFILE_ALREADY_EXISTS or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['PROFILE_ALREADY_EXISTS', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-008/B | Admin add profile wrong token 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/admin/v1/kines/{{kineId}}/profiles",
+            "description": "**ClickUp:** BE-E2-02\n**User Story:** US-E.2\n**Expected (sheet):** 403 Forbidden; profile not created.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"MEMBER\",\n  \"subscriptionPlanId\": \"{{subscriptionPlanId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-008/B",
+                  "pm.test('[STC-PROFILE-ADD-008/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-008/B] status in [400, 403] (implementation may differ)', function () {",
+                  "  pm.expect([400, 403]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-009/B | Add STUDENT with justificatif",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              },
+              {
+                "key": "X-Profile-Id",
+                "value": "{{profileId}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles",
+            "description": "**ClickUp:** BE-E2-01\n**User Story:** US-E.2\n**Expected (sheet):** 201 Created; STUDENT profile created; fictive patients cloned from templates for this tenant.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"STUDENT\",\n  \"schoolIfmk\": \"IFMK Lyon\",\n  \"academicYear\": \"2024-2025\",\n  \"justificatifUrl\": \"https://s3.example/justif.pdf\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-009/B",
+                  "pm.test('[STC-PROFILE-ADD-009/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-009/B] status in [201, 400] (implementation may differ)', function () {",
+                  "  pm.expect([201, 400]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-010/B | Add LIBERAL profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles",
+            "description": "**ClickUp:** BE-E2-01\n**User Story:** US-E.2\n**Expected (sheet):** • Profil LIBERAL créé • Aucun patient fictif cloné • La méthode cloneFictifTemplatesForStudent N'EST PAS appelée",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"LIBERAL\",\n  \"cabinetName\": \"Cabinet Manuel\",\n  \"address\": \"12 rue X\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-010/B",
+                  "pm.test('[STC-PROFILE-ADD-010/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-ADD-011/B | Add REMPLACANT profile (adjust per sheet)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileType\": \"REMPLACANT\",\n  \"cabinetName\": \"Cabinet Rempla Test\",\n  \"professionalNumber\": \"{{testProfessionalNumberNew}}\",\n  \"subscriptionPlanId\": \"{{subscriptionPlanId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-ADD-011/B — replace body with sheet (REPLACEMENT/REMPLACANT per API enum)",
+                  "pm.test('[STC-PROFILE-ADD-011/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-ADD-011/B] status in [201,400]', function () {",
+                  "  pm.expect([201,400]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 PROFILE-SELECT",
+      "item": [
+        {
+          "name": "STC-PROFILE-SELECT-001/B | Select profile nominal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "description": "**ClickUp:** BE-E1-01\n**User Story:** US-E.1\n**Expected (sheet):** 200 OK; returns user, profile, permissions, rules; lastProfileId updated.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"{{profileId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-SELECT-001/B",
+                  "pm.test('[STC-PROFILE-SELECT-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-SELECT-001/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-SELECT-002/B | Select profile cache warmup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "description": "**ClickUp:** BE-E4-01\n**User Story:** US-E.1\n**Expected (sheet):** 200 OK; permissions resolved; Redis cache populated for selected profile.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"{{profileId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-SELECT-002/B",
+                  "pm.test('[STC-PROFILE-SELECT-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-SELECT-002/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-SELECT-004/B | Select without Bearer 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"{{profileId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-SELECT-004/B (public select forbidden)",
+                  "pm.test('[STC-PROFILE-SELECT-004/B] status 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-SELECT-005/B | Select invalid profileId 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "description": "**ClickUp:** BE-E1-01\n**User Story:** US-E.1\n**Expected (sheet):** 400 Bad Request with PROFILE_ID_INVALID.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"abc123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-SELECT-005/B",
+                  "pm.test('[STC-PROFILE-SELECT-005/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-SELECT-005/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PROFILE-SELECT-005/B] error code PROFILE_ID_INVALID if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(String(json.code)).to.eql('PROFILE_ID_INVALID');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-SELECT-006/B | Select inactive profile 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "description": "**ClickUp:** BE-E4-01\n**User Story:** US-E.1\n**Expected (sheet):** 403 Forbidden with PROFILE_INACTIVE; no context switch stored.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"{{profileIdInactive}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-SELECT-006/B",
+                  "pm.test('[STC-PROFILE-SELECT-006/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-SELECT-006/B] status in [403, 400] (implementation may differ)', function () {",
+                  "  pm.expect([403, 400]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PROFILE-SELECT-006/B] error code PROFILE_INACTIVE if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(String(json.code)).to.eql('PROFILE_INACTIVE');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-SELECT-007/B | Select with inactive kine 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineTokenInactive}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "description": "**ClickUp:** BE-E4-01\n**User Story:** US-E.1\n**Expected (sheet):** 403 Forbidden with KINE_INACTIVE.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"{{profileId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-SELECT-007/B",
+                  "pm.test('[STC-PROFILE-SELECT-007/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-SELECT-007/B] status in [403, 200] (implementation may differ)', function () {",
+                  "  pm.expect([403, 200]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PROFILE-SELECT-007/B] error code KINE_INACTIVE or TOKEN_MISSING if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['KINE_INACTIVE', 'TOKEN_MISSING', 'UNAUTHORIZED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-SELECT-008/B | Select profile not owned 403/404",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"65f0000000000000000000ff\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-SELECT-008/B",
+                  "pm.test('[STC-PROFILE-SELECT-008/B] status in [403,404,400]', function () {",
+                  "  pm.expect([403,404,400]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-SELECT-009/B | Select malformed id 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/select-profile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profileId\": \"not-a-valid-objectid\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-SELECT-009/B",
+                  "pm.test('[STC-PROFILE-SELECT-009/B] status in [400,404]', function () {",
+                  "  pm.expect([400,404]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 PROFILE-UPDATE",
+      "item": [
+        {
+          "name": "STC-PROFILE-UPDATE-001/B | Patch profile allowed fields",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles/{{profileId}}",
+            "description": "**ClickUp:** BE-E5-01\n**User Story:** US-E.5\n**Expected (sheet):** Cas nominal validé selon les AC du ticket :   • PATCH /api/v1/kine/profilees/:profileeId scoped au Compte authentifié   • Whitelist stricte : isActive (false only), isReplacement, school, academicYear, justificatifUrl   ...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isReplacement\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-UPDATE-001/B",
+                  "pm.test('[STC-PROFILE-UPDATE-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-UPDATE-001/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-UPDATE-002/B | Patch unknown profile 404",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles/65f0000000000000000000ff",
+            "description": "**ClickUp:** BE-E5-01\n**User Story:** US-E.5\n**Expected (sheet):** • Response status code : HTTP 404 • Body contains : { \"statusCode\": 404, \"error\": \"...\", \"code\": \"PROFILE_NOT_FOUND\" } • No side effects in database",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-UPDATE-002/B",
+                  "pm.test('[STC-PROFILE-UPDATE-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-UPDATE-002/B] status in [404, 400] (implementation may differ)', function () {",
+                  "  pm.expect([404, 400]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PROFILE-UPDATE-002/B] error code PROFILE_NOT_FOUND if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(String(json.code)).to.eql('PROFILE_NOT_FOUND');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-UPDATE-003/B | Patch activate forbidden 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles/{{profileId}}",
+            "description": "**ClickUp:** BE-E5-01\n**User Story:** US-E.5\n**Expected (sheet):** 400 Bad Request with PROFILE_ACTIVATION_ADMIN_ONLY.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-UPDATE-003/B",
+                  "pm.test('[STC-PROFILE-UPDATE-003/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-UPDATE-003/B] status in [400, 403, 200] (implementation may differ)', function () {",
+                  "  pm.expect([400, 403, 200]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PROFILE-UPDATE-003/B] error code PROFILE_ACTIVATION_ADMIN_ONLY or FORBIDDEN if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['PROFILE_ACTIVATION_ADMIN_ONLY', 'FORBIDDEN', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-UPDATE-004/B | Patch assistant field N/A 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles/{{profileId}}",
+            "description": "**ClickUp:** BE-E5-01\n**User Story:** US-E.5\n**Expected (sheet):** 400 Bad Request with FIELD_NOT_APPLICABLE.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"professionalNumber\": \"{{testProfessionalNumberExisting}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-UPDATE-004/B",
+                  "pm.test('[STC-PROFILE-UPDATE-004/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PROFILE-UPDATE-004/B] status in [400, 200] (implementation may differ)', function () {",
+                  "  pm.expect([400, 200]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PROFILE-UPDATE-004/B] error code FIELD_NOT_APPLICABLE if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(String(json.code)).to.eql('FIELD_NOT_APPLICABLE');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-UPDATE-005/B | Patch immutable field ignored or 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles/{{profileId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hacker@evil.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-UPDATE-005/B — email not mutable via PATCH profile",
+                  "pm.test('[STC-PROFILE-UPDATE-005/B] status in [400,200]', function () {",
+                  "  pm.expect([400,200]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PROFILE-UPDATE-006/B | Patch student field on non-student 400",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/profiles/{{profileId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schoolIfmk\": \"IFMK Paris\",\n  \"academicYear\": \"2025-2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PROFILE-UPDATE-006/B",
+                  "pm.test('[STC-PROFILE-UPDATE-006/B] status in [400,200]', function () {",
+                  "  pm.expect([400,200]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

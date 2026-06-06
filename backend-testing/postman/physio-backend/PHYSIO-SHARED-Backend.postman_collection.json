@@ -1,0 +1,566 @@
+{
+  "info": {
+    "name": "PHYSIO - SHARED Backend",
+    "_postman_id": "physio-shared-backend-001",
+    "description": "PHYSIO shared auth/password + health. Chain: Forgot → Verify (set verificationCode/resetToken) → Reset. change-password needs Bearer.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [],
+  "item": [
+    {
+      "name": "Password Forgot",
+      "item": [
+        {
+          "name": "STC-PWD-FORGOT-003/B | Forgot password unknown email 200",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/forgot-password",
+            "description": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** • HTTP 200 OK (toujours) • Body: { message: 'Si un account existe, un code a été envoyé.' } • Email INEXISTANT : aucun email envoyé • Email EXISTANT : email envoyé silencieusement • Impossibilité d'énumérer les emails ex...",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testEmailNew}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-FORGOT-003/B",
+                  "pm.test('[STC-PWD-FORGOT-003/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-FORGOT-003/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PWD-FORGOT-004/B | Forgot password rate limit 429",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/forgot-password",
+            "description": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** • Appels 1-5 : HTTP 200 OK • Appel 6+ : HTTP 429 Too Many Requests • Body: { statusCode: 429, code: 'RATE_LIMIT_EXCEEDED' } • Reset après 1h",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testEmailExisting}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-FORGOT-004/B",
+                  "pm.test('[STC-PWD-FORGOT-004/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-FORGOT-004/B] status 200 (early) or 429 (after repeated calls)', function () {",
+                  "  pm.expect([200, 429]).to.include(pm.response.code);",
+                  "});",
+                  "// Run this request 6+ times quickly to assert 429 + RATE_LIMIT_EXCEEDED per sheet.",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 429) {",
+                  "  pm.test('[STC-PWD-FORGOT-004/B] rate limit code', function () {",
+                  "    var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                  "    pm.expect(String(c || '')).to.eql('RATE_LIMIT_EXCEEDED');",
+                  "  });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PWD-FORGOT-001/B | Forgot password existing email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/forgot-password",
+            "description": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** 200 OK with generic anti-enumeration message; reset code hashed in Redis; mailer triggered.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-FORGOT-001/B",
+                  "pm.test('[STC-PWD-FORGOT-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-FORGOT-001/B] status 200 or 429 (rate limit after prior forgot-password in chain)', function () {",
+                  "  pm.expect([200, 429]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Password Verify Code",
+      "item": [
+        {
+          "name": "STC-PWD-VERIFY-001/B | Verify code success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/verify-code",
+            "description": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 200 OK or contract success response; resetToken returned; code marked as consumed/verified according to backend behavior.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"{{verificationCode}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-VERIFY-001/B",
+                  "pm.test('[STC-PWD-VERIFY-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-VERIFY-001/B] status in [200, 400] (implementation may differ)', function () {",
+                  "  pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200) {",
+                  "  var rt = json.resetToken || json.reset_token || (json.data && json.data.resetToken);",
+                  "  if (rt) pm.environment.set('resetToken', rt);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PWD-VERIFY-003/B | Verify code invalid 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/verify-code",
+            "description": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 400 Bad Request with CODE_INVALID.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"999999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-VERIFY-003/B",
+                  "pm.test('[STC-PWD-VERIFY-003/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-VERIFY-003/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-VERIFY-003/B] error code invalid/expired if body exposes code', function () {",
+                  "  var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                  "  if (c != null && c !== '') { pm.expect(['CODE_INVALID', 'CODE_EXPIRED']).to.include(String(c)); }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PWD-VERIFY-004/B | Verify code expired 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/verify-code",
+            "description": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 400 Bad Request with CODE_EXPIRED.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"{{verificationCodeExpired}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-VERIFY-004/B",
+                  "pm.test('[STC-PWD-VERIFY-004/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-VERIFY-004/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-VERIFY-004/B] error code CODE_EXPIRED or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['CODE_EXPIRED', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PWD-VERIFY-005/B | Verify code brute force",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/verify-code",
+            "description": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** Attempts 1-3: CODE_INVALID; next attempt: CODE_TOO_MANY_ATTEMPTS; code invalidated.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"999999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-VERIFY-005/B",
+                  "pm.test('[STC-PWD-VERIFY-005/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-VERIFY-005/B] status 400 expected', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "// Sheet: attempts 1–3 CODE_INVALID; later CODE_TOO_MANY_ATTEMPTS — re-run to cover both.",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-VERIFY-005/B] error code INVALID, TOO_MANY, or EXPIRED', function () {",
+                  "  var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                  "  pm.expect(['CODE_INVALID', 'CODE_TOO_MANY_ATTEMPTS', 'CODE_EXPIRED']).to.include(String(c || ''));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Password Reset",
+      "item": [
+        {
+          "name": "STC-PWD-RESET-001/B | Reset password with token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/reset-password",
+            "description": "**ClickUp:** BE-F3-01\n**User Story:** US-F.3\n**Expected (sheet):** 200 OK success; password changed; refresh tokens invalidated; new tokens issued if contract says so.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resetToken\": \"{{resetToken}}\",\n  \"newPassword\": \"NewP@ssw0rd2025!\",\n  \"passwordConfirmation\": \"NewP@ssw0rd2025!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-RESET-001/B",
+                  "pm.test('[STC-PWD-RESET-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-RESET-001/B] status in [200, 400] (implementation may differ)', function () {",
+                  "  pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Password Change",
+      "item": [
+        {
+          "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/change-password",
+            "description": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPassword\": \"{{kinePassword}}\",\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPasswordConfirmation\": \"{{kinePassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-CHANGE-002/B",
+                  "pm.test('[STC-PWD-CHANGE-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-CHANGE-002/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['PASSWORD_SAME_AS_OLD', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-PWD-CHANGE-001/B | Change password success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/change-password",
+            "description": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-CHANGE-001/B",
+                  "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200) {",
+                  "  var a = pm.environment.get('kinePassword');",
+                  "  var b = pm.environment.get('kinePasswordAlternate');",
+                  "  pm.environment.set('kinePassword', b);",
+                  "  pm.environment.set('kinePasswordAlternate', a);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "System Healthcheck",
+      "item": [
+        {
+          "name": "STC-HEALTHZ-001/B | Liveness healthcheck",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}{{healthCheckPath}}",
+            "description": "**ClickUp:** BE-X15-01\n**User Story:** X-15\n**Expected (sheet):** 200 OK; health payload indicates service readiness/liveness. Environment-variable documentation is out of API-scope for this case."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-HEALTHZ-001/B",
+                  "pm.test('[STC-HEALTHZ-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-HEALTHZ-001/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

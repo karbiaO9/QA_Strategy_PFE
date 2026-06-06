@@ -1,0 +1,10 @@
+<svg viewBox="0 0 37 36" fill="none" width="32.888889" height="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>checked</title>
+    <style>
+        :root, .palette0 {color: currentColor;
+            --color0: #414246;
+            --color1: #292d32;
+        }
+    </style>
+    <path stroke="var(--color1, #292d32)" stroke-linecap="round" stroke-linejoin="round" d="M10.5748 17.9799l4.9546 4.9545 9.9268-9.9091M30.393 5.634c6.9505 6.9505 6.8279 18.2952-0.3501 25.1054-6.6353 6.2854-17.4022 6.2854-24.055 0-7.1956-6.8102-7.3181-18.1549-0.3502-25.1054 6.8279-6.8453 17.9274-6.8453 24.7553 0z" />
+</svg>

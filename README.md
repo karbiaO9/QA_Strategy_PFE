@@ -1,283 +1,101 @@
-# MarketSaver Cache-First Server
+# XXXConnect Identity API QA Automation
 
-A high-performance, cache-first API server that serves cryptocurrency market data with intelligent fallback mechanisms to ensure 100% uptime in production.
+Backend API test project for XXXConnect Identity Sprint 1 authentication tests using Postman + Newman with Markdown reporting.
 
-## 🚀 Key Features
+## Project Purpose
 
-- **Cache-First Architecture**: All data served from in-memory cache for lightning-fast responses
-- **Intelligent Fallback**: Automatic database queries when cache is empty (no more "Cache is being populated" errors!)
-- **Auto-Population**: Cache automatically populates on startup and refreshes on schedule
-- **Production Ready**: Built-in retry mechanisms, health checks, and monitoring
-- **High Performance**: Optimized for high-load scenarios with streaming responses for large datasets
+- Execute Sprint 1 authentication STCs against `https://identity.physio.agregatech.com`
+- Produce deterministic Markdown test artifacts:
+  - STC reports (one file per STC)
+  - Bug reports (only on failures)
+  - SQTR report (aggregated sprint-level quality status)
 
-## 🔧 Cache System
+## Folder Structure
 
-### How It Works
+```text
+backend-testing/          # API / Newman / STC reporting
+  postman/
+  qa-config-sprint1/
+  stc_sheets/
+  reports/
+  scripts/
+  sprint1/
 
-1. **Startup**: Server populates all cache from database before accepting requests
-2. **API Requests**: First check cache, if empty → fetch from database → update cache → serve response
-3. **Scheduled Updates**: Cron jobs refresh cache at optimal intervals
-4. **Fallback Protection**: Even if cache fails, data is served directly from database
+frontend-testing/         # Playwright + POM (auth, smoke, regression, STC markdown reports)
 
-### Cache Keys & TTLs
+Frontend to test/         # XXX Next.js app under test
+Backend to test/          # Backend source (if present)
+```
 
-| Data Type | TTL | Update Frequency |
-|-----------|-----|------------------|
-| Market Data | 2 hours | Every 2 hours |
-| Trending Coins | 8 hours | Every 8 hours |
-| Top Gainers | 12 hours | Every 12 hours |
-| Top Coins | 4 hours | Every 4 hours |
-| Top Market Coins | 4 hours | Every 4 hours |
-| News | 6 hours | Every 6 hours |
-| Exchanges | 2 weeks | Every 2 weeks |
+## Install Dependencies
 
-## 📡 API Endpoints
-
-### Data Endpoints
-- `GET /api/market-data` - Market data with 2-hour cache
-- `GET /api/trending-coins` - Trending coins with 8-hour cache
-- `GET /api/top-gainers` - Top gainers with 12-hour cache
-- `GET /api/top-coins` - Top coins with 4-hour cache
-- `GET /api/top-market-coins` - Top market coins with 4-hour cache
-- `GET /api/news` - News with 6-hour cache
-- `GET /api/exchanges` - Exchanges with 2-week cache
-
-### Management Endpoints
-- `GET /health` - Server health status
-- `GET /health/detailed` - Detailed health information
-- `GET /health/cache-ready` - Cache readiness status
-- `GET /cache/stats` - Cache statistics
-- `GET /cache/health` - Cache health
-- `GET /cache/status` - Cache readiness details
-- `POST /cache/warm` - Manually warm all cache
-- `POST /cache/refresh/:key` - Refresh specific cache key
-- `DELETE /cache/clear` - Clear all cache
-- `GET /cache/service` - Service status
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 16+
-- PostgreSQL database
-- Environment variables configured
-
-### Installation
 ```bash
 npm install
 ```
 
-### Environment Setup
-Copy `env.example` to `.env` and configure:
+## Run Newman Collection
+
 ```bash
-cp env.example .env
+npm run test:api:auth
 ```
 
-Required environment variables:
-```env
-PORT=3000
-DATABASE_URL=postgresql://user:password@localhost:5432/marketsaver
-NODE_ENV=production
-```
+This writes:
+- `backend-testing/reports/newman/auth-results.json`
+- `backend-testing/reports/newman/auth-report.html`
 
-### Start Server
+## Generate Markdown Reports
+
 ```bash
-npm start
+npm run report:md
 ```
 
-The server will:
-1. Connect to database
-2. Populate all cache data
-3. Start scheduled cache updates
-4. Begin accepting API requests
+Or run all in one command:
 
-## 🔍 Monitoring & Health
-
-### Health Check
 ```bash
-curl http://localhost:3000/health
+npm run test:api:auth:report
 ```
 
-### Cache Status
+### Newman + Markdown + n8n webhook (local automation)
+
+After Newman and `generate-md-reports-from-newman.js` finish, uploads `.md` files under `backend-testing/reports/markdown` to your n8n webhook as **multipart/form-data**. By default **all files are sent in a single HTTP request** (multiple parts, same field name `file`), which matches how many n8n test webhooks behave. Use `WEBHOOK_UPLOAD_MODE=sequential` in `.env` if you need one POST per file.
+
 ```bash
-curl http://localhost:3000/cache/status
+npm run qa:newman:md:webhook
 ```
 
-### Cache Statistics
+If reports are **already** generated and you only want to push them to n8n:
+
 ```bash
-curl http://localhost:3000/cache/stats
+npm run qa:upload-markdown:webhook
 ```
 
-## 🛠️ Production Features
+That scans `reports/markdown` (override with `REPORTS_DIR` / `REPORT_GLOB` in `.env`) and sends each `.md` as `multipart/form-data` (`file` field by default).
 
-### Automatic Retry Mechanism
-- Failed cache updates automatically retry up to 3 times
-- Exponential backoff between retries
-- Comprehensive error logging
+Copy `.env.example` to `.env` and set `WEBHOOK_URL` (and optional `COLLECTION_PATH`, `ENVIRONMENT_PATH`, `NEWMAN_JSON_OUT`, `NEWMAN_CMD`, `REPORTS_DIR`, `REPORT_GLOB`, `WEBHOOK_FIELD_NAME`, `WEBHOOK_UPLOAD_MODE`) as needed. If `.env` is absent, the script still defaults the webhook to the local n8n test URL from the automation spec.
 
-### Cache Warming
-- Manual cache warming: `POST /cache/warm`
-- Individual cache refresh: `POST /cache/refresh/:key`
-- Automatic startup population
+Generated files:
+- `reports/markdown/stc/STC-AUTH-002B.md`
+- `reports/markdown/stc/STC-AUTH-004B.md`
+- `reports/markdown/stc/STC-AUTH-005B.md`
+- `reports/markdown/stc/STC-AUTH-006B.md`
+- `reports/markdown/stc/STC-AUTH-010B.md`
+- `reports/markdown/bugs/BUG-AUTH-xxx.md` (only for failures)
+- `reports/markdown/sqtr/SQTR-Sprint1-Auth.md`
 
-### Health Monitoring
-- Real-time cache readiness status
-- Memory usage monitoring
-- Service status tracking
-- Database connection health
+## Known Data Gaps
 
-## 🚨 Problem Resolution
+- Patient phone numbers are missing by default; `patient_phone_marie` must be filled to validate phone/password login flow.
 
-### "Cache is being populated" Error - SOLVED! ✅
+## Known Endpoint Mapping Warnings
 
-**Before**: API returned 503 errors when cache was empty
-```json
-{
-  "success": false,
-  "error": "Top gainers not available in cache",
-  "message": "Cache is being populated, please try again later"
-}
-```
+- `STC-AUTH-006/B` description mentions Patient single-profile login, but mapped endpoint is Kine refresh.
+- `STC-AUTH-010/B` description mentions Admin login, but mapped endpoint is Kine change-password.
+- `STC-AUTH-002/B` description mentions invalid credentials/failure counter, but mapped endpoint is select-profile.
 
-**After**: Automatic fallback to database ensures data is always available
-```json
-{
-  "success": true,
-  "data": [...],
-  "source": "database", // or "cache" if available
-  "total": 100,
-  "timestamp": "2024-01-01T00:00:00.000Z"
-}
-```
+## Safety Note
 
-### How It's Fixed
+- Do not run destructive change-password tests on real users unless a reversible test account and rollback strategy are provided.
 
-1. **Fallback Queries**: When cache is empty, data is fetched directly from database
-2. **Cache Updates**: Fresh data automatically populates cache for future requests
-3. **No More 503s**: Users always get data, regardless of cache state
-4. **Seamless Experience**: Fallback is transparent to API consumers
+## Credential Handling
 
-## 📊 Performance
-
-### Cache Performance
-- **Hit Rate**: Typically 95%+ in production
-- **Response Time**: <10ms for cached data
-- **Fallback Time**: <100ms for database queries
-- **Memory Usage**: Optimized with configurable TTLs
-
-### Load Testing
-```bash
-npm run test:performance
-```
-
-## 🔧 Configuration
-
-### Cache TTLs
-Modify TTL values in `lib/cache.js`:
-```javascript
-this.TTL = {
-  MARKET_DATA: 2 * 60 * 60 * 1000,        // 2 hours
-  TRENDING_COINS: 8 * 60 * 60 * 1000,      // 8 hours
-  // ... customize as needed
-};
-```
-
-### Update Schedules
-Modify cron schedules in `services/cache-updater.js`:
-```javascript
-// Market data: every 2 hours
-this.scheduleJob('market-data', '0 */2 * * *', () => this.updateMarketDataCache());
-```
-
-## 🚀 Deployment
-
-### Production Checklist
-- [ ] Set `NODE_ENV=production`
-- [ ] Configure database connection
-- [ ] Set appropriate cache TTLs
-- [ ] Monitor cache hit rates
-- [ ] Set up health check monitoring
-- [ ] Configure log aggregation
-
-### Docker Support
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Cache Not Populating**
-   - Check database connection
-   - Verify table names and structure
-   - Check logs for SQL errors
-
-2. **High Memory Usage**
-   - Adjust cache TTLs
-   - Monitor cache size
-   - Use cache clearing endpoints
-
-3. **Slow Response Times**
-   - Check cache hit rates
-   - Monitor database performance
-   - Verify cache population status
-
-### Debug Endpoints
-- `/health/detailed` - Comprehensive system status
-- `/cache/service` - Service and job status
-- `/cache/status` - Cache readiness details
-
-## 📈 Monitoring & Alerts
-
-### Key Metrics to Monitor
-- Cache hit rate (target: >95%)
-- Memory usage
-- Response times
-- Database connection status
-- Cache population status
-
-### Health Check Integration
-```bash
-# Kubernetes liveness probe
-httpGet:
-  path: /health
-  port: 3000
-initialDelaySeconds: 30
-periodSeconds: 10
-
-# Kubernetes readiness probe
-httpGet:
-  path: /health/cache-ready
-  port: 3000
-initialDelaySeconds: 60
-periodSeconds: 5
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the troubleshooting section
-- Review the health endpoints for system status
-
----
-
-**MarketSaver Cache-First Server** - Never see "Cache is being populated" errors again! 🚀
+- Local Postman environment contains credentials and is ignored in git via `.gitignore`.

@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>QM-STC — Software Test Case Sheet | XXX &amp; Connect · Pura Solutions</title>
+<style>
+
+/* ── Reset ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── Design Tokens ── */
+:root{
+  --navy:    #1B2A4A;
+  --navy-d:  #01314f;
+  --blue:    #2457A0;
+  --blue-l:  #3B6FBF;
+  --white:   #FFFFFF;
+  --off:     #F7F9FB;
+  --off-alt: #FAFBFD;
+  --bdr:     #B8C5D4;
+  --bdr-l:   #D6E2EE;
+  --txt:     #1A202C;
+  --txt-m:   #374151;
+  --txt-s:   #6B7280;
+  --ph:      #b5bec8;
+  --pass:    #1B5E20;
+  --fail:    #B71C1C;
+  --warn:    #7B4F00;
+  --skip:    #374151;
+  --risk-c:  #7B1FA2;
+  --font:    'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --mono:    'Courier New',Courier,monospace;
+  --r:       4px;
+}
+
+/* ── Page ── */
+html{
+  background:#D0D9E6;
+  font-family:var(--font);
+  font-size:11px;
+  color:var(--txt);
+  -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  max-width:794px;
+  width:100%;
+  margin:16px auto 60px;
+  background:var(--white);
+  overflow-x:hidden;
+  box-shadow:0 2px 20px rgba(27,42,74,.18);
+}
+p,td,th,div,span,input,textarea,select{
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+}
+
+/* ── Print ── */
+@media print{
+  @page{size:A4 portrait;margin:12mm 13mm}
+  html{background:none;font-size:9.5px}
+  body{max-width:100%;margin:0;box-shadow:none;overflow-x:visible}
+  .no-print{display:none!important}
+  .hdr-meta,thead tr,.sec-hdr td,.doc-header,.table-wrap{
+    print-color-adjust:exact;
+    -webkit-print-color-adjust:exact;
+  }
+  tr{page-break-inside:avoid}
+  .table-wrap{page-break-inside:avoid;margin-bottom:12px}
+  .page-break{page-break-before:always}
+  .script-tbl thead{display:table-header-group}
+  input,textarea,select{color:var(--txt)!important}
+}
+
+/* ── Global Form Controls ── */
+input[type=text],input[type=date]{
+  border:none;background:transparent;
+  font:10.5px/1.4 var(--font);color:var(--txt);
+  width:100%;outline:none;
+}
+input[type=text]::placeholder,
+input[type=date]::placeholder{color:var(--ph)}
+textarea{
+  width:100%;border:none;background:transparent;
+  font:10.5px/1.65 var(--font);color:var(--txt);
+  resize:vertical;outline:none;display:block;padding:2px 0;
+}
+textarea::placeholder{color:var(--ph)}
+select{
+  border:none;background:transparent;
+  font:10.5px var(--font);color:var(--txt);
+  outline:none;cursor:pointer;width:100%;
+}
+input[type=radio],input[type=checkbox]{
+  width:12px;height:12px;
+  accent-color:var(--blue);cursor:pointer;
+  margin-right:2px;flex-shrink:0;
+}
+label{cursor:pointer}
+
+/* ── Section Wrapper ── */
+.table-wrap{
+  width:95%;margin:0 auto 14px;
+  border-radius:var(--r);border:1px solid var(--bdr);
+  overflow:hidden;background:var(--white);
+}
+.table-wrap table{width:100%;border-collapse:collapse;margin:0}
+.table-wrap td,.table-wrap th{border:1px solid var(--bdr)}
+.table-wrap tr:first-child td,
+.table-wrap tr:first-child th{border-top:none}
+.table-wrap tr:last-child td,
+.table-wrap tr:last-child th{border-bottom:none}
+.table-wrap tr td:first-child,
+.table-wrap tr th:first-child{border-left:none}
+.table-wrap tr td:last-child,
+.table-wrap tr th:last-child{border-right:none}
+.sec-hdr td{border:none!important;border-bottom:1px solid var(--navy)!important}
+
+/* ── Document Header ── */
+.doc-header{
+  width:100%;border-collapse:collapse;table-layout:fixed;
+}
+.doc-header td{padding:0;vertical-align:middle}
+.h-logo{width:13%;text-align:center;vertical-align:middle;padding:8px 6px}
+.h-logo img{display:block;margin:0 auto;max-width:100%;max-height:80px;object-fit:contain}
+.h-title{width:53%;text-align:center;padding:13px 8px}
+.h-title h1{
+  font-size:17px;font-weight:800;color:var(--navy);
+  text-transform:uppercase;letter-spacing:.06em;line-height:1.3;
+}
+.h-title .h-subtitle{
+  font-size:8.5px;color:var(--txt-s);letter-spacing:.08em;
+  text-transform:uppercase;margin-top:3px;font-weight:600;
+}
+.h-meta{
+  width:34%;padding:0;background:var(--white);
+  vertical-align:top;border-left:2px solid var(--bdr);
+}
+.meta-tbl{
+  width:100%;border-collapse:collapse;table-layout:fixed;font-size:9px;
+}
+.meta-tbl td{
+  padding:3px 7px;border-bottom:1px solid var(--bdr-l);vertical-align:middle;
+}
+.meta-tbl tr:last-child td{border-bottom:none}
+.meta-tbl .ml{font-weight:700;color:var(--txt);width:42%;white-space:nowrap}
+.meta-tbl .mv{color:var(--txt-m);width:58%}
+
+/* ── Section Base ── */
+.section{width:100%;border-collapse:collapse;table-layout:fixed}
+.sec-hdr td{
+  background:var(--navy-d);color:#fff;
+  font-size:10px;font-weight:700;padding:5px 10px;
+  letter-spacing:.04em;
+}
+.sec-num{
+  display:inline-block;background:rgba(255,255,255,.14);
+  border-radius:3px;padding:0 5px;
+  font-family:var(--mono);font-size:8px;font-weight:900;margin-right:6px;
+}
+.section td,.section th{
+  border:1px solid var(--bdr);padding:5px 8px;
+  vertical-align:middle;word-wrap:break-word;overflow-wrap:break-word;
+}
+.section .lbl{
+  font-weight:700;font-size:10px;color:var(--txt);
+  background:var(--off);white-space:nowrap;
+}
+.section .val{background:var(--white);color:var(--txt-m);font-size:10.5px}
+.section tbody tr:nth-child(even) .val,
+.section tbody tr:nth-child(even) td:not(.lbl){background:var(--off-alt)}
+.section .val textarea{min-height:56px;padding:4px 2px}
+.section .val.tall textarea{min-height:76px}
+
+/* ── Required / Optional badges ── */
+.req{
+  display:inline-block;font-size:7px;font-weight:800;
+  color:#fff;background:#B71C1C;border-radius:2px;
+  padding:0 3px;margin-left:4px;vertical-align:middle;letter-spacing:.04em;
+}
+.opt{
+  display:inline-block;font-size:7px;font-weight:700;
+  color:var(--txt-s);background:var(--bdr-l);border-radius:2px;
+  padding:0 3px;margin-left:4px;vertical-align:middle;letter-spacing:.04em;
+}
+
+/* ── Radio / Checkbox groups ── */
+.radio-group{
+  display:flex;align-items:center;flex-wrap:wrap;gap:3px 10px;
+}
+.radio-opt{
+  display:flex;align-items:center;gap:3px;
+  font-size:10px;color:var(--txt-m);
+  user-select:none;-webkit-user-select:none;
+}
+
+/* ── Status pill ── */
+.status-pill{
+  display:inline-block;font-size:8px;font-weight:700;
+  border-radius:10px;padding:1px 7px;letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.s-pending{background:#EEF2F7;color:var(--txt-s)}
+.s-pass{background:#E8F5E9;color:var(--pass)}
+.s-fail{background:#FFEBEE;color:var(--fail)}
+.s-blocked{background:#FFF8E1;color:var(--warn)}
+.s-na{background:#F3F4F6;color:var(--skip)}
+
+/* ── Summary bar ── */
+.summary-bar{
+  display:flex;flex-wrap:wrap;gap:6px 12px;
+  padding:7px 10px;background:var(--off);
+  border-top:1px solid var(--bdr-l);font-size:9px;
+}
+.sb-item{display:flex;align-items:center;gap:5px;font-weight:600;color:var(--txt-m)}
+.sb-val{
+  display:inline-block;min-width:24px;text-align:center;
+  border-radius:10px;padding:1px 6px;font-weight:700;font-size:9px;
+}
+.sb-total{background:#E8EEF6;color:var(--blue)}
+.sb-pass{background:#E8F5E9;color:var(--pass)}
+.sb-fail{background:#FFEBEE;color:var(--fail)}
+.sb-blocked{background:#FFF8E1;color:var(--warn)}
+.sb-na{background:#F3F4F6;color:var(--skip)}
+
+/* ── Script / Steps table ── */
+.script-tbl{
+  width:100%;border-collapse:collapse;table-layout:fixed;font-size:9px;
+}
+.script-tbl thead tr.col-hdr{background:#485465}
+.script-tbl thead th{
+  color:#fff;font-size:8px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;
+  padding:6px 4px;text-align:center;
+  border:1px solid var(--navy);line-height:1.3;
+}
+.script-tbl thead th[scope=col]{text-align:center}
+.script-tbl tbody tr{border-bottom:1px solid var(--bdr-l)}
+.script-tbl tbody tr:last-child{border-bottom:1px solid var(--bdr)}
+.script-tbl tbody tr:nth-child(even){background:var(--off-alt)}
+.script-tbl td{
+  padding:5px 4px;border:1px solid var(--bdr-l);
+  vertical-align:top;font-size:9px;
+}
+.script-tbl td.c-num{
+  text-align:center;font-weight:700;color:var(--blue);
+  font-family:var(--mono);font-size:9px;vertical-align:middle;
+}
+.script-tbl td.c-pf{text-align:center;vertical-align:middle;padding:3px 2px}
+.script-tbl td.c-ev{text-align:center;vertical-align:middle;padding:3px 2px}
+.script-tbl td input[type=text]{
+  font:9px/1.4 var(--font);color:var(--txt);min-height:24px;
+}
+.script-tbl td input::placeholder{color:#c5cdd8}
+.pf-select{
+  width:100%;border:none;background:transparent;
+  font:8.5px var(--font);color:var(--txt);
+  outline:none;cursor:pointer;text-align:center;
+  padding:2px 0;
+}
+.pf-pass{color:var(--pass);font-weight:700}
+.pf-fail{color:var(--fail);font-weight:700}
+.pf-blocked{color:var(--warn);font-weight:700}
+.pf-na{color:var(--skip);font-weight:600}
+.sev-c{color:var(--fail);font-weight:700}
+.sev-h{color:#E65100;font-weight:700}
+.sev-m{color:var(--warn);font-weight:700}
+.sev-l{color:var(--pass);font-weight:600}
+
+/* ── Approval grid ── */
+.approval-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:0;border-top:1px solid var(--bdr);
+}
+.appr-cell{
+  padding:8px 10px;border-right:1px solid var(--bdr);
+}
+.appr-cell:last-child{border-right:none}
+.appr-lbl{
+  font-size:8.5px;font-weight:700;color:var(--txt-s);
+  text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;
+}
+.appr-name{border-bottom:1px solid var(--bdr);padding-bottom:2px;margin-bottom:2px}
+.appr-date{font-size:8.5px;color:var(--txt-s)}
+
+/* ── Page footer ── */
+.page-foot{
+  padding:10px 12px 12px;
+  display:flex;align-items:flex-end;gap:20px;margin-top:4px;
+}
+.pf-date{
+  font-size:10.5px;font-weight:700;
+  display:flex;align-items:center;gap:6px;
+}
+.pf-date input{
+  width:130px;border:none;border-bottom:1px solid var(--bdr);
+  background:transparent;font:10.5px/1.4 var(--font);color:var(--txt);outline:none;
+}
+.pf-sig{
+  font-size:10.5px;font-weight:700;
+  display:flex;align-items:flex-end;gap:6px;
+}
+.sig-box{
+  width:130px;height:38px;
+  border:1px solid var(--bdr);border-radius:2px;
+  background:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  overflow:visible;position:relative;
+}
+.sig-box img{
+  width:180px;height:70px;object-fit:contain;display:block;
+  position:relative;z-index:1;
+}
+
+/* ── Doc reference footer ── */
+.doc-ref{
+  padding:5px 16px;border-top:1px solid var(--bdr-l);margin-top:10px;
+  display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:3px;
+  font-size:7.5px;color:var(--txt-s);font-family:var(--mono);
+}
+.doc-ref .ref{font-weight:700;color:var(--blue)}
+
+/* ── Add-row button ── */
+.add-row-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  margin:6px 0 8px 2.5%;
+  background:transparent;border:1px dashed var(--bdr);
+  color:var(--txt-s);font:600 9.5px var(--font);
+  border-radius:var(--r);padding:4px 12px;cursor:pointer;
+  transition:border-color .15s,color .15s;
+}
+.add-row-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ── Print / Export button ── */
+.print-btn{
+  position:fixed;bottom:20px;right:20px;
+  background:var(--navy);color:#fff;border:none;
+  padding:9px 18px;border-radius:999px;
+  font:600 11px/1 var(--font);cursor:pointer;
+  box-shadow:0 4px 14px rgba(27,42,74,.28);
+  transition:background .15s,transform .15s;z-index:100;
+}
+.print-btn:hover{background:var(--blue);transform:translateY(-2px)}
+.print-btn:focus-visible{outline:3px solid var(--blue-l);outline-offset:2px}
+
+/* ── Page break ── */
+.page-break{page-break-before:always}
+
+/* ── Focus ring (accessibility) ── */
+input:focus-visible,textarea:focus-visible,select:focus-visible{
+  outline:2px solid var(--blue-l);outline-offset:1px;border-radius:2px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PAGE 1
+═══════════════════════════════════════════════════════════════════════════ -->
+<table class="page-container" role="presentation" style="width:100%;border:none;border-collapse:collapse;">
+  <thead>
+    <tr>
+      <td style="padding:20px 0 10px;border:none;background:transparent;">
+        <div class="table-wrap" style="margin-bottom:0;">
+          <table class="doc-header" role="presentation">
+            <colgroup><col style="width:13%"/><col style="width:53%"/><col style="width:34%"/></colgroup>
+            <tbody>
+              <tr>
+                <td class="h-logo">
+                  <img src="https://res.cloudinary.com/dq1isdg9t/image/upload/v1777460568/logopura_tn5dym.png" alt="Pura Solutions"/>
+                </td>
+                <td class="h-title">
+                  <h1>Software Test Case Sheet</h1>
+                  <div class="h-subtitle">QA Governance · Test Evidence · Audit Traceability</div>
+                </td>
+                <td class="h-meta">
+                  <table class="meta-tbl" role="presentation">
+                    <colgroup><col style="width:42%"/><col style="width:58%"/></colgroup>
+                    <tbody>
+                      <tr><td class="ml">Document Ref</td><td class="mv"><strong>QM-STC</strong></td></tr>
+                      <tr><td class="ml">Version</td><td class="mv"><strong>V02R00</strong></td></tr>
+                      <tr><td class="ml">Editor</td><td class="mv"><strong>Mohamed Hedi Limem</strong></td></tr>
+                      <tr><td class="ml">Verifier</td><td class="mv"><strong>QA Committee</strong></td></tr>
+                      <tr><td class="ml">Issued</td><td class="mv"><strong>30/04/2026</strong></td></tr>
+                      <tr><td class="ml">Classification</td><td class="mv"><strong>Internal · Confidential</strong></td></tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style="border:none;padding:0;">
+
+<!-- ───────────────────────────────────────────────────────────────────────────
+     SECTION 1 — TEST CASE IDENTIFICATION
+─────────────────────────────────────────────────────────────────────────── -->
+<div class="table-wrap">
+<table class="section" aria-label="Test Case Identification">
+  <colgroup>
+    <col style="width:18%"/><col style="width:32%"/>
+    <col style="width:18%"/><col style="width:32%"/>
+  </colgroup>
+  <thead>
+    <tr class="sec-hdr" role="rowgroup">
+      <td colspan="4"><span class="sec-num" aria-hidden="true">01</span> Test Case Identification</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="lbl"><label for="f-project">Project</label> <span class="req" aria-label="required">REQ</span></td>
+      <td class="val"><input id="f-project" type="text" placeholder="XXX &amp; Connect" aria-required="true"/></td>
+      <td class="lbl"><label for="f-stc-id">STC ID</label> <span class="req" aria-label="required">REQ</span></td>
+      <td class="val"><input id="f-stc-id" type="text" placeholder="STC-___" style="font-family:var(--mono);font-weight:700;color:var(--blue)" aria-required="true"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-suite-id">Test Suite ID</label></td>
+      <td class="val"><input id="f-suite-id" type="text" placeholder="TS-___" style="font-family:var(--mono)"/></td>
+      <td class="lbl"><label for="f-req-id">Requirement ID</label></td>
+      <td class="val"><input id="f-req-id" type="text" placeholder="REQ-___ / US-___" style="font-family:var(--mono)"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-module">Module / Component</label></td>
+      <td class="val"><input id="f-module" type="text" placeholder="e.g. Patient Portal — Auth"/></td>
+      <td class="lbl"><label for="f-feature">Feature Name</label></td>
+      <td class="val"><input id="f-feature" type="text" placeholder="e.g. Biometric Login"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-sprint">Sprint ID</label></td>
+      <td class="val"><input id="f-sprint" type="text" placeholder="SP-__ / Sprint __" style="font-family:var(--mono)"/></td>
+      <td class="lbl"><label for="f-release">Release ID</label></td>
+      <td class="val"><input id="f-release" type="text" placeholder="REL-__ / v_._._" style="font-family:var(--mono)"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-build">Build Number</label></td>
+      <td class="val"><input id="f-build" type="text" placeholder="BUILD-____" style="font-family:var(--mono)"/></td>
+      <td class="lbl"><label for="f-api-ver">API Version</label></td>
+      <td class="val"><input id="f-api-ver" type="text" placeholder="v__ / N/A" style="font-family:var(--mono)"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-traceability">Traceability Ref</label></td>
+      <td class="val"><input id="f-traceability" type="text" placeholder="IEC 62304 §___ / ISO 13485 §___"/></td>
+      <td class="lbl"><label for="f-compliance">Compliance Impact</label></td>
+      <td class="val">
+        <div class="radio-group" role="group" aria-label="Compliance Impact">
+          <label class="radio-opt"><input type="radio" name="compliance" value="yes"/> Yes</label>
+          <label class="radio-opt"><input type="radio" name="compliance" value="no" checked/> No</label>
+          <label class="radio-opt"><input type="radio" name="compliance" value="partial"/> Partial</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-user-story">User Story</label></td>
+      <td class="val" colspan="3"><input id="f-user-story" type="text" placeholder="As a [role], I want to … so that …"/></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-objective">Test Objective</label> <span class="req" aria-label="required">REQ</span></td>
+      <td class="val tall" colspan="3"><textarea id="f-objective" rows="3" placeholder="State what this test case is designed to validate. Reference the acceptance criteria or feature requirement it covers." aria-required="true"></textarea></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ───────────────────────────────────────────────────────────────────────────
+     SECTION 2 — TEST CLASSIFICATION & GOVERNANCE
+─────────────────────────────────────────────────────────────────────────── -->
+<div class="table-wrap">
+<table class="section" aria-label="Test Classification and Governance">
+  <colgroup>
+    <col style="width:18%"/><col style="width:32%"/>
+    <col style="width:18%"/><col style="width:32%"/>
+  </colgroup>
+  <thead>
+    <tr class="sec-hdr">
+      <td colspan="4"><span class="sec-num" aria-hidden="true">02</span> Test Classification &amp; Governance</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="lbl">Test Type <span class="req" aria-label="required">REQ</span></td>
+      <td class="val" colspan="3">
+        <div class="radio-group" role="group" aria-label="Test Type">
+          <label class="radio-opt"><input type="radio" name="test-type" value="functional"/> Functional</label>
+          <label class="radio-opt"><input type="radio" name="test-type" value="ui"/> UI / UX</label>
+          <label class="radio-opt"><input type="radio" name="test-type" value="integration"/> Integration</label>
+          <label class="radio-opt"><input type="radio" name="test-type" value="api"/> API</label>
+          <label class="radio-opt"><input type="radio" name="test-type" value="performance"/> Performance</label>
+          <label class="radio-opt"><input type="radio" name="test-type" value="security"/> Security</label>
+          <label class="radio-opt"><input type="radio" name="test-type" value="compatibility"/> Compatibility</label>
+          <label class="radio-opt"><input type="radio" name="test-type" value="regression"/> Regression</label>
+          <label class="radio-opt"><input type="radio" name="test-type" value="smoke"/> Smoke</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="lbl">Priority <span class="req" aria-label="required">REQ</span></td>
+      <td class="val" colspan="3">
+        <div class="radio-group" role="group" aria-label="Priority Level">
+          <label class="radio-opt"><input type="radio" name="priority" value="critical"/> Critical</label>
+          <label class="radio-opt"><input type="radio" name="priority" value="high"/> High</label>
+          <label class="radio-opt"><input type="radio" name="priority" value="medium"/> Medium</label>
+          <label class="radio-opt"><input type="radio" name="priority" value="low"/> Low</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="lbl">Risk Level</td>
+      <td class="val" colspan="3">
+        <div class="radio-group" role="group" aria-label="Risk Level">
+          <label class="radio-opt"><input type="radio" name="risk" value="critical"/> Critical</label>
+          <label class="radio-opt"><input type="radio" name="risk" value="high"/> High</label>
+          <label class="radio-opt"><input type="radio" name="risk" value="medium"/> Medium</label>
+          <label class="radio-opt"><input type="radio" name="risk" value="low"/> Low</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="lbl">Execution Status</td>
+      <td class="val" colspan="3">
+        <div class="radio-group" role="group" aria-label="Execution Status">
+          <label class="radio-opt"><input type="radio" name="exec-status" value="not-run" checked/> Not Run</label>
+          <label class="radio-opt"><input type="radio" name="exec-status" value="in-progress"/> In Progress</label>
+          <label class="radio-opt"><input type="radio" name="exec-status" value="passed"/> Passed</label>
+          <label class="radio-opt"><input type="radio" name="exec-status" value="failed"/> Failed</label>
+          <label class="radio-opt"><input type="radio" name="exec-status" value="blocked"/> Blocked</label>
+          <label class="radio-opt"><input type="radio" name="exec-status" value="skipped"/> Skipped</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="lbl">Regression Flag</td>
+      <td class="val">
+        <div class="radio-group" role="group" aria-label="Regression Flag">
+          <label class="radio-opt"><input type="radio" name="regression" value="yes"/> Yes</label>
+          <label class="radio-opt"><input type="radio" name="regression" value="no"/> No</label>
+        </div>
+      </td>
+      <td class="lbl">Automation Flag</td>
+      <td class="val">
+        <div class="radio-group" role="group" aria-label="Automation Flag">
+          <label class="radio-opt"><input type="radio" name="automation" value="automated"/> Automated</label>
+          <label class="radio-opt"><input type="radio" name="automation" value="manual"/> Manual</label>
+          <label class="radio-opt"><input type="radio" name="automation" value="hybrid"/> Hybrid</label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-auto-ref">Automation Script Ref</label></td>
+      <td class="val"><input id="f-auto-ref" type="text" placeholder="e.g. tests/auth/login.spec.ts" style="font-family:var(--mono)"/></td>
+      <td class="lbl"><label for="f-ci-ref">CI/CD Pipeline Ref</label></td>
+      <td class="val"><input id="f-ci-ref" type="text" placeholder="e.g. GitHub Actions · workflow_id" style="font-family:var(--mono)"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-retest">Retest Required</label></td>
+      <td class="val">
+        <div class="radio-group" role="group" aria-label="Retest Required">
+          <label class="radio-opt"><input type="radio" name="retest" value="yes"/> Yes</label>
+          <label class="radio-opt"><input type="radio" name="retest" value="no"/> No</label>
+        </div>
+      </td>
+      <td class="lbl"><label for="f-defect-ref">Defect Reference</label></td>
+      <td class="val"><input id="f-defect-ref" type="text" placeholder="BGR-___ / JIRA-___" style="font-family:var(--mono)"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-security-class">Security Classification</label></td>
+      <td class="val">
+        <div class="radio-group" role="group" aria-label="Security Classification">
+          <label class="radio-opt"><input type="radio" name="sec-class" value="public"/> Public</label>
+          <label class="radio-opt"><input type="radio" name="sec-class" value="internal"/> Internal</label>
+          <label class="radio-opt"><input type="radio" name="sec-class" value="confidential"/> Confidential</label>
+          <label class="radio-opt"><input type="radio" name="sec-class" value="restricted"/> Restricted</label>
+        </div>
+      </td>
+      <td class="lbl"><label for="f-approval-status">Approval Status</label></td>
+      <td class="val">
+        <div class="radio-group" role="group" aria-label="Approval Status">
+          <label class="radio-opt"><input type="radio" name="approval-status" value="draft"/> Draft</label>
+          <label class="radio-opt"><input type="radio" name="approval-status" value="review"/> Under Review</label>
+          <label class="radio-opt"><input type="radio" name="approval-status" value="approved"/> Approved</label>
+          <label class="radio-opt"><input type="radio" name="approval-status" value="rejected"/> Rejected</label>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ───────────────────────────────────────────────────────────────────────────
+     SECTION 3 — TEST RUN INFORMATION
+─────────────────────────────────────────────────────────────────────────── -->
+<div class="table-wrap">
+<table class="section" aria-label="Test Run Information">
+  <colgroup>
+    <col style="width:18%"/><col style="width:32%"/>
+    <col style="width:18%"/><col style="width:32%"/>
+  </colgroup>
+  <thead>
+    <tr class="sec-hdr">
+      <td colspan="4"><span class="sec-num" aria-hidden="true">03</span> Test Run Information</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="lbl"><label for="f-tester">Tester Name</label> <span class="req" aria-label="required">REQ</span></td>
+      <td class="val"><input id="f-tester" type="text" placeholder="Full name — role" aria-required="true"/></td>
+      <td class="lbl"><label for="f-reviewer">Reviewer</label></td>
+      <td class="val"><input id="f-reviewer" type="text" placeholder="Full name — role"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-qa-validator">QA Validator</label></td>
+      <td class="val"><input id="f-qa-validator" type="text" placeholder="Full name — role"/></td>
+      <td class="lbl"><label for="f-test-date">Date(s) of Test</label> <span class="req" aria-label="required">REQ</span></td>
+      <td class="val"><input id="f-test-date" type="text" placeholder="DD / MM / YYYY" aria-required="true"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-user-role">User Role Tested</label></td>
+      <td class="val"><input id="f-user-role" type="text" placeholder="e.g. Physiotherapist · Admin · Patient"/></td>
+      <td class="lbl"><label for="f-tenant">Tenant / Organisation</label></td>
+      <td class="val"><input id="f-tenant" type="text" placeholder="e.g. Clinic A — Demo Tenant"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-exec-duration">Execution Duration</label></td>
+      <td class="val"><input id="f-exec-duration" type="text" placeholder="hh:mm — estimated / actual"/></td>
+      <td class="lbl"><label for="f-exec-cycle">Execution Cycle</label></td>
+      <td class="val"><input id="f-exec-cycle" type="text" placeholder="Cycle 1 / Cycle 2 / UAT"/></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ───────────────────────────────────────────────────────────────────────────
+     SECTION 4 — TEST ENVIRONMENT
+─────────────────────────────────────────────────────────────────────────── -->
+<div class="table-wrap">
+<table class="section" aria-label="Test Environment">
+  <colgroup>
+    <col style="width:18%"/><col style="width:32%"/>
+    <col style="width:18%"/><col style="width:32%"/>
+  </colgroup>
+  <thead>
+    <tr class="sec-hdr">
+      <td colspan="4"><span class="sec-num" aria-hidden="true">04</span> Test Environment</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="lbl">Environment Type</td>
+      <td class="val">
+        <div class="radio-group" role="group" aria-label="Environment Type">
+          <label class="radio-opt"><input type="radio" name="env-type" value="dev"/> Dev</label>
+          <label class="radio-opt"><input type="radio" name="env-type" value="staging"/> Staging</label>
+          <label class="radio-opt"><input type="radio" name="env-type" value="uat"/> UAT</label>
+          <label class="radio-opt"><input type="radio" name="env-type" value="prod"/> Production</label>
+        </div>
+      </td>
+      <td class="lbl"><label for="f-app-ver">Application Version</label> <span class="req" aria-label="required">REQ</span></td>
+      <td class="val"><input id="f-app-ver" type="text" placeholder="v_._._" style="font-family:var(--mono)" aria-required="true"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-server">Server / Base URL</label></td>
+      <td class="val"><input id="f-server" type="text" placeholder="https://staging.physio-connect.com"/></td>
+      <td class="lbl"><label for="f-api-env">API Endpoint</label></td>
+      <td class="val"><input id="f-api-env" type="text" placeholder="https://api.staging.physio-connect.com/v__"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-browser">Browser</label></td>
+      <td class="val"><input id="f-browser" type="text" placeholder="Chrome 124 / Safari 17 / N/A"/></td>
+      <td class="lbl"><label for="f-os">Operating System</label></td>
+      <td class="val"><input id="f-os" type="text" placeholder="macOS 14 / iOS 17 / Android 14"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-database">Database</label></td>
+      <td class="val"><input id="f-database" type="text" placeholder="MongoDB — core_db / N/A"/></td>
+      <td class="lbl"><label for="f-device">Device / Form Factor</label></td>
+      <td class="val"><input id="f-device" type="text" placeholder="Desktop / Tablet / Mobile / N/A"/></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ───────────────────────────────────────────────────────────────────────────
+     SECTION 5 — PRECONDITIONS, POSTCONDITIONS & DEPENDENCIES
+─────────────────────────────────────────────────────────────────────────── -->
+<div class="table-wrap">
+<table class="section" aria-label="Preconditions Postconditions and Dependencies">
+  <colgroup><col style="width:20%"/><col style="width:80%"/></colgroup>
+  <thead>
+    <tr class="sec-hdr">
+      <td colspan="2"><span class="sec-num" aria-hidden="true">05</span> Preconditions, Postconditions &amp; Dependencies</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-precond">Preconditions</label> <span class="req" aria-label="required">REQ</span></td>
+      <td class="val"><textarea id="f-precond" rows="3" placeholder="List all conditions that must be satisfied before executing this test case (e.g. user authenticated, feature flag enabled, test data seeded, third-party service mocked)." aria-required="true"></textarea></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-postcond">Postconditions</label></td>
+      <td class="val"><textarea id="f-postcond" rows="3" placeholder="Describe the expected system state after successful execution (e.g. session persisted, record created in DB, audit log entry generated)."></textarea></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-dependencies">Dependencies</label></td>
+      <td class="val"><textarea id="f-dependencies" rows="2" placeholder="List upstream test cases, services, or environments this test depends on (e.g. STC-021 must pass first, requires Stripe sandbox)."></textarea></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-assumptions">Assumptions</label></td>
+      <td class="val"><textarea id="f-assumptions" rows="2" placeholder="State any assumptions made about data, user state, or system configuration during this test run."></textarea></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-required-info">Required Test Data</label></td>
+      <td class="val"><textarea id="f-required-info" rows="3" placeholder="List all credentials, data sets, file attachments, or API keys required. Do not record actual secrets — reference the vault or test-data store."></textarea></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-notes-general">General Notes</label></td>
+      <td class="val"><textarea id="f-notes-general" rows="3" placeholder="Any additional observations, constraints, or context relevant to this test case."></textarea></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td style="border:none;padding:16px 0;">
+        <div style="width:95%;margin:0 auto;">
+          <div class="page-foot" style="margin-top:0;">
+            <span class="pf-date">Date : <input type="text" aria-label="Document date" value="04 / 05 / 2026"/></span>
+            <span class="pf-sig">Signature : <div class="sig-box" role="img" aria-label="Signature"><img src="signature.png" alt=""/></div></span>
+          </div>
+          <div class="doc-ref" role="contentinfo">
+            <span class="ref">QM-STC / V02R00</span>
+            <span>XXX &amp; Connect × Pura Solutions SARL &nbsp;|&nbsp; Contrat PURA-PC-2025-001</span>
+            <span>Ce document fait partie intégrante du dossier de livraison du sprint.</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PAGE 2
+═══════════════════════════════════════════════════════════════════════════ -->
+<div class="page-break" role="separator" aria-hidden="true"></div>
+<table class="page-container" role="presentation" style="width:100%;border:none;border-collapse:collapse;">
+  <thead>
+    <tr>
+      <td style="padding:20px 0 10px;border:none;background:transparent;">
+        <div class="table-wrap" style="margin-bottom:0;">
+          <table class="doc-header" role="presentation">
+            <colgroup><col style="width:13%"/><col style="width:53%"/><col style="width:34%"/></colgroup>
+            <tbody>
+              <tr>
+                <td class="h-logo">
+                  <img src="https://res.cloudinary.com/dq1isdg9t/image/upload/v1777460568/logopura_tn5dym.png" alt="Pura Solutions"/>
+                </td>
+                <td class="h-title">
+                  <h1>Software Test Case Sheet</h1>
+                  <div class="h-subtitle">QA Governance · Test Evidence · Audit Traceability</div>
+                </td>
+                <td class="h-meta">
+                  <table class="meta-tbl" role="presentation">
+                    <colgroup><col style="width:42%"/><col style="width:58%"/></colgroup>
+                    <tbody>
+                      <tr><td class="ml">Document Ref</td><td class="mv"><strong>QM-STC</strong></td></tr>
+                      <tr><td class="ml">Version</td><td class="mv"><strong>V02R00</strong></td></tr>
+                      <tr><td class="ml">Editor</td><td class="mv"><input type="text" aria-label="Editor name" placeholder="Full name"/></td></tr>
+                      <tr><td class="ml">Verifier</td><td class="mv"><input type="text" aria-label="Verifier name" placeholder="Full name"/></td></tr>
+                      <tr><td class="ml">Issued</td><td class="mv"><input type="text" aria-label="Issue date" value="04 / 05 / 2026"/></td></tr>
+                      <tr><td class="ml">Classification</td><td class="mv"><strong>Internal · Confidential</strong></td></tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td style="border:none;padding:0;">
+
+<!-- ───────────────────────────────────────────────────────────────────────────
+     SECTION 6 — TEST SCRIPT STEPS / RESULTS
+─────────────────────────────────────────────────────────────────────────── -->
+<div class="table-wrap">
+<table class="script-tbl section" id="script-table" aria-label="Test Script Steps and Results">
+  <colgroup>
+    <col style="width:4%"/>   <!-- # -->
+    <col style="width:19%"/>  <!-- Action -->
+    <col style="width:10%"/>  <!-- Test Data -->
+    <col style="width:14%"/>  <!-- Expected -->
+    <col style="width:13%"/>  <!-- Actual -->
+    <col style="width:11%"/>  <!-- Acceptance Criteria -->
+    <col style="width:8%"/>   <!-- Status -->
+    <col style="width:6%"/>   <!-- Defect Ref -->
+    <col style="width:5%"/>   <!-- Sev -->
+    <col style="width:7%"/>   <!-- Evidence Ref -->
+    <col style="width:3%"/>   <!-- Timestamp marker -->
+  </colgroup>
+  <thead>
+    <tr class="sec-hdr">
+      <td colspan="11"><span class="sec-num" aria-hidden="true">06</span> Test Script Steps / Results</td>
+    </tr>
+    <tr class="col-hdr">
+      <th scope="col">#</th>
+      <th scope="col">Action / Test Step</th>
+      <th scope="col">Test Data</th>
+      <th scope="col">Expected Result</th>
+      <th scope="col">Actual Result</th>
+      <th scope="col">Acceptance Criteria</th>
+      <th scope="col">Status</th>
+      <th scope="col">Defect Ref</th>
+      <th scope="col">Sev</th>
+      <th scope="col">Evidence Ref</th>
+      <th scope="col" title="Tester Notes">Notes</th>
+    </tr>
+  </thead>
+  <tbody id="script-rows">
+    <!-- Generated by JS -->
+  </tbody>
+</table>
+</div>
+
+<button class="add-row-btn no-print" id="add-row" aria-label="Add test step row" type="button">
+  + Add Step
+</button>
+
+<!-- ───────────────────────────────────────────────────────────────────────────
+     SECTION 7 — EXECUTION SUMMARY
+─────────────────────────────────────────────────────────────────────────── -->
+<div class="table-wrap">
+<table class="section" aria-label="Execution Summary">
+  <colgroup>
+    <col style="width:18%"/><col style="width:32%"/>
+    <col style="width:18%"/><col style="width:32%"/>
+  </colgroup>
+  <thead>
+    <tr class="sec-hdr">
+      <td colspan="4"><span class="sec-num" aria-hidden="true">07</span> Execution Summary</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="lbl">Total Steps</td>
+      <td class="val"><span id="sum-total" class="status-pill s-pending">—</span></td>
+      <td class="lbl">Steps Passed</td>
+      <td class="val"><span id="sum-pass" class="status-pill s-pass">—</span></td>
+    </tr>
+    <tr>
+      <td class="lbl">Steps Failed</td>
+      <td class="val"><span id="sum-fail" class="status-pill s-fail">—</span></td>
+      <td class="lbl">Blocked / Skipped</td>
+      <td class="val"><span id="sum-blocked" class="status-pill s-blocked">—</span></td>
+    </tr>
+    <tr>
+      <td class="lbl">Overall Result</td>
+      <td class="val" colspan="3"><span id="sum-overall" class="status-pill s-pending">Not Executed</span></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-exec-notes">Execution Notes</label></td>
+      <td class="val" colspan="3"><textarea id="f-exec-notes" rows="3" placeholder="Summarise the overall execution outcome. Note deviations, environment issues, or observations that affect the result."></textarea></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-evidence-ref">Evidence Reference</label></td>
+      <td class="val"><textarea id="f-evidence-ref" rows="2" placeholder="Screenshot, video, log file, or S3 path references."></textarea></td>
+      <td class="lbl" style="vertical-align:top"><label for="f-attachment-ref">Attachment Reference</label></td>
+      <td class="val"><textarea id="f-attachment-ref" rows="2" placeholder="Link to attached artefacts (Confluence, SharePoint, Drive)."></textarea></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ───────────────────────────────────────────────────────────────────────────
+     SECTION 8 — REVIEWER & APPROVAL WORKFLOW
+─────────────────────────────────────────────────────────────────────────── -->
+<div class="table-wrap">
+<table class="section" aria-label="Reviewer and Approval Workflow">
+  <colgroup>
+    <col style="width:18%"/><col style="width:32%"/>
+    <col style="width:18%"/><col style="width:32%"/>
+  </colgroup>
+  <thead>
+    <tr class="sec-hdr">
+      <td colspan="4"><span class="sec-num" aria-hidden="true">08</span> Reviewer &amp; Approval Workflow</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="lbl"><label for="f-rev-name">Reviewer Name</label></td>
+      <td class="val"><input id="f-rev-name" type="text" placeholder="Full name — role"/></td>
+      <td class="lbl"><label for="f-rev-date">Review Date</label></td>
+      <td class="val"><input id="f-rev-date" type="text" placeholder="DD / MM / YYYY"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-qa-val-name">QA Validator Name</label></td>
+      <td class="val"><input id="f-qa-val-name" type="text" placeholder="Full name — role"/></td>
+      <td class="lbl"><label for="f-qa-val-date">Validation Date</label></td>
+      <td class="val"><input id="f-qa-val-date" type="text" placeholder="DD / MM / YYYY"/></td>
+    </tr>
+    <tr>
+      <td class="lbl"><label for="f-approver-name">Approver Name</label></td>
+      <td class="val"><input id="f-approver-name" type="text" placeholder="Full name — role"/></td>
+      <td class="lbl"><label for="f-approval-date">Approval Date</label></td>
+      <td class="val"><input id="f-approval-date" type="text" placeholder="DD / MM / YYYY"/></td>
+    </tr>
+    <tr>
+      <td class="lbl" style="vertical-align:top"><label for="f-review-comments">Review Comments</label></td>
+      <td class="val tall" colspan="3"><textarea id="f-review-comments" rows="3" placeholder="Reviewer observations, quality notes, or recommended actions before approval."></textarea></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td style="border:none;padding:16px 0;">
+        <div style="width:95%;margin:0 auto;">
+          <div class="page-foot" style="margin-top:0;">
+            <span class="pf-date">Date : <input type="text" aria-label="Document date" value="04 / 05 / 2026"/></span>
+            <span class="pf-sig">Signature : <div class="sig-box" role="img" aria-label="Signature"><img src="signature.png" alt=""/></div></span>
+          </div>
+          <div class="doc-ref" role="contentinfo">
+            <span class="ref">QM-STC / V02R00</span>
+            <span>XXX &amp; Connect × Pura Solutions SARL &nbsp;|&nbsp; Contrat PURA-PC-2025-001</span>
+            <span>Ce document fait partie intégrante du dossier de livraison du sprint.</span>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<button class="print-btn no-print" type="button" onclick="window.print()" aria-label="Print or export as PDF">
+  &#9113; Print / Export PDF
+</button>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Status options ── */
+  var STATUS_OPTS = [
+    { value: '',         label: '—',       cls: '' },
+    { value: 'pass',     label: 'Pass',    cls: 'pf-pass' },
+    { value: 'fail',     label: 'Fail',    cls: 'pf-fail' },
+    { value: 'blocked',  label: 'Blocked', cls: 'pf-blocked' },
+    { value: 'na',       label: 'N/A',     cls: 'pf-na' }
+  ];
+
+  var SEV_OPTS = [
+    { value: '',   label: '—' },
+    { value: 'C',  label: 'C — Critical' },
+    { value: 'H',  label: 'H — High' },
+    { value: 'M',  label: 'M — Medium' },
+    { value: 'L',  label: 'L — Low' }
+  ];
+
+  var SEV_CLS = { C: 'sev-c', H: 'sev-h', M: 'sev-m', L: 'sev-l' };
+
+  var tbody  = document.getElementById('script-rows');
+  var addBtn = document.getElementById('add-row');
+  var rowCount = 0;
+
+  /* ── Create one text-input cell ── */
+  function mkInputCell(placeholder, opts) {
+    var td  = document.createElement('td');
+    var inp = document.createElement('input');
+    inp.type = 'text';
+    inp.placeholder = placeholder;
+    if (opts && opts.mono) { inp.style.fontFamily = "var(--mono)"; }
+    td.appendChild(inp);
+    return td;
+  }
+
+  /* ── Create status select cell ── */
+  function mkStatusCell() {
+    var td  = document.createElement('td');
+    td.className = 'c-pf';
+    var sel = document.createElement('select');
+    sel.className = 'pf-select';
+    sel.setAttribute('aria-label', 'Step execution status');
+    STATUS_OPTS.forEach(function (o) {
+      var opt = document.createElement('option');
+      opt.value = o.value;
+      opt.textContent = o.label;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function () {
+      var matched = STATUS_OPTS.find(function (o) { return o.value === sel.value; });
+      sel.className = 'pf-select' + (matched && matched.cls ? ' ' + matched.cls : '');
+      updateSummary();
+    });
+    td.appendChild(sel);
+    return td;
+  }
+
+  /* ── Create severity select cell ── */
+  function mkSevCell() {
+    var td  = document.createElement('td');
+    td.className = 'c-pf';
+    var sel = document.createElement('select');
+    sel.className = 'pf-select';
+    sel.setAttribute('aria-label', 'Defect severity');
+    SEV_OPTS.forEach(function (o) {
+      var opt = document.createElement('option');
+      opt.value = o.value;
+      opt.textContent = o.label;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function () {
+      sel.className = 'pf-select' + (SEV_CLS[sel.value] ? ' ' + SEV_CLS[sel.value] : '');
+    });
+    td.appendChild(sel);
+    return td;
+  }
+
+  /* ── Re-number all step rows ── */
+  function renumberRows() {
+    var rows = tbody.querySelectorAll('tr');
+    rows.forEach(function (row, idx) {
+      var numCell = row.querySelector('.c-num');
+      if (numCell) { numCell.textContent = idx + 1; }
+    });
+  }
+
+  /* ── Update execution summary ── */
+  function updateSummary() {
+    var rows = tbody.querySelectorAll('tr');
+    var total = rows.length;
+    var pass = 0, fail = 0, blocked = 0, na = 0;
+    rows.forEach(function (row) {
+      var sel = row.querySelector('.pf-select');
+      if (!sel) { return; }
+      switch (sel.value) {
+        case 'pass':    pass++;    break;
+        case 'fail':    fail++;    break;
+        case 'blocked': blocked++; break;
+        case 'na':      na++;      break;
+      }
+    });
+
+    setText('sum-total',   total || '—');
+    setText('sum-pass',    pass  || '—');
+    setText('sum-fail',    fail  || '—');
+    setText('sum-blocked', (blocked + na) || '—');
+
+    var overall = document.getElementById('sum-overall');
+    if (!overall) { return; }
+    if (total === 0) {
+      setOverall(overall, 'Not Executed', 's-pending');
+    } else if (fail > 0) {
+      setOverall(overall, 'FAILED', 's-fail');
+    } else if (blocked > 0) {
+      setOverall(overall, 'BLOCKED', 's-blocked');
+    } else if (pass === total) {
+      setOverall(overall, 'PASSED', 's-pass');
+    } else if (pass > 0) {
+      setOverall(overall, 'In Progress', 's-pending');
+    } else {
+      setOverall(overall, 'Not Executed', 's-pending');
+    }
+  }
+
+  function setText(id, val) {
+    var el = document.getElementById(id);
+    if (el) { el.textContent = val; }
+  }
+
+  function setOverall(el, label, cls) {
+    el.textContent = label;
+    el.className = 'status-pill ' + cls;
+  }
+
+  /* ── Append one test-step row ── */
+  function addRow() {
+    rowCount++;
+    var tr  = document.createElement('tr');
+    tr.setAttribute('role', 'row');
+
+    /* Step # */
+    var cNum = document.createElement('td');
+    cNum.className = 'c-num';
+    cNum.setAttribute('aria-label', 'Step number');
+    cNum.textContent = rowCount;
+
+    var cAction     = mkInputCell('Describe the action or test step…');
+    var cData       = mkInputCell('Inputs, credentials, payload…');
+    var cExpected   = mkInputCell('Expected outcome…');
+    var cActual     = mkInputCell('Observed outcome…');
+    var cCriteria   = mkInputCell('Acceptance criteria ref…');
+    var cStatus     = mkStatusCell();
+    var cDefect     = mkInputCell('BGR-___', { mono: true });
+    var cSev        = mkSevCell();
+    var cEvidence   = mkInputCell('SS-___ / LOG-___', { mono: true });
+    var cNotes      = mkInputCell('Tester notes…');
+
+    [cNum, cAction, cData, cExpected, cActual, cCriteria,
+     cStatus, cDefect, cSev, cEvidence, cNotes].forEach(function (c) {
+      tr.appendChild(c);
+    });
+
+    tbody.appendChild(tr);
+    updateSummary();
+
+    /* Focus the action input for keyboard UX */
+    var firstInput = cAction.querySelector('input');
+    if (firstInput) { firstInput.focus(); }
+  }
+
+  /* ── Seed initial rows ── */
+  for (var i = 0; i < 10; i++) { addRow(); }
+
+  /* ── Add-row button ── */
+  if (addBtn) {
+    addBtn.addEventListener('click', function () { addRow(); });
+  }
+
+  /* ── Keyboard: Tab on last cell of last row adds a new row ── */
+  tbody.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || e.shiftKey) { return; }
+    var rows    = tbody.querySelectorAll('tr');
+    var lastRow = rows[rows.length - 1];
+    var inputs  = lastRow ? lastRow.querySelectorAll('input,select') : [];
+    var lastEl  = inputs[inputs.length - 1];
+    if (document.activeElement === lastEl) {
+      e.preventDefault();
+      addRow();
+    }
+  });
+
+  /* ── Initial summary ── */
+  updateSummary();
+}());
+</script>
+
+</body>
+</html>

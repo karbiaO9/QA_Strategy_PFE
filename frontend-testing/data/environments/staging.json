@@ -1,0 +1,6 @@
+{
+  "name": "staging",
+  "baseUrl": "https://kine.physio.agregatech.com",
+  "apiBaseUrl": "https://identity.physio.agregatech.com",
+  "description": "Local physio app + staging identity API"
+}

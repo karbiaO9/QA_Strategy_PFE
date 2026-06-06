@@ -1,0 +1,46 @@
+@import "./fonts/physio-connect/font/style.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    @apply bg-background-alt text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground-bold;
+  }
+}
+
+/* Custom scrollbar styling */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 20px;
+  transition: background-color 0.2s;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}

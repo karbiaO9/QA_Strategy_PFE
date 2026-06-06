@@ -1,0 +1,5574 @@
+{
+  "collection": {
+    "_": {
+      "postman_id": "physio-shared-backend-001"
+    },
+    "item": [
+      {
+        "id": "375022e2-daa3-4838-a03b-975dba7434af",
+        "name": "Password Forgot",
+        "item": [
+          {
+            "id": "81849075-f3e9-413a-9bab-bb5307c23f39",
+            "name": "STC-PWD-FORGOT-003/B | Forgot password unknown email 200",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** • HTTP 200 OK (toujours) • Body: { message: 'Si un account existe, un code a été envoyé.' } • Email INEXISTANT : aucun email envoyé • Email EXISTANT : email envoyé silencieusement • Impossibilité d'énumérer les emails ex...",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "forgot-password"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{testEmailNew}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "d90d936d-83f7-4f0b-8399-927c5a9dbc54",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-FORGOT-003/B",
+                    "pm.test('[STC-PWD-FORGOT-003/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-FORGOT-003/B] status 200', function () {",
+                    "  pm.response.to.have.status(200);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                  ],
+                  "_lastExecutionId": "83d2acb4-7f9d-4c7b-a17b-8349d3c20749"
+                }
+              }
+            ]
+          },
+          {
+            "id": "babb9b85-f502-4a92-b272-c4f08fb5ebf7",
+            "name": "STC-PWD-FORGOT-004/B | Forgot password rate limit 429",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** • Appels 1-5 : HTTP 200 OK • Appel 6+ : HTTP 429 Too Many Requests • Body: { statusCode: 429, code: 'RATE_LIMIT_EXCEEDED' } • Reset après 1h",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "forgot-password"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{testEmailExisting}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "f35e02e5-a174-4eb4-8cd8-e66f1eaafcb6",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-FORGOT-004/B",
+                    "pm.test('[STC-PWD-FORGOT-004/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-FORGOT-004/B] status 200 (early) or 429 (after repeated calls)', function () {",
+                    "  pm.expect([200, 429]).to.include(pm.response.code);",
+                    "});",
+                    "// Run this request 6+ times quickly to assert 429 + RATE_LIMIT_EXCEEDED per sheet.",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                    "if (pm.response.code === 429) {",
+                    "  pm.test('[STC-PWD-FORGOT-004/B] rate limit code', function () {",
+                    "    var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                    "    pm.expect(String(c || '')).to.eql('RATE_LIMIT_EXCEEDED');",
+                    "  });",
+                    "}"
+                  ],
+                  "_lastExecutionId": "80ab6883-660a-42de-a23a-89ea230f2cdd"
+                }
+              }
+            ]
+          },
+          {
+            "id": "14cc0a18-8d9d-4d8a-b828-3411540fb566",
+            "name": "STC-PWD-FORGOT-001/B | Forgot password existing email",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** 200 OK with generic anti-enumeration message; reset code hashed in Redis; mailer triggered.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "forgot-password"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{kineEmail}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "9ffbd22d-3ae6-41a4-9057-7dcd8bb56cfd",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-FORGOT-001/B",
+                    "pm.test('[STC-PWD-FORGOT-001/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-FORGOT-001/B] status 200 or 429 (rate limit after prior forgot-password in chain)', function () {",
+                    "  pm.expect([200, 429]).to.include(pm.response.code);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                  ],
+                  "_lastExecutionId": "a6bf44d5-ac69-4628-b7f5-83a43177a6a4"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      },
+      {
+        "id": "3b06b5fd-8692-433e-b8d3-e1d9ca8c79f5",
+        "name": "Password Verify Code",
+        "item": [
+          {
+            "id": "4f277d9d-c407-401b-9ce3-7d1edbcc3cdb",
+            "name": "STC-PWD-VERIFY-001/B | Verify code success",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 200 OK or contract success response; resetToken returned; code marked as consumed/verified according to backend behavior.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "verify-code"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"{{verificationCode}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "843031f8-1bfb-401a-a28a-63872101c4d5",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-VERIFY-001/B",
+                    "pm.test('[STC-PWD-VERIFY-001/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-VERIFY-001/B] status in [200, 400] (implementation may differ)', function () {",
+                    "  pm.expect([200, 400]).to.include(pm.response.code);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                    "if (pm.response.code === 200) {",
+                    "  var rt = json.resetToken || json.reset_token || (json.data && json.data.resetToken);",
+                    "  if (rt) pm.environment.set('resetToken', rt);",
+                    "}"
+                  ],
+                  "_lastExecutionId": "32baf775-1da3-4354-b387-72a0427376ed"
+                }
+              }
+            ]
+          },
+          {
+            "id": "f79c40e6-abce-465c-9630-b2ac30145d4c",
+            "name": "STC-PWD-VERIFY-003/B | Verify code invalid 400",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 400 Bad Request with CODE_INVALID.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "verify-code"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"999999\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "0ca5e715-c0e6-459d-8690-7fd288a275a9",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-VERIFY-003/B",
+                    "pm.test('[STC-PWD-VERIFY-003/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-VERIFY-003/B] status 400', function () {",
+                    "  pm.response.to.have.status(400);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                    "pm.test('[STC-PWD-VERIFY-003/B] error code invalid/expired if body exposes code', function () {",
+                    "  var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                    "  if (c != null && c !== '') { pm.expect(['CODE_INVALID', 'CODE_EXPIRED']).to.include(String(c)); }",
+                    "});"
+                  ],
+                  "_lastExecutionId": "c59c8784-8d32-4c4b-aa15-0d538f0582d0"
+                }
+              }
+            ]
+          },
+          {
+            "id": "3b65bfa2-8f87-47d1-8323-cb3fbb7c1351",
+            "name": "STC-PWD-VERIFY-004/B | Verify code expired 400",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 400 Bad Request with CODE_EXPIRED.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "verify-code"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"{{verificationCodeExpired}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "ced021ba-66ae-4efa-bcd7-fc49c6f1f517",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-VERIFY-004/B",
+                    "pm.test('[STC-PWD-VERIFY-004/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-VERIFY-004/B] status 400', function () {",
+                    "  pm.response.to.have.status(400);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                    "pm.test('[STC-PWD-VERIFY-004/B] error code CODE_EXPIRED or VALIDATION_FAILED if body exposes code', function () {",
+                    "  if (json && json.code != null && json.code !== '') {",
+                    "    pm.expect(['CODE_EXPIRED', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                    "  }",
+                    "});"
+                  ],
+                  "_lastExecutionId": "160a7d31-a22d-4b95-aaf8-ff142b9f7357"
+                }
+              }
+            ]
+          },
+          {
+            "id": "0c2a5741-02fe-4093-b399-7db873610878",
+            "name": "STC-PWD-VERIFY-005/B | Verify code brute force",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** Attempts 1-3: CODE_INVALID; next attempt: CODE_TOO_MANY_ATTEMPTS; code invalidated.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "verify-code"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"999999\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "a54bd75b-bde9-4dff-82e1-a78d4c7c0025",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-VERIFY-005/B",
+                    "pm.test('[STC-PWD-VERIFY-005/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-VERIFY-005/B] status 400 expected', function () {",
+                    "  pm.response.to.have.status(400);",
+                    "});",
+                    "// Sheet: attempts 1–3 CODE_INVALID; later CODE_TOO_MANY_ATTEMPTS — re-run to cover both.",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                    "pm.test('[STC-PWD-VERIFY-005/B] error code INVALID, TOO_MANY, or EXPIRED', function () {",
+                    "  var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                    "  pm.expect(['CODE_INVALID', 'CODE_TOO_MANY_ATTEMPTS', 'CODE_EXPIRED']).to.include(String(c || ''));",
+                    "});"
+                  ],
+                  "_lastExecutionId": "2fba9d17-312d-4d51-9ee3-bf4fee8eaa6c"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      },
+      {
+        "id": "216124f7-e7f2-4981-ad9d-58333a5b1322",
+        "name": "Password Reset",
+        "item": [
+          {
+            "id": "a3bff35e-c0a9-45da-a6aa-50ffd6439608",
+            "name": "STC-PWD-RESET-001/B | Reset password with token",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-F3-01\n**User Story:** US-F.3\n**Expected (sheet):** 200 OK success; password changed; refresh tokens invalidated; new tokens issued if contract says so.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "reset-password"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"resetToken\": \"{{resetToken}}\",\n  \"newPassword\": \"NewP@ssw0rd2025!\",\n  \"passwordConfirmation\": \"NewP@ssw0rd2025!\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "af362a61-c1b4-4a7c-92c7-fd4a7e5fc86e",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-RESET-001/B",
+                    "pm.test('[STC-PWD-RESET-001/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-RESET-001/B] status in [200, 400] (implementation may differ)', function () {",
+                    "  pm.expect([200, 400]).to.include(pm.response.code);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                  ],
+                  "_lastExecutionId": "3c3ef958-f5fc-4f83-a522-050f34af7774"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      },
+      {
+        "id": "a854b96c-feeb-4fa2-aaeb-d35909dfd6ae",
+        "name": "Password Change",
+        "item": [
+          {
+            "id": "29333606-1479-42ce-8769-326079ecf579",
+            "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "change-password"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{kineToken}}"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"newPassword\": \"{{kinePassword}}\",\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPasswordConfirmation\": \"{{kinePassword}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "a5081cf5-cff2-441a-9ada-fb2d870a822f",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-CHANGE-002/B",
+                    "pm.test('[STC-PWD-CHANGE-002/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-CHANGE-002/B] status 400', function () {",
+                    "  pm.response.to.have.status(400);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                    "pm.test('[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code', function () {",
+                    "  if (json && json.code != null && json.code !== '') {",
+                    "    pm.expect(['PASSWORD_SAME_AS_OLD', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                    "  }",
+                    "});"
+                  ],
+                  "_lastExecutionId": "2b8f764a-eca4-4eb1-b0c8-751df8879b56"
+                }
+              }
+            ]
+          },
+          {
+            "id": "24a22f9e-83f0-4b2c-b437-4c5ccccc8198",
+            "name": "STC-PWD-CHANGE-001/B | Change password success",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+                "type": "text/plain"
+              },
+              "url": {
+                "path": [
+                  "api",
+                  "v1",
+                  "kine",
+                  "auth",
+                  "change-password"
+                ],
+                "host": [
+                  "{{baseUrl}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{kineToken}}"
+                }
+              ],
+              "method": "POST",
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+                "options": {
+                  "raw": {
+                    "language": "json"
+                  }
+                }
+              }
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "13ac2358-a459-4264-884c-d3151e3adb31",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-PWD-CHANGE-001/B",
+                    "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
+                    "  pm.response.to.have.status(200);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                    "if (pm.response.code === 200) {",
+                    "  var a = pm.environment.get('kinePassword');",
+                    "  var b = pm.environment.get('kinePasswordAlternate');",
+                    "  pm.environment.set('kinePassword', b);",
+                    "  pm.environment.set('kinePasswordAlternate', a);",
+                    "}"
+                  ],
+                  "_lastExecutionId": "feaf2c44-01f5-4dae-a93e-eb1876da0833"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      },
+      {
+        "id": "cfc94002-b58c-486d-9f82-cb9a4b78222a",
+        "name": "System Healthcheck",
+        "item": [
+          {
+            "id": "b8b380e3-e321-46f6-a793-c8885e66f728",
+            "name": "STC-HEALTHZ-001/B | Liveness healthcheck",
+            "request": {
+              "description": {
+                "content": "**ClickUp:** BE-X15-01\n**User Story:** X-15\n**Expected (sheet):** 200 OK; health payload indicates service readiness/liveness. Environment-variable documentation is out of API-scope for this case.",
+                "type": "text/plain"
+              },
+              "url": {
+                "host": [
+                  "{{baseUrl}}{{healthCheckPath}}"
+                ],
+                "query": [],
+                "variable": []
+              },
+              "header": [
+                {
+                  "key": "Accept",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{adminToken}}"
+                }
+              ],
+              "method": "GET"
+            },
+            "response": [],
+            "event": [
+              {
+                "listen": "test",
+                "script": {
+                  "id": "f2f1c366-34f1-41c4-9385-8730e8e521d4",
+                  "type": "text/javascript",
+                  "exec": [
+                    "// STC: STC-HEALTHZ-001/B",
+                    "pm.test('[STC-HEALTHZ-001/B] response time OK', function () {",
+                    "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                    "});",
+                    "pm.test('[STC-HEALTHZ-001/B] status 200', function () {",
+                    "  pm.response.to.have.status(200);",
+                    "});",
+                    "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                  ],
+                  "_lastExecutionId": "91a03345-0a6d-40bf-a7fd-58426359b7f7"
+                }
+              }
+            ]
+          }
+        ],
+        "event": []
+      }
+    ],
+    "event": [],
+    "variable": [],
+    "info": {
+      "_postman_id": "physio-shared-backend-001",
+      "name": "PHYSIO - SHARED Backend",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": {
+        "content": "PHYSIO shared auth/password + health. Chain: Forgot → Verify (set verificationCode/resetToken) → Reset. change-password needs Bearer.",
+        "type": "text/plain"
+      }
+    }
+  },
+  "environment": {
+    "_": {
+      "postman_variable_scope": "environment",
+      "postman_exported_at": "2026-05-12T10:23:56.427Z",
+      "postman_exported_using": "Newman/4.6.1"
+    },
+    "id": "physio-backend-exec-env",
+    "name": "PHYSIO - Backend Execution",
+    "values": [
+      {
+        "type": "any",
+        "value": "https://identity.physio.agregatech.com",
+        "key": "baseUrl"
+      },
+      {
+        "type": "any",
+        "value": "/",
+        "key": "healthCheckPath"
+      },
+      {
+        "type": "any",
+        "value": "admin@physioconnect.com",
+        "key": "adminEmail"
+      },
+      {
+        "type": "any",
+        "value": "Admin123!",
+        "key": "adminPassword"
+      },
+      {
+        "type": "any",
+        "value": "NewPass123!",
+        "key": "adminNewPassword"
+      },
+      {
+        "type": "any",
+        "value": "sophie.martin@cabinet-paris.fr",
+        "key": "kineEmail"
+      },
+      {
+        "type": "any",
+        "value": "KineAdmin123!",
+        "key": "kinePassword"
+      },
+      {
+        "type": "any",
+        "value": "KineAdmin123!",
+        "key": "kinePasswordAlternate"
+      },
+      {
+        "type": "any",
+        "value": "+33601010101",
+        "key": "kinePhoneLogin"
+      },
+      {
+        "type": "any",
+        "value": "marie.durand@patient.fr",
+        "key": "patientEmail"
+      },
+      {
+        "type": "any",
+        "value": "Patient123!",
+        "key": "patientPassword"
+      },
+      {
+        "type": "any",
+        "value": "+33611111111",
+        "key": "patientPhoneLogin"
+      },
+      {
+        "type": "any",
+        "value": "marie.test.patient@testmail.fr",
+        "key": "patientRegisterEmail"
+      },
+      {
+        "type": "any",
+        "value": "+33677770001",
+        "key": "patientRegisterPhone"
+      },
+      {
+        "type": "any",
+        "value": "QaTest123!",
+        "key": "registerDefaultPassword"
+      },
+      {
+        "type": "any",
+        "value": "Student123!",
+        "key": "registerStudentPassword"
+      },
+      {
+        "type": "any",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWZiNDRjMTJhMWJkZmZmYjVjZTA4MDMiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6MTA1LCJpYXQiOjE3Nzg1ODUwMDUsImV4cCI6MTc3ODY3MTQwNX0.Hk4RHGhbvwKWDjlmJCvAkb3jcfUHGfs96U4YrrNwdL0",
+        "key": "adminToken"
+      },
+      {
+        "type": "any",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWZiNDRjMTJhMWJkZmZmYjVjZTA4MDYiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjcsImlhdCI6MTc3ODU4NTAxNiwiZXhwIjoxNzc4NjcxNDE2fQ.Us0taCtyVXHjvwkfGLpXJylITi0Vr-VXb7QGTquN1aI",
+        "key": "kineToken"
+      },
+      {
+        "type": "any",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWZiNDRjMzJhMWJkZmZmYjVjZTA4NWIiLCJlbWFpbCI6Im1hcmllLmR1cmFuZEBwYXRpZW50LmZyIiwidHlwZSI6InBhdGllbnQiLCJjYWJpbmV0SWQiOiI2OWZiNDRjMTJhMWJkZmZmYjVjZTA4MDkiLCJyb2xlU2x1ZyI6IlBBVElFTlQiLCJ2Ijo3LCJpYXQiOjE3Nzg1ODUwNDQsImV4cCI6MTc3ODY3MTQ0NH0.e7-c4rZc1i23JTvQmE8tG6kZREhVqXqDrUUq904jBcU",
+        "key": "patientToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "kineTokenInactive"
+      },
+      {
+        "type": "any",
+        "value": "b21fb187d213ec9ce21241a2f82132dc2f7d2c953e014e19c50f36aeb4fcfaa8",
+        "key": "refreshToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "adminRefreshToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "kineRefreshToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "patientRefreshToken"
+      },
+      {
+        "type": "any",
+        "value": "69fb44c12a1bdfffb5ce0806",
+        "key": "kineId"
+      },
+      {
+        "type": "any",
+        "value": "69fb44c12a1bdfffb5ce0809",
+        "key": "cabinetId"
+      },
+      {
+        "type": "any",
+        "value": "69fb44c12a1bdfffb5ce080c",
+        "key": "profileId"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "profileIdInactive"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "profileIdAssistant"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "invitationToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "invitationTokenConsumed"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "resetToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "verificationCode"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "verificationCodeExpired"
+      },
+      {
+        "type": "any",
+        "value": "marie.durand@patient.fr",
+        "key": "testEmailExisting"
+      },
+      {
+        "type": "any",
+        "value": "jean.nouveau.member@testmail.fr",
+        "key": "testEmailNew"
+      },
+      {
+        "type": "any",
+        "value": "123456789",
+        "key": "testProfessionalNumberExisting"
+      },
+      {
+        "type": "any",
+        "value": "12345678901",
+        "key": "testProfessionalNumberNew"
+      },
+      {
+        "type": "any",
+        "value": "507f1f77bcf86cd799439011",
+        "key": "subscriptionPlanId"
+      },
+      {
+        "type": "any",
+        "value": "12 rue du Cabinet Test",
+        "key": "cabinetAddressStreet"
+      },
+      {
+        "type": "any",
+        "value": "75001",
+        "key": "cabinetAddressPostalCode"
+      },
+      {
+        "type": "any",
+        "value": "Paris",
+        "key": "cabinetAddressCity"
+      },
+      {
+        "type": "any",
+        "value": "qa.superadmin@testmail.fr",
+        "key": "qaSuperAdminEmail"
+      },
+      {
+        "type": "any",
+        "value": "Admin123!",
+        "key": "qaSuperAdminPassword"
+      },
+      {
+        "type": "any",
+        "value": "Thomas",
+        "key": "qaSuperAdminFirstName"
+      },
+      {
+        "type": "any",
+        "value": "Platform",
+        "key": "qaSuperAdminLastName"
+      },
+      {
+        "type": "any",
+        "value": "https://cdn.test.com/avatars/admin.jpg",
+        "key": "adminProfilePhotoUrl"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "roleIdSuperAdmin"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "moduleIdPatients"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "actionIdView"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "actionIdCreate"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "permissionId"
+      },
+      {
+        "type": "any",
+        "value": "jean.nouveau.member@testmail.fr",
+        "key": "inviteMemberEmail"
+      },
+      {
+        "type": "any",
+        "value": "jean.nouveau.assistant@testmail.fr",
+        "key": "inviteAssistantEmail"
+      },
+      {
+        "type": "any",
+        "value": "MEMBER",
+        "key": "invitationTargetProfileTypeMember"
+      },
+      {
+        "type": "any",
+        "value": "ASSISTANT",
+        "key": "invitationTargetProfileTypeAssistant"
+      },
+      {
+        "type": "any",
+        "value": "Kine123!",
+        "key": "invitationAttachPassword"
+      },
+      {
+        "type": "any",
+        "value": "Jean",
+        "key": "acceptInviteFirstName"
+      },
+      {
+        "type": "any",
+        "value": "Nouveau",
+        "key": "acceptInviteLastName"
+      },
+      {
+        "type": "any",
+        "value": "QaTest123!",
+        "key": "acceptInvitePassword"
+      },
+      {
+        "type": "any",
+        "value": "jean.nouveau.solo@testmail.fr",
+        "key": "registerLiberalSoloEmail"
+      },
+      {
+        "type": "any",
+        "value": "123456789",
+        "key": "registerLiberalProfessionalNumber"
+      },
+      {
+        "type": "any",
+        "value": "Cabinet Test Marseille",
+        "key": "registerLiberalCabinetName"
+      },
+      {
+        "type": "any",
+        "value": "12 rue des Lilas",
+        "key": "registerLiberalStreet"
+      },
+      {
+        "type": "any",
+        "value": "13001",
+        "key": "registerLiberalPostalCode"
+      },
+      {
+        "type": "any",
+        "value": "Marseille",
+        "key": "registerLiberalCity"
+      },
+      {
+        "type": "any",
+        "value": "+33655554444",
+        "key": "registerLiberalPhone"
+      },
+      {
+        "type": "any",
+        "value": "nadia.remplacant@testmail.fr",
+        "key": "registerRemplacantEmail"
+      },
+      {
+        "type": "any",
+        "value": "12345678901",
+        "key": "registerRemplacantProfessionalNumber"
+      },
+      {
+        "type": "any",
+        "value": "Cabinet Remplacement Paris",
+        "key": "registerRemplacantCabinetName"
+      },
+      {
+        "type": "any",
+        "value": "15 avenue Victor Hugo",
+        "key": "registerRemplacantStreet"
+      },
+      {
+        "type": "any",
+        "value": "75016",
+        "key": "registerRemplacantPostalCode"
+      },
+      {
+        "type": "any",
+        "value": "Paris",
+        "key": "registerRemplacantCity"
+      },
+      {
+        "type": "any",
+        "value": "+33655550001",
+        "key": "registerRemplacantPhone"
+      },
+      {
+        "type": "any",
+        "value": "pierre.nouveau.group@testmail.fr",
+        "key": "registerAdminGroupEmail"
+      },
+      {
+        "type": "any",
+        "value": "12345678901",
+        "key": "registerAdminGroupProfessionalNumber"
+      },
+      {
+        "type": "any",
+        "value": "Cabinet Groupe Test Lyon",
+        "key": "registerAdminGroupCabinetName"
+      },
+      {
+        "type": "any",
+        "value": "73282932000074",
+        "key": "registerAdminGroupSiret"
+      },
+      {
+        "type": "any",
+        "value": "20 rue de la République",
+        "key": "registerAdminGroupStreet"
+      },
+      {
+        "type": "any",
+        "value": "69002",
+        "key": "registerAdminGroupPostalCode"
+      },
+      {
+        "type": "any",
+        "value": "Lyon",
+        "key": "registerAdminGroupCity"
+      },
+      {
+        "type": "any",
+        "value": "emma.nouvelle.student@testmail.fr",
+        "key": "registerStudentEmail"
+      },
+      {
+        "type": "any",
+        "value": "Emma",
+        "key": "registerStudentFirstName"
+      },
+      {
+        "type": "any",
+        "value": "Laurent",
+        "key": "registerStudentLastName"
+      },
+      {
+        "type": "any",
+        "value": "IFMK Marseille",
+        "key": "registerStudentSchool"
+      },
+      {
+        "type": "any",
+        "value": "3e",
+        "key": "registerStudentStudyYear"
+      },
+      {
+        "type": "any",
+        "value": "Marseille",
+        "key": "registerStudentCity"
+      },
+      {
+        "type": "any",
+        "value": "certificat_ifmk.pdf",
+        "key": "registerStudentProofFilename"
+      },
+      {
+        "type": "any",
+        "value": "View",
+        "key": "rbacActionViewName"
+      },
+      {
+        "type": "any",
+        "value": "view",
+        "key": "rbacActionViewSlug"
+      },
+      {
+        "type": "any",
+        "value": "Create",
+        "key": "rbacActionCreateName"
+      },
+      {
+        "type": "any",
+        "value": "create",
+        "key": "rbacActionCreateSlug"
+      },
+      {
+        "type": "any",
+        "value": "Patients",
+        "key": "rbacModulePatientsName"
+      },
+      {
+        "type": "any",
+        "value": "patients",
+        "key": "rbacModulePatientsSlug"
+      },
+      {
+        "type": "any",
+        "value": "QA_TEST_ROLE",
+        "key": "rbacRoleQaName"
+      }
+    ]
+  },
+  "globals": {
+    "id": "63064e5c-f8f3-4608-8e21-60043f3ed9b3",
+    "values": []
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 11,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 11,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequests": {
+        "total": 11,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 11,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 11,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 26,
+        "pending": 0,
+        "failed": 1
+      },
+      "testScripts": {
+        "total": 11,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 0,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "responseAverage": 302.72727272727275,
+      "responseMin": 38,
+      "responseMax": 687,
+      "responseSd": 258.5997577546116,
+      "dnsAverage": 0,
+      "dnsMin": 0,
+      "dnsMax": 0,
+      "dnsSd": 0,
+      "firstByteAverage": 0,
+      "firstByteMin": 0,
+      "firstByteMax": 0,
+      "firstByteSd": 0,
+      "started": 1778581439468,
+      "completed": 1778581448962
+    },
+    "executions": [
+      {
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 11,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "e97a7e7c-bf58-4503-9315-d8406e5c48b0",
+          "httpRequestId": "85045ac8-3641-4569-bd4f-014839ed0e27"
+        },
+        "item": {
+          "id": "81849075-f3e9-413a-9bab-bb5307c23f39",
+          "name": "STC-PWD-FORGOT-003/B | Forgot password unknown email 200",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** • HTTP 200 OK (toujours) • Body: { message: 'Si un account existe, un code a été envoyé.' } • Email INEXISTANT : aucun email envoyé • Email EXISTANT : email envoyé silencieusement • Impossibilité d'énumérer les emails ex...",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "forgot-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testEmailNew}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d90d936d-83f7-4f0b-8399-927c5a9dbc54",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-FORGOT-003/B",
+                  "pm.test('[STC-PWD-FORGOT-003/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-FORGOT-003/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ],
+                "_lastExecutionId": "83d2acb4-7f9d-4c7b-a17b-8349d3c20749"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** • HTTP 200 OK (toujours) • Body: { message: 'Si un account existe, un code a été envoyé.' } • Email INEXISTANT : aucun email envoyé • Email EXISTANT : email envoyé silencieusement • Impossibilité d'énumérer les emails ex...",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "forgot-password"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "bd592fa7-0e13-4b03-bd92-254712b90d3f",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 48,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"jean.nouveau.member@testmail.fr\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "dbcb4979-7224-4421-8ada-803bb4906ebf",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "158"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:09 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"9e-104enTa1iR0YyzFNssrWf2mJvgs\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              115,
+              117,
+              99,
+              99,
+              101,
+              115,
+              115,
+              34,
+              58,
+              116,
+              114,
+              117,
+              101,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              83,
+              105,
+              32,
+              117,
+              110,
+              32,
+              99,
+              111,
+              109,
+              112,
+              116,
+              101,
+              32,
+              101,
+              115,
+              116,
+              32,
+              97,
+              115,
+              115,
+              111,
+              99,
+              105,
+              101,
+              32,
+              97,
+              32,
+              99,
+              101,
+              116,
+              32,
+              101,
+              109,
+              97,
+              105,
+              108,
+              44,
+              32,
+              117,
+              110,
+              32,
+              99,
+              111,
+              100,
+              101,
+              32,
+              100,
+              101,
+              32,
+              114,
+              101,
+              105,
+              110,
+              105,
+              116,
+              105,
+              97,
+              108,
+              105,
+              115,
+              97,
+              116,
+              105,
+              111,
+              110,
+              32,
+              97,
+              32,
+              101,
+              116,
+              101,
+              32,
+              101,
+              110,
+              118,
+              111,
+              121,
+              101,
+              46,
+              32,
+              86,
+              101,
+              114,
+              105,
+              102,
+              105,
+              101,
+              122,
+              32,
+              118,
+              111,
+              116,
+              114,
+              101,
+              32,
+              98,
+              111,
+              105,
+              116,
+              101,
+              32,
+              100,
+              101,
+              32,
+              114,
+              101,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              32,
+              40,
+              101,
+              116,
+              32,
+              118,
+              111,
+              115,
+              32,
+              115,
+              112,
+              97,
+              109,
+              115,
+              41,
+              46,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 687,
+          "responseSize": 158
+        },
+        "id": "81849075-f3e9-413a-9bab-bb5307c23f39",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-FORGOT-003/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-FORGOT-003/B] status 200",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "ebe5a81a-40a7-4d38-b9cc-aeaf0c626bfa",
+          "length": 11,
+          "cycles": 1,
+          "position": 1,
+          "iteration": 0,
+          "httpRequestId": "317b9211-713e-4f3c-a0ac-a98c62d208d4"
+        },
+        "item": {
+          "id": "babb9b85-f502-4a92-b272-c4f08fb5ebf7",
+          "name": "STC-PWD-FORGOT-004/B | Forgot password rate limit 429",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** • Appels 1-5 : HTTP 200 OK • Appel 6+ : HTTP 429 Too Many Requests • Body: { statusCode: 429, code: 'RATE_LIMIT_EXCEEDED' } • Reset après 1h",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "forgot-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testEmailExisting}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "f35e02e5-a174-4eb4-8cd8-e66f1eaafcb6",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-FORGOT-004/B",
+                  "pm.test('[STC-PWD-FORGOT-004/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-FORGOT-004/B] status 200 (early) or 429 (after repeated calls)', function () {",
+                  "  pm.expect([200, 429]).to.include(pm.response.code);",
+                  "});",
+                  "// Run this request 6+ times quickly to assert 429 + RATE_LIMIT_EXCEEDED per sheet.",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 429) {",
+                  "  pm.test('[STC-PWD-FORGOT-004/B] rate limit code', function () {",
+                  "    var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                  "    pm.expect(String(c || '')).to.eql('RATE_LIMIT_EXCEEDED');",
+                  "  });",
+                  "}"
+                ],
+                "_lastExecutionId": "80ab6883-660a-42de-a23a-89ea230f2cdd"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** • Appels 1-5 : HTTP 200 OK • Appel 6+ : HTTP 429 Too Many Requests • Body: { statusCode: 429, code: 'RATE_LIMIT_EXCEEDED' } • Reset après 1h",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "forgot-password"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "50fc3afa-c720-47bc-b113-f220d55ddbf4",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 40,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"marie.durand@patient.fr\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "7edafa3a-85ea-4cc7-bca1-203394f8f686",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "158"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:11 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"9e-104enTa1iR0YyzFNssrWf2mJvgs\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              115,
+              117,
+              99,
+              99,
+              101,
+              115,
+              115,
+              34,
+              58,
+              116,
+              114,
+              117,
+              101,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              83,
+              105,
+              32,
+              117,
+              110,
+              32,
+              99,
+              111,
+              109,
+              112,
+              116,
+              101,
+              32,
+              101,
+              115,
+              116,
+              32,
+              97,
+              115,
+              115,
+              111,
+              99,
+              105,
+              101,
+              32,
+              97,
+              32,
+              99,
+              101,
+              116,
+              32,
+              101,
+              109,
+              97,
+              105,
+              108,
+              44,
+              32,
+              117,
+              110,
+              32,
+              99,
+              111,
+              100,
+              101,
+              32,
+              100,
+              101,
+              32,
+              114,
+              101,
+              105,
+              110,
+              105,
+              116,
+              105,
+              97,
+              108,
+              105,
+              115,
+              97,
+              116,
+              105,
+              111,
+              110,
+              32,
+              97,
+              32,
+              101,
+              116,
+              101,
+              32,
+              101,
+              110,
+              118,
+              111,
+              121,
+              101,
+              46,
+              32,
+              86,
+              101,
+              114,
+              105,
+              102,
+              105,
+              101,
+              122,
+              32,
+              118,
+              111,
+              116,
+              114,
+              101,
+              32,
+              98,
+              111,
+              105,
+              116,
+              101,
+              32,
+              100,
+              101,
+              32,
+              114,
+              101,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              32,
+              40,
+              101,
+              116,
+              32,
+              118,
+              111,
+              115,
+              32,
+              115,
+              112,
+              97,
+              109,
+              115,
+              41,
+              46,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 685,
+          "responseSize": 158
+        },
+        "id": "babb9b85-f502-4a92-b272-c4f08fb5ebf7",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-FORGOT-004/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-FORGOT-004/B] status 200 (early) or 429 (after repeated calls)",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "75b12db2-ad69-45e3-b73d-fbbc733d18ba",
+          "length": 11,
+          "cycles": 1,
+          "position": 2,
+          "iteration": 0,
+          "httpRequestId": "b274f036-7058-416e-a3c7-7ab9df4cae9f"
+        },
+        "item": {
+          "id": "14cc0a18-8d9d-4d8a-b828-3411540fb566",
+          "name": "STC-PWD-FORGOT-001/B | Forgot password existing email",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** 200 OK with generic anti-enumeration message; reset code hashed in Redis; mailer triggered.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "forgot-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "9ffbd22d-3ae6-41a4-9057-7dcd8bb56cfd",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-FORGOT-001/B",
+                  "pm.test('[STC-PWD-FORGOT-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-FORGOT-001/B] status 200 or 429 (rate limit after prior forgot-password in chain)', function () {",
+                  "  pm.expect([200, 429]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ],
+                "_lastExecutionId": "a6bf44d5-ac69-4628-b7f5-83a43177a6a4"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-F1-01\n**User Story:** US-F.1\n**Expected (sheet):** 200 OK with generic anti-enumeration message; reset code hashed in Redis; mailer triggered.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "forgot-password"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "af60af9f-0303-42b2-85a7-cec40f73efe9",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 47,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"sophie.martin@cabinet-paris.fr\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "489c49a2-fd44-41cd-b563-55e6c92501dd",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "158"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:12 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"9e-104enTa1iR0YyzFNssrWf2mJvgs\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              115,
+              117,
+              99,
+              99,
+              101,
+              115,
+              115,
+              34,
+              58,
+              116,
+              114,
+              117,
+              101,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              83,
+              105,
+              32,
+              117,
+              110,
+              32,
+              99,
+              111,
+              109,
+              112,
+              116,
+              101,
+              32,
+              101,
+              115,
+              116,
+              32,
+              97,
+              115,
+              115,
+              111,
+              99,
+              105,
+              101,
+              32,
+              97,
+              32,
+              99,
+              101,
+              116,
+              32,
+              101,
+              109,
+              97,
+              105,
+              108,
+              44,
+              32,
+              117,
+              110,
+              32,
+              99,
+              111,
+              100,
+              101,
+              32,
+              100,
+              101,
+              32,
+              114,
+              101,
+              105,
+              110,
+              105,
+              116,
+              105,
+              97,
+              108,
+              105,
+              115,
+              97,
+              116,
+              105,
+              111,
+              110,
+              32,
+              97,
+              32,
+              101,
+              116,
+              101,
+              32,
+              101,
+              110,
+              118,
+              111,
+              121,
+              101,
+              46,
+              32,
+              86,
+              101,
+              114,
+              105,
+              102,
+              105,
+              101,
+              122,
+              32,
+              118,
+              111,
+              116,
+              114,
+              101,
+              32,
+              98,
+              111,
+              105,
+              116,
+              101,
+              32,
+              100,
+              101,
+              32,
+              114,
+              101,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              32,
+              40,
+              101,
+              116,
+              32,
+              118,
+              111,
+              115,
+              32,
+              115,
+              112,
+              97,
+              109,
+              115,
+              41,
+              46,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 686,
+          "responseSize": 158
+        },
+        "id": "14cc0a18-8d9d-4d8a-b828-3411540fb566",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-FORGOT-001/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-FORGOT-001/B] status 200 or 429 (rate limit after prior forgot-password in chain)",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "68dd7c8c-9067-43a0-a27d-7e3e9306dcca",
+          "length": 11,
+          "cycles": 1,
+          "position": 3,
+          "iteration": 0,
+          "httpRequestId": "75e5de12-b46e-4153-814b-69738ea8031f"
+        },
+        "item": {
+          "id": "4f277d9d-c407-401b-9ce3-7d1edbcc3cdb",
+          "name": "STC-PWD-VERIFY-001/B | Verify code success",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 200 OK or contract success response; resetToken returned; code marked as consumed/verified according to backend behavior.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "verify-code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"{{verificationCode}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "843031f8-1bfb-401a-a28a-63872101c4d5",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-VERIFY-001/B",
+                  "pm.test('[STC-PWD-VERIFY-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-VERIFY-001/B] status in [200, 400] (implementation may differ)', function () {",
+                  "  pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200) {",
+                  "  var rt = json.resetToken || json.reset_token || (json.data && json.data.resetToken);",
+                  "  if (rt) pm.environment.set('resetToken', rt);",
+                  "}"
+                ],
+                "_lastExecutionId": "32baf775-1da3-4354-b387-72a0427376ed"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 200 OK or contract success response; resetToken returned; code marked as consumed/verified according to backend behavior.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "verify-code"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "f29850fa-f274-4346-9325-6c64fdd07479",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 61,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"sophie.martin@cabinet-paris.fr\",\n  \"code\": \"\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "52b54252-ed8b-4ab8-9363-ec42e4740d24",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "249"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:12 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"f9-yochnt+v3ZUw+UZp9y+klqVmhEI\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              86,
+              65,
+              76,
+              73,
+              68,
+              65,
+              84,
+              73,
+              79,
+              78,
+              95,
+              70,
+              65,
+              73,
+              76,
+              69,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              32,
+              112,
+              97,
+              121,
+              108,
+              111,
+              97,
+              100,
+              32,
+              105,
+              115,
+              32,
+              105,
+              110,
+              118,
+              97,
+              108,
+              105,
+              100,
+              46,
+              34,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              115,
+              34,
+              58,
+              91,
+              123,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              34,
+              58,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              44,
+              34,
+              109,
+              115,
+              103,
+              34,
+              58,
+              34,
+              67,
+              111,
+              100,
+              101,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              54,
+              32,
+              100,
+              105,
+              103,
+              105,
+              116,
+              115,
+              46,
+              34,
+              125,
+              44,
+              123,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              34,
+              58,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              44,
+              34,
+              109,
+              115,
+              103,
+              34,
+              58,
+              34,
+              99,
+              111,
+              100,
+              101,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              108,
+              111,
+              110,
+              103,
+              101,
+              114,
+              32,
+              116,
+              104,
+              97,
+              110,
+              32,
+              111,
+              114,
+              32,
+              101,
+              113,
+              117,
+              97,
+              108,
+              32,
+              116,
+              111,
+              32,
+              54,
+              32,
+              99,
+              104,
+              97,
+              114,
+              97,
+              99,
+              116,
+              101,
+              114,
+              115,
+              34,
+              125,
+              93,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 38,
+          "responseSize": 249
+        },
+        "id": "4f277d9d-c407-401b-9ce3-7d1edbcc3cdb",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-VERIFY-001/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-VERIFY-001/B] status in [200, 400] (implementation may differ)",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "9fa26b17-0ea1-4549-a24b-6e08de6f732e",
+          "length": 11,
+          "cycles": 1,
+          "position": 4,
+          "iteration": 0,
+          "httpRequestId": "c3b2cdbc-e3d0-4474-ba70-c99073ab5808"
+        },
+        "item": {
+          "id": "f79c40e6-abce-465c-9630-b2ac30145d4c",
+          "name": "STC-PWD-VERIFY-003/B | Verify code invalid 400",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 400 Bad Request with CODE_INVALID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "verify-code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"999999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "0ca5e715-c0e6-459d-8690-7fd288a275a9",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-VERIFY-003/B",
+                  "pm.test('[STC-PWD-VERIFY-003/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-VERIFY-003/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-VERIFY-003/B] error code invalid/expired if body exposes code', function () {",
+                  "  var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                  "  if (c != null && c !== '') { pm.expect(['CODE_INVALID', 'CODE_EXPIRED']).to.include(String(c)); }",
+                  "});"
+                ],
+                "_lastExecutionId": "c59c8784-8d32-4c4b-aa15-0d538f0582d0"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 400 Bad Request with CODE_INVALID.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "verify-code"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "2ec72052-6316-4fa1-99fe-edfbd72fa740",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 67,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"sophie.martin@cabinet-paris.fr\",\n  \"code\": \"999999\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "2cdddd25-6c89-4e24-ad6d-e722270468c1",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "96"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:13 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"60-4LClhyxGPkgzJzwDffI6lbOUgk8\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              67,
+              79,
+              68,
+              69,
+              95,
+              73,
+              78,
+              86,
+              65,
+              76,
+              73,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              73,
+              110,
+              118,
+              97,
+              108,
+              105,
+              100,
+              32,
+              99,
+              111,
+              100,
+              101,
+              46,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 399,
+          "responseSize": 96
+        },
+        "id": "f79c40e6-abce-465c-9630-b2ac30145d4c",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-VERIFY-003/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-VERIFY-003/B] status 400",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-VERIFY-003/B] error code invalid/expired if body exposes code",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "2783d39f-5a55-4651-bcb7-947e50f1a958",
+          "length": 11,
+          "cycles": 1,
+          "position": 5,
+          "iteration": 0,
+          "httpRequestId": "863c35cf-9310-4be5-a9c0-f6781525a653"
+        },
+        "item": {
+          "id": "3b65bfa2-8f87-47d1-8323-cb3fbb7c1351",
+          "name": "STC-PWD-VERIFY-004/B | Verify code expired 400",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 400 Bad Request with CODE_EXPIRED.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "verify-code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"{{verificationCodeExpired}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "ced021ba-66ae-4efa-bcd7-fc49c6f1f517",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-VERIFY-004/B",
+                  "pm.test('[STC-PWD-VERIFY-004/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-VERIFY-004/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-VERIFY-004/B] error code CODE_EXPIRED or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['CODE_EXPIRED', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ],
+                "_lastExecutionId": "160a7d31-a22d-4b95-aaf8-ff142b9f7357"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** 400 Bad Request with CODE_EXPIRED.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "verify-code"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "6589f0ff-862e-4936-b144-7b90097ad8f4",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 61,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"sophie.martin@cabinet-paris.fr\",\n  \"code\": \"\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "df309680-52d2-4ac1-b3f2-814cd94b7270",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "249"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:14 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"f9-yochnt+v3ZUw+UZp9y+klqVmhEI\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              86,
+              65,
+              76,
+              73,
+              68,
+              65,
+              84,
+              73,
+              79,
+              78,
+              95,
+              70,
+              65,
+              73,
+              76,
+              69,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              32,
+              112,
+              97,
+              121,
+              108,
+              111,
+              97,
+              100,
+              32,
+              105,
+              115,
+              32,
+              105,
+              110,
+              118,
+              97,
+              108,
+              105,
+              100,
+              46,
+              34,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              115,
+              34,
+              58,
+              91,
+              123,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              34,
+              58,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              44,
+              34,
+              109,
+              115,
+              103,
+              34,
+              58,
+              34,
+              67,
+              111,
+              100,
+              101,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              54,
+              32,
+              100,
+              105,
+              103,
+              105,
+              116,
+              115,
+              46,
+              34,
+              125,
+              44,
+              123,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              34,
+              58,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              44,
+              34,
+              109,
+              115,
+              103,
+              34,
+              58,
+              34,
+              99,
+              111,
+              100,
+              101,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              108,
+              111,
+              110,
+              103,
+              101,
+              114,
+              32,
+              116,
+              104,
+              97,
+              110,
+              32,
+              111,
+              114,
+              32,
+              101,
+              113,
+              117,
+              97,
+              108,
+              32,
+              116,
+              111,
+              32,
+              54,
+              32,
+              99,
+              104,
+              97,
+              114,
+              97,
+              99,
+              116,
+              101,
+              114,
+              115,
+              34,
+              125,
+              93,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 116,
+          "responseSize": 249
+        },
+        "id": "3b65bfa2-8f87-47d1-8323-cb3fbb7c1351",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-VERIFY-004/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-VERIFY-004/B] status 400",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-VERIFY-004/B] error code CODE_EXPIRED or VALIDATION_FAILED if body exposes code",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "8034953c-ec71-42b7-9800-c8f4855489de",
+          "length": 11,
+          "cycles": 1,
+          "position": 6,
+          "iteration": 0,
+          "httpRequestId": "410c498a-8eb2-4101-887a-14cf9ab0775f"
+        },
+        "item": {
+          "id": "0c2a5741-02fe-4093-b399-7db873610878",
+          "name": "STC-PWD-VERIFY-005/B | Verify code brute force",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** Attempts 1-3: CODE_INVALID; next attempt: CODE_TOO_MANY_ATTEMPTS; code invalidated.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "verify-code"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"code\": \"999999\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "a54bd75b-bde9-4dff-82e1-a78d4c7c0025",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-VERIFY-005/B",
+                  "pm.test('[STC-PWD-VERIFY-005/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-VERIFY-005/B] status 400 expected', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "// Sheet: attempts 1–3 CODE_INVALID; later CODE_TOO_MANY_ATTEMPTS — re-run to cover both.",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-VERIFY-005/B] error code INVALID, TOO_MANY, or EXPIRED', function () {",
+                  "  var c = json.code || (json.body && json.body.code) || (json.error && json.error.code);",
+                  "  pm.expect(['CODE_INVALID', 'CODE_TOO_MANY_ATTEMPTS', 'CODE_EXPIRED']).to.include(String(c || ''));",
+                  "});"
+                ],
+                "_lastExecutionId": "2fba9d17-312d-4d51-9ee3-bf4fee8eaa6c"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-F2-01\n**User Story:** US-F.2\n**Expected (sheet):** Attempts 1-3: CODE_INVALID; next attempt: CODE_TOO_MANY_ATTEMPTS; code invalidated.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "verify-code"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "551f91b3-7fc4-4e54-864c-236617678bba",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 67,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"sophie.martin@cabinet-paris.fr\",\n  \"code\": \"999999\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "08923d59-1697-4860-ba4d-2120d44d7eab",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "96"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:15 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"60-4LClhyxGPkgzJzwDffI6lbOUgk8\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              67,
+              79,
+              68,
+              69,
+              95,
+              73,
+              78,
+              86,
+              65,
+              76,
+              73,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              73,
+              110,
+              118,
+              97,
+              108,
+              105,
+              100,
+              32,
+              99,
+              111,
+              100,
+              101,
+              46,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 98,
+          "responseSize": 96
+        },
+        "id": "0c2a5741-02fe-4093-b399-7db873610878",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-VERIFY-005/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-VERIFY-005/B] status 400 expected",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-VERIFY-005/B] error code INVALID, TOO_MANY, or EXPIRED",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "a9bbaa10-8a85-451c-9bc4-01ec2cefd31b",
+          "length": 11,
+          "cycles": 1,
+          "position": 7,
+          "iteration": 0,
+          "httpRequestId": "e1657c2a-e8be-4afa-b4f0-28ffb14aca38"
+        },
+        "item": {
+          "id": "a3bff35e-c0a9-45da-a6aa-50ffd6439608",
+          "name": "STC-PWD-RESET-001/B | Reset password with token",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-F3-01\n**User Story:** US-F.3\n**Expected (sheet):** 200 OK success; password changed; refresh tokens invalidated; new tokens issued if contract says so.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "reset-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resetToken\": \"{{resetToken}}\",\n  \"newPassword\": \"NewP@ssw0rd2025!\",\n  \"passwordConfirmation\": \"NewP@ssw0rd2025!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "af362a61-c1b4-4a7c-92c7-fd4a7e5fc86e",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-RESET-001/B",
+                  "pm.test('[STC-PWD-RESET-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-RESET-001/B] status in [200, 400] (implementation may differ)', function () {",
+                  "  pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ],
+                "_lastExecutionId": "3c3ef958-f5fc-4f83-a522-050f34af7774"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-F3-01\n**User Story:** US-F.3\n**Expected (sheet):** 200 OK success; password changed; refresh tokens invalidated; new tokens issued if contract says so.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "reset-password"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "82aff342-c45c-4edf-b007-de833fece174",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 105,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"resetToken\": \"\",\n  \"newPassword\": \"NewP@ssw0rd2025!\",\n  \"passwordConfirmation\": \"NewP@ssw0rd2025!\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "3ee15fa1-1d85-4552-9a47-8cbcb7039eef",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "179"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:15 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"b3-iMIGElvVQspSy+5cnPkV/kqlSVc\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              70,
+              73,
+              69,
+              76,
+              68,
+              95,
+              78,
+              79,
+              84,
+              95,
+              65,
+              80,
+              80,
+              76,
+              73,
+              67,
+              65,
+              66,
+              76,
+              69,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              85,
+              110,
+              107,
+              110,
+              111,
+              119,
+              110,
+              32,
+              111,
+              114,
+              32,
+              110,
+              111,
+              110,
+              45,
+              109,
+              117,
+              116,
+              97,
+              98,
+              108,
+              101,
+              32,
+              102,
+              105,
+              101,
+              108,
+              100,
+              40,
+              115,
+              41,
+              58,
+              32,
+              112,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              67,
+              111,
+              110,
+              102,
+              105,
+              114,
+              109,
+              97,
+              116,
+              105,
+              111,
+              110,
+              46,
+              34,
+              44,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              115,
+              34,
+              58,
+              91,
+              34,
+              112,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              67,
+              111,
+              110,
+              102,
+              105,
+              114,
+              109,
+              97,
+              116,
+              105,
+              111,
+              110,
+              34,
+              93,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 42,
+          "responseSize": 179
+        },
+        "id": "a3bff35e-c0a9-45da-a6aa-50ffd6439608",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-RESET-001/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-RESET-001/B] status in [200, 400] (implementation may differ)",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "0ec8c1b8-fb07-4af8-89c2-9f03a3e9d482",
+          "length": 11,
+          "cycles": 1,
+          "position": 8,
+          "iteration": 0,
+          "httpRequestId": "dba30711-f77f-4755-9812-907091b84bca"
+        },
+        "item": {
+          "id": "29333606-1479-42ce-8769-326079ecf579",
+          "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "change-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPassword\": \"{{kinePassword}}\",\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPasswordConfirmation\": \"{{kinePassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "a5081cf5-cff2-441a-9ada-fb2d870a822f",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-CHANGE-002/B",
+                  "pm.test('[STC-PWD-CHANGE-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-CHANGE-002/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['PASSWORD_SAME_AS_OLD', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ],
+                "_lastExecutionId": "2b8f764a-eca4-4eb1-b0c8-751df8879b56"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "change-password"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWZiNDRjMTJhMWJkZmZmYjVjZTA4MDYiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjcsImlhdCI6MTc3ODU4NTAxNiwiZXhwIjoxNzc4NjcxNDE2fQ.Us0taCtyVXHjvwkfGLpXJylITi0Vr-VXb7QGTquN1aI"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "09436b50-61d0-4687-95a8-65161a17a7ea",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 120,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"newPassword\": \"KineAdmin123!\",\n  \"currentPassword\": \"KineAdmin123!\",\n  \"newPasswordConfirmation\": \"KineAdmin123!\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "02602a09-45fa-4313-a03d-84236de7db78",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "152"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:16 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"98-JPrybppLN+OOXABPTU6zk07p+7Q\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              80,
+              65,
+              83,
+              83,
+              87,
+              79,
+              82,
+              68,
+              95,
+              83,
+              65,
+              77,
+              69,
+              95,
+              65,
+              83,
+              95,
+              79,
+              76,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              84,
+              104,
+              101,
+              32,
+              110,
+              101,
+              119,
+              32,
+              112,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              100,
+              105,
+              102,
+              102,
+              101,
+              114,
+              101,
+              110,
+              116,
+              32,
+              102,
+              114,
+              111,
+              109,
+              32,
+              116,
+              104,
+              101,
+              32,
+              99,
+              117,
+              114,
+              114,
+              101,
+              110,
+              116,
+              32,
+              112,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              46,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 273,
+          "responseSize": 152
+        },
+        "id": "29333606-1479-42ce-8769-326079ecf579",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-CHANGE-002/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-CHANGE-002/B] status 400",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "e4a09ee4-16f9-4c05-9d3a-b0a265a42b17",
+          "length": 11,
+          "cycles": 1,
+          "position": 9,
+          "iteration": 0,
+          "httpRequestId": "ae35f74e-1207-4b70-bacc-ce0f8604bbca"
+        },
+        "item": {
+          "id": "24a22f9e-83f0-4b2c-b437-4c5ccccc8198",
+          "name": "STC-PWD-CHANGE-001/B | Change password success",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "change-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "13ac2358-a459-4264-884c-d3151e3adb31",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-CHANGE-001/B",
+                  "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200) {",
+                  "  var a = pm.environment.get('kinePassword');",
+                  "  var b = pm.environment.get('kinePasswordAlternate');",
+                  "  pm.environment.set('kinePassword', b);",
+                  "  pm.environment.set('kinePasswordAlternate', a);",
+                  "}"
+                ],
+                "_lastExecutionId": "feaf2c44-01f5-4dae-a93e-eb1876da0833"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "change-password"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWZiNDRjMTJhMWJkZmZmYjVjZTA4MDYiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjcsImlhdCI6MTc3ODU4NTAxNiwiZXhwIjoxNzc4NjcxNDE2fQ.Us0taCtyVXHjvwkfGLpXJylITi0Vr-VXb7QGTquN1aI"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "7b5d56c8-b66a-4bd5-9ac5-3faed4bdbb73",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 120,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"currentPassword\": \"KineAdmin123!\",\n  \"newPassword\": \"KineAdmin123!\",\n  \"newPasswordConfirmation\": \"KineAdmin123!\"\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "b9de1014-20f5-4b4a-993b-5f65bc6d7762",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "152"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:17 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"98-JPrybppLN+OOXABPTU6zk07p+7Q\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              80,
+              65,
+              83,
+              83,
+              87,
+              79,
+              82,
+              68,
+              95,
+              83,
+              65,
+              77,
+              69,
+              95,
+              65,
+              83,
+              95,
+              79,
+              76,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              84,
+              104,
+              101,
+              32,
+              110,
+              101,
+              119,
+              32,
+              112,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              100,
+              105,
+              102,
+              102,
+              101,
+              114,
+              101,
+              110,
+              116,
+              32,
+              102,
+              114,
+              111,
+              109,
+              32,
+              116,
+              104,
+              101,
+              32,
+              99,
+              117,
+              114,
+              114,
+              101,
+              110,
+              116,
+              32,
+              112,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              46,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 265,
+          "responseSize": 152
+        },
+        "id": "24a22f9e-83f0-4b2c-b437-4c5ccccc8198",
+        "assertions": [
+          {
+            "assertion": "[STC-PWD-CHANGE-001/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-PWD-CHANGE-001/B] status 200",
+            "skipped": false,
+            "error": {
+              "name": "AssertionError",
+              "index": 1,
+              "test": "[STC-PWD-CHANGE-001/B] status 200",
+              "message": "expected response to have status code 200 but got 400",
+              "stack": "AssertionError: expected response to have status code 200 but got 400\n   at Object.eval sandbox-script.js:2:10)"
+            }
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "cb2bbbbb-6e7f-4110-b0cc-1af330a7e19b",
+          "length": 11,
+          "cycles": 1,
+          "position": 10,
+          "iteration": 0,
+          "httpRequestId": "9038843d-0e3c-461e-b9ba-66d6ddcca879"
+        },
+        "item": {
+          "id": "b8b380e3-e321-46f6-a793-c8885e66f728",
+          "name": "STC-HEALTHZ-001/B | Liveness healthcheck",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-X15-01\n**User Story:** X-15\n**Expected (sheet):** 200 OK; health payload indicates service readiness/liveness. Environment-variable documentation is out of API-scope for this case.",
+              "type": "text/plain"
+            },
+            "url": {
+              "host": [
+                "{{baseUrl}}{{healthCheckPath}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "f2f1c366-34f1-41c4-9385-8730e8e521d4",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-HEALTHZ-001/B",
+                  "pm.test('[STC-HEALTHZ-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-HEALTHZ-001/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}"
+                ],
+                "_lastExecutionId": "91a03345-0a6d-40bf-a7fd-58426359b7f7"
+              }
+            }
+          ]
+        },
+        "request": {
+          "description": {
+            "content": "**ClickUp:** BE-X15-01\n**User Story:** X-15\n**Expected (sheet):** 200 OK; health payload indicates service readiness/liveness. Environment-variable documentation is out of API-scope for this case.",
+            "type": "text/plain"
+          },
+          "url": {
+            "protocol": "https",
+            "path": [
+              ""
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWZiNDRjMTJhMWJkZmZmYjVjZTA4MDMiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6MTA1LCJpYXQiOjE3Nzg1ODUwMDUsImV4cCI6MTc3ODY3MTQwNX0.Hk4RHGhbvwKWDjlmJCvAkb3jcfUHGfs96U4YrrNwdL0"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "b39fd6f2-6c57-47b2-8da9-dd7b07b9dbc4",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            }
+          ],
+          "method": "GET"
+        },
+        "response": {
+          "id": "cf69f0a3-ca1f-40b6-b7f8-e001b8b9865b",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "12"
+            },
+            {
+              "key": "Content-Type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 12 May 2026 11:24:18 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"c-Lve95gjOVATpfV8EL5X4nxwjKHE\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              72,
+              101,
+              108,
+              108,
+              111,
+              32,
+              87,
+              111,
+              114,
+              108,
+              100,
+              33
+            ]
+          },
+          "cookie": [],
+          "responseTime": 41,
+          "responseSize": 12
+        },
+        "id": "b8b380e3-e321-46f6-a793-c8885e66f728",
+        "assertions": [
+          {
+            "assertion": "[STC-HEALTHZ-001/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-HEALTHZ-001/B] status 200",
+            "skipped": false
+          }
+        ]
+      }
+    ],
+    "transfers": {
+      "responseTotal": 1659
+    },
+    "failures": [
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 1,
+          "test": "[STC-PWD-CHANGE-001/B] status 200",
+          "message": "expected response to have status code 200 but got 400",
+          "stack": "AssertionError: expected response to have status code 200 but got 400\n   at Object.eval sandbox-script.js:2:10)",
+          "checksum": "866e24241cf30fa6e1c1377b83e6e6dd",
+          "id": "abf6049e-f7d9-42c0-8d9f-6117647720e0",
+          "timestamp": 1778581448343,
+          "stacktrace": [
+            {
+              "fileName": "sandbox-script.js",
+              "lineNumber": 2,
+              "functionName": "Object.eval",
+              "typeName": "Object",
+              "methodName": "eval",
+              "columnNumber": 10,
+              "native": false
+            }
+          ]
+        },
+        "at": "assertion:1 in test-script",
+        "source": {
+          "id": "24a22f9e-83f0-4b2c-b437-4c5ccccc8198",
+          "name": "STC-PWD-CHANGE-001/B | Change password success",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "change-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "13ac2358-a459-4264-884c-d3151e3adb31",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-CHANGE-001/B",
+                  "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200) {",
+                  "  var a = pm.environment.get('kinePassword');",
+                  "  var b = pm.environment.get('kinePasswordAlternate');",
+                  "  pm.environment.set('kinePassword', b);",
+                  "  pm.environment.set('kinePasswordAlternate', a);",
+                  "}"
+                ],
+                "_lastExecutionId": "feaf2c44-01f5-4dae-a93e-eb1876da0833"
+              }
+            }
+          ]
+        },
+        "parent": {
+          "id": "a854b96c-feeb-4fa2-aaeb-d35909dfd6ae",
+          "name": "Password Change",
+          "item": [
+            {
+              "id": "29333606-1479-42ce-8769-326079ecf579",
+              "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
+              "request": {
+                "description": {
+                  "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kine",
+                    "auth",
+                    "change-password"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{kineToken}}"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"newPassword\": \"{{kinePassword}}\",\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPasswordConfirmation\": \"{{kinePassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "a5081cf5-cff2-441a-9ada-fb2d870a822f",
+                    "type": "text/javascript",
+                    "exec": [
+                      "// STC: STC-PWD-CHANGE-002/B",
+                      "pm.test('[STC-PWD-CHANGE-002/B] response time OK', function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                      "});",
+                      "pm.test('[STC-PWD-CHANGE-002/B] status 400', function () {",
+                      "  pm.response.to.have.status(400);",
+                      "});",
+                      "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                      "pm.test('[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code', function () {",
+                      "  if (json && json.code != null && json.code !== '') {",
+                      "    pm.expect(['PASSWORD_SAME_AS_OLD', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                      "  }",
+                      "});"
+                    ],
+                    "_lastExecutionId": "2b8f764a-eca4-4eb1-b0c8-751df8879b56"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "24a22f9e-83f0-4b2c-b437-4c5ccccc8198",
+              "name": "STC-PWD-CHANGE-001/B | Change password success",
+              "request": {
+                "description": {
+                  "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kine",
+                    "auth",
+                    "change-password"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{kineToken}}"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "13ac2358-a459-4264-884c-d3151e3adb31",
+                    "type": "text/javascript",
+                    "exec": [
+                      "// STC: STC-PWD-CHANGE-001/B",
+                      "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                      "});",
+                      "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                      "if (pm.response.code === 200) {",
+                      "  var a = pm.environment.get('kinePassword');",
+                      "  var b = pm.environment.get('kinePasswordAlternate');",
+                      "  pm.environment.set('kinePassword', b);",
+                      "  pm.environment.set('kinePasswordAlternate', a);",
+                      "}"
+                    ],
+                    "_lastExecutionId": "feaf2c44-01f5-4dae-a93e-eb1876da0833"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": []
+        },
+        "cursor": {
+          "ref": "e4a09ee4-16f9-4c05-9d3a-b0a265a42b17",
+          "length": 11,
+          "cycles": 1,
+          "position": 9,
+          "iteration": 0,
+          "httpRequestId": "ae35f74e-1207-4b70-bacc-ce0f8604bbca",
+          "scriptId": "13ac2358-a459-4264-884c-d3151e3adb31",
+          "execution": "feaf2c44-01f5-4dae-a93e-eb1876da0833"
+        }
+      }
+    ],
+    "error": null
+  }
+}

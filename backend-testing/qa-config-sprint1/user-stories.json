@@ -1,0 +1,106 @@
+{
+  "epics": [
+    {
+      "epicId": "A",
+      "title": "Inscription autonome",
+      "userStories": [
+        { "id": "US-A.1", "title": "Inscription autonome : Kine Liberal Solo" },
+        { "id": "US-A.2", "title": "Inscription autonome : Kine Remplacant" },
+        { "id": "US-A.3", "title": "Inscription autonome : Admin Cabinet de groupe" },
+        { "id": "US-A.4", "title": "Inscription autonome : Etudiant" },
+        { "id": "US-A.5", "title": "Selecteur de profil adaptatif (contrat backend)" }
+      ]
+    },
+    {
+      "epicId": "B",
+      "title": "Inscription par invitation",
+      "userStories": [
+        { "id": "US-B.1", "title": "Invitation : Membre kine (compte inexistant)" },
+        { "id": "US-B.2", "title": "Invitation : Assistant administratif (compte inexistant)" },
+        { "id": "US-B.3", "title": "Invitation : Compte existant (rattachement automatique)" }
+      ]
+    },
+    {
+      "epicId": "C",
+      "title": "Authentification",
+      "userStories": [
+        { "id": "US-C.1", "title": "Login Kine : retour des Profils (Layer 2)" },
+        { "id": "US-C.2", "title": "Login Patient : email + password (ou tel)" },
+        { "id": "US-C.3", "title": "Login Patient : OAuth Google + Apple" },
+        { "id": "US-C.4", "title": "Login Admin" }
+      ]
+    },
+    {
+      "epicId": "D",
+      "title": "Gestion de session",
+      "userStories": [
+        { "id": "US-D.1", "title": "Endpoint /me : user + profile + permissions" },
+        { "id": "US-D.2", "title": "Refresh Token" },
+        { "id": "US-D.3", "title": "Logout : invalidation refresh + cache permissions" }
+      ]
+    },
+    {
+      "epicId": "E",
+      "title": "Switcher et multi-profils",
+      "userStories": [
+        { "id": "US-E.1", "title": "Switcher : basculer entre profils sans deconnexion" },
+        { "id": "US-E.2", "title": "Switcher : ajout d'un 2eme profil depuis le dashboard" },
+        { "id": "US-E.3", "title": "Permissions differenciees entre profils d'un meme Compte" }
+      ]
+    },
+    {
+      "epicId": "F",
+      "title": "Mot de passe oublie",
+      "userStories": [
+        { "id": "US-F.1", "title": "Mot de passe oublie : demande du code 6 chiffres" },
+        { "id": "US-F.2", "title": "Mot de passe oublie : verification du code" },
+        { "id": "US-F.3", "title": "Mot de passe oublie : reinitialisation" }
+      ]
+    },
+    {
+      "epicId": "G",
+      "title": "Systeme de permissions (RBAC + CASL)",
+      "userStories": [
+        { "id": "US-G.1", "title": "Permissions : chargement + format aplati" },
+        { "id": "US-G.2", "title": "RBAC : acces autorise scope ALL" },
+        { "id": "US-G.3", "title": "RBAC : acces restreint scope OWN via conditions CASL" },
+        { "id": "US-G.4", "title": "RBAC : refus sans permission" },
+        { "id": "US-G.5", "title": "RBAC : heritage KINE_ADMIN -> KINE" },
+        { "id": "US-G.6", "title": "RBAC : cache Redis + invalidation" }
+      ]
+    },
+    {
+      "epicId": "H",
+      "title": "Isolation multi-tenant",
+      "userStories": [
+        { "id": "US-H.1", "title": "Isolation multi-tenant : Cabinet A ne voit pas Cabinet B" }
+      ]
+    },
+    {
+      "epicId": "I",
+      "title": "Verification ADELI ou RPPS",
+      "userStories": [
+        { "id": "US-I.1", "title": "Verification manuelle ADELI / RPPS (non bloquante) + ecran admin" },
+        { "id": "US-I.2", "title": "Unicite ADELI / RPPS sur profils cliniques actifs" }
+      ]
+    }
+  ],
+  "crossCuttingItems": [
+    { "id": "X-1", "title": "APIs CRUD RBAC (actions / modules / permissions / roles)" },
+    { "id": "X-2", "title": "Bcrypt cost factor >= 12" },
+    { "id": "X-3", "title": "Rate limiting global (login, forgot-password)" },
+    { "id": "X-4", "title": "Endpoints dev (/api/dev/reset-codes, /invitations, /users)" },
+    { "id": "X-5", "title": "Envoi email reel (password-reset + invitations)" },
+    { "id": "X-6", "title": "2FA SMS (Twilio)" },
+    { "id": "X-7", "title": "Upload physique du justificatif etudiant (multipart, <=5 Mo, PDF/JPG/PNG)" },
+    { "id": "X-8", "title": "Role systeme ASSISTANT distinct" },
+    { "id": "X-9", "title": "Integration auto annuaire.sante.fr (ADELI/RPPS)" },
+    { "id": "X-10", "title": "Transition Etudiant -> Professionnel" },
+    { "id": "X-11", "title": "Freemium / logique d'abonnement" },
+    { "id": "X-12", "title": "E2E tests (harness supertest)" },
+    { "id": "X-13", "title": "Index unicite email cross-collections (admin + kine + patient)" },
+    { "id": "X-14", "title": "Subscription per profil (jamais per-user)" },
+    { "id": "X-15", "title": "Config externalisee (TTLs, bcrypt, rate limits, freemium)" },
+    { "id": "X-16", "title": "Self-service account management (change-password / update /me / update profile)" }
+  ]
+}

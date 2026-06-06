@@ -1,0 +1,46 @@
+{
+  "name": "@physio/frontend-testing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright test framework for XXX Connect frontend",
+  "scripts": {
+    "test": "playwright test",
+    "test:auth": "playwright test tests/auth --project=chromium-guest --project=chromium-auth --workers=1",
+    "test:auth:guest": "playwright test tests/auth --project=chromium-guest",
+    "test:auth:session": "playwright test tests/auth/me.spec.ts --project=chromium-auth -g STC-AUTH-021",
+    "test:smoke": "playwright test --project=chromium-guest --grep @smoke",
+    "test:regression": "playwright test --project=chromium-auth --grep @regression",
+    "test:integration": "playwright test --grep @integration",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report reports/html",
+    "report:allure": "allure generate reports/allure-results --clean -o reports/allure-report && allure open reports/allure-report",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "validate:stc-spec": "tsx scripts/validate-stc-spec-catalog.ts",
+    "validate:stc-reports": "tsx scripts/validate-stc-reports.ts",
+    "report:stc": "tsx scripts/regenerate-stc-reports.ts",
+    "sync:stc-annotations": "tsx scripts/sync-stc-annotations-from-spec.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.0",
+    "allure-playwright": "^3.2.0",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.27.0",
+    "imapflow": "^1.3.3",
+    "mailparser": "^3.9.8",
+    "prettier": "^3.5.0",
+    "tsx": "^4.22.0",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.32.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

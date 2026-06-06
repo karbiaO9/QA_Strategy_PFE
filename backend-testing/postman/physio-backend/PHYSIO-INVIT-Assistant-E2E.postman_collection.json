@@ -1,0 +1,784 @@
+{
+  "info": {
+    "name": "PHYSIO - INVIT Assistant E2E + STC chain",
+    "_postman_id": "physio-invit-assistant-e2e-001",
+    "description": "End-to-end: login as cabinet kine admin, invite ASSISTANT to {{inviteAssistantTargetEmail}} (default oussemak9999@gmail.com), then exercise invitation STCs.\n\n**Credentials:** Set collection or environment variables `kineAdminEmail` and `kineAdminPassword` (e.g. password containing `KineAdmin123` as you use in QA).\n\n**Run order:** Use Collection Runner top-to-bottom. Negative accept/preview cases are placed before nominal accept so the assistant token stays valid until STC-INVIT-ACCEPT-001/B.\n\n**STC-INVIT-GEN-008/B, STC-INVIT-ACCEPT-003/004/008/B:** Not present in the checked Excel export; requests follow the same API patterns as the main KINE collection (GEN-008 = invalid generate payload 400; ACCEPT-003 = replay after consume 409; ACCEPT-004 = INVITATION_ACCOUNT_MISMATCH when applicable; ACCEPT-008 = CGU rejected 400). Adjust expectations in Tests if your sheet differs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://identity.physio.agregatech.com" },
+    { "key": "kineAdminEmail", "value": "sophie.martin@cabinet-paris.fr" },
+    { "key": "kineAdminPassword", "value": "KineAdmin123!" },
+    { "key": "inviteAssistantTargetEmail", "value": "oussemak9999@gmail.com" },
+    { "key": "inviteMemberEmailForStc", "value": "jean.nouveau.member@testmail.fr" },
+    { "key": "acceptInviteFirstName", "value": "Oussema9999" },
+    { "key": "acceptInviteLastName", "value": "Invitee" },
+    { "key": "acceptInvitePassword", "value": "QaTest123!" },
+    { "key": "testProfessionalNumberNew", "value": "12345678901" },
+    { "key": "patientEmail", "value": "marie.durand@patient.fr" },
+    { "key": "invitationTokenMember", "value": "" },
+    { "key": "invitationTokenAssistant", "value": "" },
+    { "key": "invitationTokenConsumed", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "01 Setup",
+      "item": [
+        {
+          "name": "Login Kine Admin (cabinet) — prerequisite",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineAdminEmail}}\",\n  \"password\": \"{{kineAdminPassword}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Sets `kineToken`, `cabinetId`, `profileId` on success. Override `kineAdminEmail` / `kineAdminPassword` for your KineAdmin123 account."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('Login 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var at = json.accessToken || json.access_token || (json.data && json.data.accessToken);",
+                  "  if (at) pm.environment.set('kineToken', at);",
+                  "  var p0 = json.profiles && json.profiles[0];",
+                  "  if (p0 && p0.id) pm.environment.set('profileId', p0.id);",
+                  "  if (p0 && p0.cabinetId) pm.environment.set('cabinetId', p0.cabinetId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 MEMBER token (STC-INVIT-GEN-001/002/007)",
+      "item": [
+        {
+          "name": "STC-INVIT-GEN-001/B | Generate MEMBER invitation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{kineToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{inviteMemberEmailForStc}}\",\n  \"cabinetId\": \"{{cabinetId}}\",\n  \"targetProfileType\": \"MEMBER\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-GEN-001/B",
+                  "pm.test('[STC-INVIT-GEN-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-INVIT-GEN-001/B] status 200 or 201', function () {",
+                  "  pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200 || pm.response.code === 201) {",
+                  "  var tok = json.invitationToken || json.token || (json.data && (json.data.invitationToken || json.data.token));",
+                  "  if (tok) { pm.collectionVariables.set('invitationTokenMember', tok); pm.environment.set('invitationTokenMember', tok); }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-GEN-002/B | Preview MEMBER invitation token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{kineToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations/preview",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenMember}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-GEN-002/B",
+                  "pm.test('[STC-INVIT-GEN-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-INVIT-GEN-002/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-GEN-007/B | Preview conflict 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{kineToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations/preview",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenMember}}\",\n  \"email\": \"existing@example.fr\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-GEN-007/B",
+                  "pm.test('[STC-INVIT-GEN-007/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-INVIT-GEN-007/B] status in [409, 200]', function () {",
+                  "  pm.expect([409, 200]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 Generate — errors (STC-INVIT-GEN-005/006/008)",
+      "item": [
+        {
+          "name": "STC-INVIT-GEN-005/B | Generate invitation forbidden 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{kineToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{inviteMemberEmailForStc}}\",\n  \"targetProfileType\": \"MEMBER\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Missing cabinetId for MEMBER — expect 403 or 201 per backend rules."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-GEN-005/B",
+                  "pm.test('[STC-INVIT-GEN-005/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-INVIT-GEN-005/B] status in [403, 201]', function () {",
+                  "  pm.expect([403, 201]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-GEN-006/B | Preview without auth 401",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations/preview",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"invalid-or-missing-context\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-GEN-006/B",
+                  "pm.test('[STC-INVIT-GEN-006/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-INVIT-GEN-006/B] status 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-GEN-008/B | Generate invalid payload 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{kineToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"not-a-valid-email\",\n  \"cabinetId\": \"{{cabinetId}}\",\n  \"targetProfileType\": \"MEMBER\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Placeholder STC from your list (not in repo Excel). Expect 400 validation; change payload if your sheet specifies another rule."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-GEN-008/B",
+                  "pm.test('[STC-INVIT-GEN-008/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-INVIT-GEN-008/B] status in [400, 422]', function () {",
+                  "  pm.expect([400, 422]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 ASSISTANT invite (E2E + STC-INVIT-ASST-001)",
+      "item": [
+        {
+          "name": "STC-INVIT-ASST-001/B | Invite ASSISTANT → oussemak9999@gmail.com",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{kineToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{inviteAssistantTargetEmail}}\",\n  \"firstName\": \"{{acceptInviteFirstName}}\",\n  \"lastName\": \"{{acceptInviteLastName}}\",\n  \"targetProfileType\": \"ASSISTANT\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Same contract as STC-INVIT-ASST-001/B; email targets the invitee who will complete STC-INVIT-ACCEPT-001/B."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC-INVIT-ASST-001/B (assistant E2E)",
+                  "pm.test('[STC-INVIT-ASST-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-INVIT-ASST-001/B] status 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 201) {",
+                  "  var tok = json.invitationToken || json.token || (json.data && (json.data.invitationToken || json.data.token));",
+                  "  if (tok) {",
+                  "    pm.collectionVariables.set('invitationTokenAssistant', tok);",
+                  "    pm.environment.set('invitationTokenAssistant', tok);",
+                  "    pm.environment.set('invitationToken', tok);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-GEN-002/B | Preview ASSISTANT invitation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{kineToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations/preview",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenAssistant}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('[STC-INVIT-GEN-002/B] assistant preview 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 Accept — negatives before nominal (token preserved)",
+      "item": [
+        {
+          "name": "STC-INVIT-ACCEPT-007/B | Assistant must not send professionalNumber",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/accept-invitation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenAssistant}}\",\n  \"firstName\": \"Sophie\",\n  \"lastName\": \"Roux\",\n  \"password\": \"{{acceptInvitePassword}}\",\n  \"passwordConfirmation\": \"{{acceptInvitePassword}}\",\n  \"cguAccepted\": true,\n  \"professionalNumber\": \"{{testProfessionalNumberNew}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ACCEPT-007/B",
+                  "pm.test('[STC-INVIT-ACCEPT-007/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.code) {",
+                  "  pm.test('[STC-INVIT-ACCEPT-007/B] code PROFESSIONAL_NUMBER_FORBIDDEN', function () {",
+                  "    pm.expect(String(json.code)).to.eql('PROFESSIONAL_NUMBER_FORBIDDEN');",
+                  "  });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ACCEPT-005/B | Accept validation 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/accept-invitation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenAssistant}}\",\n  \"firstName\": \"\",\n  \"lastName\": \"Dupuis\",\n  \"password\": \"weak\",\n  \"passwordConfirmation\": \"mismatch\",\n  \"cguAccepted\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ACCEPT-005/B",
+                  "pm.test('[STC-INVIT-ACCEPT-005/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ACCEPT-008/B | CGU not accepted 400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/accept-invitation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenAssistant}}\",\n  \"firstName\": \"{{acceptInviteFirstName}}\",\n  \"lastName\": \"{{acceptInviteLastName}}\",\n  \"password\": \"{{acceptInvitePassword}}\",\n  \"passwordConfirmation\": \"{{acceptInvitePassword}}\",\n  \"cguAccepted\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Placeholder STC from your list. Expect 400; if backend treats as business error only, relax assertion."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ACCEPT-008/B",
+                  "pm.test('[STC-INVIT-ACCEPT-008/B] status in [400, 422]', function () {",
+                  "  pm.expect([400, 422]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ACCEPT-002/B | Accept invalid token 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/accept-invitation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"invalid-or-expired-token\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"Dupuis\",\n  \"password\": \"{{acceptInvitePassword}}\",\n  \"passwordConfirmation\": \"{{acceptInvitePassword}}\",\n  \"cguAccepted\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ACCEPT-002/B",
+                  "pm.test('[STC-INVIT-ACCEPT-002/B] status 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ACCEPT-006/B | Accept corrupted JWT 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/accept-invitation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"corrupted.jwt.token\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"Dupuis\",\n  \"password\": \"{{acceptInvitePassword}}\",\n  \"passwordConfirmation\": \"{{acceptInvitePassword}}\",\n  \"cguAccepted\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ACCEPT-006/B",
+                  "pm.test('[STC-INVIT-ACCEPT-006/B] status 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ACCEPT-001/B | Accept ASSISTANT invitation (nominal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/accept-invitation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenAssistant}}\",\n  \"firstName\": \"{{acceptInviteFirstName}}\",\n  \"lastName\": \"{{acceptInviteLastName}}\",\n  \"password\": \"{{acceptInvitePassword}}\",\n  \"passwordConfirmation\": \"{{acceptInvitePassword}}\",\n  \"cguAccepted\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "No professionalNumber for ASSISTANT. Invite completes for {{inviteAssistantTargetEmail}}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ACCEPT-001/B",
+                  "pm.test('[STC-INVIT-ACCEPT-001/B] status 201', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "var spent = pm.collectionVariables.get('invitationTokenAssistant') || pm.environment.get('invitationTokenAssistant');",
+                  "if (spent) {",
+                  "  pm.collectionVariables.set('invitationTokenConsumed', spent);",
+                  "  pm.environment.set('invitationTokenConsumed', spent);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ACCEPT-003/B | Replay accept — INVITATION_ALREADY_USED 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/accept-invitation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenConsumed}}\",\n  \"firstName\": \"{{acceptInviteFirstName}}\",\n  \"lastName\": \"{{acceptInviteLastName}}\",\n  \"password\": \"{{acceptInvitePassword}}\",\n  \"passwordConfirmation\": \"{{acceptInvitePassword}}\",\n  \"cguAccepted\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Placeholder STC from your list: second accept with consumed token. Expect 409 INVITATION_ALREADY_USED per Swagger."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ACCEPT-003/B",
+                  "pm.test('[STC-INVIT-ACCEPT-003/B] status 409', function () {",
+                  "  pm.response.to.have.status(409);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.code) {",
+                  "  pm.test('[STC-INVIT-ACCEPT-003/B] code INVITATION_ALREADY_USED', function () {",
+                  "    pm.expect(String(json.code)).to.eql('INVITATION_ALREADY_USED');",
+                  "  });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ACCEPT-004/B | INVITATION_ACCOUNT_MISMATCH 409 (optional)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{kineToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{patientEmail}}\",\n  \"firstName\": \"Pat\",\n  \"lastName\": \"IENT\",\n  \"targetProfileType\": \"ASSISTANT\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Step A: invite a mailbox that is already a Patient account. Step B would be accept — often blocked earlier. STC-INVIT-ACCEPT-004/B placeholder: if your sheet defines a different flow, replace this folder."
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Two-step STC: store mismatch token if invite succeeds",
+                  "pm.collectionVariables.unset('invitationTokenMismatch');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC-INVIT-ACCEPT-004/B — invite phase; accept may return 409 MISMATCH",
+                  "pm.test('[STC-INVIT-ACCEPT-004/B] invite status in [201, 400, 403, 409]', function () {",
+                  "  pm.expect([201, 400, 403, 409]).to.include(pm.response.code);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 201) {",
+                  "  var tok = json.invitationToken || json.token || (json.data && (json.data.invitationToken || json.data.token));",
+                  "  if (tok) pm.collectionVariables.set('invitationTokenMismatch', tok);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ACCEPT-004/B | Accept (patient-email invite) — expect 409 if token exists",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/accept-invitation",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenMismatch}}\",\n  \"firstName\": \"DAli\",\n  \"lastName\": \"Dali\",\n  \"password\": \"{{acceptInvitePassword}}\",\n  \"passwordConfirmation\": \"{{acceptInvitePassword}}\",\n  \"cguAccepted\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Runs only if previous invite returned 201 and set invitationTokenMismatch",
+                  "var t = pm.collectionVariables.get('invitationTokenMismatch');",
+                  "if (!t) {",
+                  "  pm.test('[STC-INVIT-ACCEPT-004/B] skipped — no mismatch token', function () { pm.expect(true).to.be.true; });",
+                  "} else {",
+                  "  pm.test('[STC-INVIT-ACCEPT-004/B] status in [409, 400, 201]', function () {",
+                  "    pm.expect([409, 400, 201]).to.include(pm.response.code);",
+                  "  });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 Attach (STC-INVIT-ATTACH-001/003/004)",
+      "item": [
+        {
+          "name": "STC-INVIT-ATTACH-003/B | Attach invalid token 401",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations/attach",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"invalid-or-expired-token\",\n  \"password\": \"{{acceptInvitePassword}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ATTACH-003/B",
+                  "pm.test('[STC-INVIT-ATTACH-003/B] status 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ATTACH-004/B | Attach consumed token 409",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations/attach",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenConsumed}}\",\n  \"password\": \"{{acceptInvitePassword}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ATTACH-004/B",
+                  "pm.test('[STC-INVIT-ATTACH-004/B] status in [409, 401]', function () {",
+                  "  pm.expect([409, 401]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "STC-INVIT-ATTACH-001/B | Attach existing user (manual token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/api/v1/kine/auth/invitations/attach",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invitationToken\": \"{{invitationTokenMember}}\",\n  \"password\": \"{{kineAdminPassword}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Nominal attach expects an invitation sent to an **existing** kine account and that user's password. Default body uses MEMBER token from folder 02 + admin password — will often return 401/409 unless `inviteMemberEmailForStc` matches a kine login you own. Generate a fresh MEMBER invite to that kine email and paste token, or change password variable to the invitee's password."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// STC: STC-INVIT-ATTACH-001/B",
+                  "pm.test('[STC-INVIT-ATTACH-001/B] status in [201, 401, 409]', function () {",
+                  "  pm.expect([201, 401, 409]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

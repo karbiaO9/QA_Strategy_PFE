@@ -1,0 +1,135 @@
+version: '3.8'
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: physio_rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: physio_redis
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: redis-cli ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7
+    container_name: physio_mongodb
+    profiles: ['local-mongo']
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+
+  minio:
+    image: minio/minio:latest
+    container_name: physio_minio
+    profiles: ['local-s3']
+    command: server /data --console-address ":9001"
+    ports:
+      - '9000:9000' 
+      - '9001:9001' 
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-minioadmin}
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  minio-bootstrap:
+    image: minio/mc:latest
+    container_name: physio_minio_bootstrap
+    profiles: ['local-s3']
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "
+      mc alias set local http://minio:9000 ${S3_ACCESS_KEY_ID:-minioadmin} ${S3_SECRET_ACCESS_KEY:-minioadmin} &&
+      mc mb -p local/${S3_BUCKET:-physioconnect-uploads} || true &&
+      echo 'MinIO bucket ready: ${S3_BUCKET:-physioconnect-uploads}'
+      "
+
+
+  identity-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: physio_identity
+    profiles: ['app']
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001
+      MONGODB_URI: ${MONGODB_URI}
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      REDIS_URL: redis://redis:6379
+
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      JWT_INVITATION_TTL: ${JWT_INVITATION_TTL:-7d}
+      JWT_INVITATION_TTL_SECONDS: ${JWT_INVITATION_TTL_SECONDS:-604800}
+
+      FRONTEND_BASE_URL: ${FRONTEND_BASE_URL}
+      FRONTEND_INVITATION_PATH: ${FRONTEND_INVITATION_PATH:-/kine/accept-invitation}
+
+      MAIL_DRIVER: ${MAIL_DRIVER:-log}
+      MAIL_FROM: ${MAIL_FROM:-XXXConnect <no-reply@physioconnect.local>}
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-}
+      MAIL_SECURE: ${MAIL_SECURE:-}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+
+      UPLOAD_MAX_BYTES: ${UPLOAD_MAX_BYTES:-5242880}
+
+      STORAGE_PROVIDER: ${STORAGE_PROVIDER:-ovh-hds}
+      S3_REGION: ${S3_REGION}
+      S3_BUCKET: ${S3_BUCKET}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY}
+      S3_ENDPOINT: ${S3_ENDPOINT_DOCKER:-${S3_ENDPOINT:-}}
+      S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-true}
+      S3_PUBLIC_URL_BASE: ${S3_PUBLIC_URL_BASE:-}
+      S3_USE_PRESIGNED_GET: ${S3_USE_PRESIGNED_GET:-true}
+      S3_PRESIGNED_GET_TTL_SECONDS: ${S3_PRESIGNED_GET_TTL_SECONDS:-900}
+      S3_SSE: ${S3_SSE:-}
+
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_ALLOWED_AUDIENCES: ${GOOGLE_ALLOWED_AUDIENCES:-}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+  minio_data:

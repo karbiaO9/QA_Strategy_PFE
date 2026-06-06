@@ -1,0 +1,2803 @@
+{
+  "collection": {
+    "_": {
+      "postman_id": "physio-kine-register-solo-001"
+    },
+    "item": [
+      {
+        "id": "a99197a2-7d70-4e49-b4b9-64cd60414ddc",
+        "name": "STC-REGISTER-SOLO-001/B | Register LIBERAL nominal",
+        "request": {
+          "url": {
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "5ebf649f-b619-4884-b5f3-4fd2724a51ff",
+              "type": "text/javascript",
+              "exec": [
+                "// STC: STC-REGISTER-SOLO-001/B",
+                "pm.test('[STC-REGISTER-SOLO-001/B] response time OK', function () {",
+                "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                "});",
+                "pm.test('[STC-REGISTER-SOLO-001/B] status in [201,400]', function () {",
+                "  pm.expect([201,400]).to.include(pm.response.code);",
+                "});"
+              ],
+              "_lastExecutionId": "18ae0e91-96a3-441e-abe8-621a5102ebab"
+            }
+          }
+        ]
+      },
+      {
+        "id": "79f18a80-d5d6-45be-b599-1fe74de5f8ca",
+        "name": "STC-REGISTER-SOLO-003/B | LIBERAL missing professionalNumber 400",
+        "request": {
+          "url": {
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "09a1f024-0c62-4f59-93d8-48bdaee0b15b",
+              "type": "text/javascript",
+              "exec": [
+                "// STC: STC-REGISTER-SOLO-003/B",
+                "pm.test('[STC-REGISTER-SOLO-003/B] status 400', function () {",
+                "  pm.response.to.have.status(400);",
+                "});"
+              ],
+              "_lastExecutionId": "94550e50-4865-495d-b91d-8fd1d2942907"
+            }
+          }
+        ]
+      },
+      {
+        "id": "d28ec530-2138-4293-a397-1bc08b107884",
+        "name": "STC-REGISTER-SOLO-004/B | Invalid email 400",
+        "request": {
+          "url": {
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"not-an-email\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "673ab1d8-2788-4410-adf0-44136f759999",
+              "type": "text/javascript",
+              "exec": [
+                "// STC: STC-REGISTER-SOLO-004/B",
+                "pm.test('[STC-REGISTER-SOLO-004/B] status in [400,422]', function () {",
+                "  pm.expect([400,422]).to.include(pm.response.code);",
+                "});"
+              ],
+              "_lastExecutionId": "02e7dd64-0f9e-4ff3-bbf9-c0d48d82e50c"
+            }
+          }
+        ]
+      },
+      {
+        "id": "5a58d1d4-652d-48da-9cbc-b9229596948c",
+        "name": "STC-REGISTER-SOLO-005/B | Duplicate email 409",
+        "request": {
+          "url": {
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "82abcedc-0dcc-41a8-8f74-02a1d2d3b921",
+              "type": "text/javascript",
+              "exec": [
+                "// STC: STC-REGISTER-SOLO-005/B — uses existing kineEmail",
+                "pm.test('[STC-REGISTER-SOLO-005/B] status in [409,400]', function () {",
+                "  pm.expect([409,400]).to.include(pm.response.code);",
+                "});"
+              ],
+              "_lastExecutionId": "d5c25bd2-f474-45ca-a31e-89e2e7123713"
+            }
+          }
+        ]
+      },
+      {
+        "id": "f52ab47d-e245-4e68-83c1-de9f9082184b",
+        "name": "STC-REGISTER-SOLO-006/B | Weak password 400",
+        "request": {
+          "url": {
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "{{baseUrl}}"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"weak1\",\n  \"passwordConfirmation\": \"weak1\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": [],
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "id": "b1779d39-2bcd-4316-9180-b4a0bd9e1d3c",
+              "type": "text/javascript",
+              "exec": [
+                "// STC: STC-REGISTER-SOLO-006/B",
+                "pm.test('[STC-REGISTER-SOLO-006/B] status 400', function () {",
+                "  pm.response.to.have.status(400);",
+                "});"
+              ],
+              "_lastExecutionId": "c2204616-6671-4bf3-a6d7-104dbdee1f31"
+            }
+          }
+        ]
+      }
+    ],
+    "event": [],
+    "variable": [
+      {
+        "type": "any",
+        "value": "https://identity.physio.agregatech.com",
+        "key": "baseUrl"
+      }
+    ],
+    "info": {
+      "_postman_id": "physio-kine-register-solo-001",
+      "name": "PHYSIO - KINE Register LIBERAL (SOLO) STCs",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": {
+        "content": "STC-REGISTER-SOLO-* — autonomous LIBERAL registration on POST /api/v1/kine/auth/register. Uses registerLiberal* and registerDefaultPassword from PHYSIO-Backend-Execution.",
+        "type": "text/plain"
+      }
+    }
+  },
+  "environment": {
+    "_": {
+      "postman_variable_scope": "environment",
+      "postman_exported_at": "2026-05-05T09:31:33.995Z",
+      "postman_exported_using": "Newman/4.6.1"
+    },
+    "id": "physio-backend-exec-env",
+    "name": "PHYSIO - Backend Execution",
+    "values": [
+      {
+        "type": "any",
+        "value": "https://identity.physio.agregatech.com",
+        "key": "baseUrl"
+      },
+      {
+        "type": "any",
+        "value": "/",
+        "key": "healthCheckPath"
+      },
+      {
+        "type": "any",
+        "value": "admin@physioconnect.com",
+        "key": "adminEmail"
+      },
+      {
+        "type": "any",
+        "value": "Admin123!",
+        "key": "adminPassword"
+      },
+      {
+        "type": "any",
+        "value": "NewPass123!",
+        "key": "adminNewPassword"
+      },
+      {
+        "type": "any",
+        "value": "sophie.martin@cabinet-paris.fr",
+        "key": "kineEmail"
+      },
+      {
+        "type": "any",
+        "value": "KineAdmin123!",
+        "key": "kinePassword"
+      },
+      {
+        "type": "any",
+        "value": "KineAdmin123!",
+        "key": "kinePasswordAlternate"
+      },
+      {
+        "type": "any",
+        "value": "+33601010101",
+        "key": "kinePhoneLogin"
+      },
+      {
+        "type": "any",
+        "value": "marie.durand@patient.fr",
+        "key": "patientEmail"
+      },
+      {
+        "type": "any",
+        "value": "Patient123!",
+        "key": "patientPassword"
+      },
+      {
+        "type": "any",
+        "value": "+33611111111",
+        "key": "patientPhoneLogin"
+      },
+      {
+        "type": "any",
+        "value": "marie.test.patient@testmail.fr",
+        "key": "patientRegisterEmail"
+      },
+      {
+        "type": "any",
+        "value": "+33677770001",
+        "key": "patientRegisterPhone"
+      },
+      {
+        "type": "any",
+        "value": "QaTest123!",
+        "key": "registerDefaultPassword"
+      },
+      {
+        "type": "any",
+        "value": "Student123!",
+        "key": "registerStudentPassword"
+      },
+      {
+        "type": "any",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWY5YjViZTU5NTczMTg1ZTVmY2QwNWEiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6MTQsImlhdCI6MTc3Nzk3NzA5MCwiZXhwIjoxNzc4MDYzNDkwfQ.ldhnOtmfaEMHTEUv_KEyAhf3nOi5O1YzNX9TvzNLmr8",
+        "key": "adminToken"
+      },
+      {
+        "type": "any",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWY5YjViZjU5NTczMTg1ZTVmY2QwNWQiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjExLCJpYXQiOjE3Nzc5NzcwODksImV4cCI6MTc3ODA2MzQ4OX0.t_l7BKlHWmR_e7wbGUbFAUcDiAgLXevlTkZAcdXXb4Y",
+        "key": "kineToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "patientToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "kineTokenInactive"
+      },
+      {
+        "type": "any",
+        "value": "cc6c379264a0bfd5a9e4e9871e903750c0e56bf43ac2d76305be75cf893b63a0",
+        "key": "refreshToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "adminRefreshToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "kineRefreshToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "patientRefreshToken"
+      },
+      {
+        "type": "any",
+        "value": "69f9b5bf59573185e5fcd05d",
+        "key": "kineId"
+      },
+      {
+        "type": "any",
+        "value": "69f9b5bf59573185e5fcd060",
+        "key": "cabinetId"
+      },
+      {
+        "type": "any",
+        "value": "69f9b5bf59573185e5fcd063",
+        "key": "profileId"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "profileIdInactive"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "profileIdAssistant"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "invitationToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "invitationTokenConsumed"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "resetToken"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "verificationCode"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "verificationCodeExpired"
+      },
+      {
+        "type": "any",
+        "value": "marie.durand@patient.fr",
+        "key": "testEmailExisting"
+      },
+      {
+        "type": "any",
+        "value": "jean.nouveau.member@testmail.fr",
+        "key": "testEmailNew"
+      },
+      {
+        "type": "any",
+        "value": "123456789",
+        "key": "testProfessionalNumberExisting"
+      },
+      {
+        "type": "any",
+        "value": "12345678901",
+        "key": "testProfessionalNumberNew"
+      },
+      {
+        "type": "any",
+        "value": "507f1f77bcf86cd799439011",
+        "key": "subscriptionPlanId"
+      },
+      {
+        "type": "any",
+        "value": "12 rue du Cabinet Test",
+        "key": "cabinetAddressStreet"
+      },
+      {
+        "type": "any",
+        "value": "75001",
+        "key": "cabinetAddressPostalCode"
+      },
+      {
+        "type": "any",
+        "value": "Paris",
+        "key": "cabinetAddressCity"
+      },
+      {
+        "type": "any",
+        "value": "qa.superadmin@testmail.fr",
+        "key": "qaSuperAdminEmail"
+      },
+      {
+        "type": "any",
+        "value": "Admin123!",
+        "key": "qaSuperAdminPassword"
+      },
+      {
+        "type": "any",
+        "value": "Thomas",
+        "key": "qaSuperAdminFirstName"
+      },
+      {
+        "type": "any",
+        "value": "Platform",
+        "key": "qaSuperAdminLastName"
+      },
+      {
+        "type": "any",
+        "value": "https://cdn.test.com/avatars/admin.jpg",
+        "key": "adminProfilePhotoUrl"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "roleIdSuperAdmin"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "moduleIdPatients"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "actionIdView"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "actionIdCreate"
+      },
+      {
+        "type": "any",
+        "value": "",
+        "key": "permissionId"
+      },
+      {
+        "type": "any",
+        "value": "jean.nouveau.member@testmail.fr",
+        "key": "inviteMemberEmail"
+      },
+      {
+        "type": "any",
+        "value": "jean.nouveau.assistant@testmail.fr",
+        "key": "inviteAssistantEmail"
+      },
+      {
+        "type": "any",
+        "value": "MEMBER",
+        "key": "invitationTargetProfileTypeMember"
+      },
+      {
+        "type": "any",
+        "value": "ASSISTANT",
+        "key": "invitationTargetProfileTypeAssistant"
+      },
+      {
+        "type": "any",
+        "value": "Kine123!",
+        "key": "invitationAttachPassword"
+      },
+      {
+        "type": "any",
+        "value": "Jean",
+        "key": "acceptInviteFirstName"
+      },
+      {
+        "type": "any",
+        "value": "Nouveau",
+        "key": "acceptInviteLastName"
+      },
+      {
+        "type": "any",
+        "value": "QaTest123!",
+        "key": "acceptInvitePassword"
+      },
+      {
+        "type": "any",
+        "value": "jean.nouveau.solo@testmail.fr",
+        "key": "registerLiberalSoloEmail"
+      },
+      {
+        "type": "any",
+        "value": "123456789",
+        "key": "registerLiberalProfessionalNumber"
+      },
+      {
+        "type": "any",
+        "value": "Cabinet Test Marseille",
+        "key": "registerLiberalCabinetName"
+      },
+      {
+        "type": "any",
+        "value": "12 rue des Lilas",
+        "key": "registerLiberalStreet"
+      },
+      {
+        "type": "any",
+        "value": "13001",
+        "key": "registerLiberalPostalCode"
+      },
+      {
+        "type": "any",
+        "value": "Marseille",
+        "key": "registerLiberalCity"
+      },
+      {
+        "type": "any",
+        "value": "+33655554444",
+        "key": "registerLiberalPhone"
+      },
+      {
+        "type": "any",
+        "value": "nadia.remplacant@testmail.fr",
+        "key": "registerRemplacantEmail"
+      },
+      {
+        "type": "any",
+        "value": "12345678901",
+        "key": "registerRemplacantProfessionalNumber"
+      },
+      {
+        "type": "any",
+        "value": "Cabinet Remplacement Paris",
+        "key": "registerRemplacantCabinetName"
+      },
+      {
+        "type": "any",
+        "value": "15 avenue Victor Hugo",
+        "key": "registerRemplacantStreet"
+      },
+      {
+        "type": "any",
+        "value": "75016",
+        "key": "registerRemplacantPostalCode"
+      },
+      {
+        "type": "any",
+        "value": "Paris",
+        "key": "registerRemplacantCity"
+      },
+      {
+        "type": "any",
+        "value": "+33655550001",
+        "key": "registerRemplacantPhone"
+      },
+      {
+        "type": "any",
+        "value": "pierre.nouveau.group@testmail.fr",
+        "key": "registerAdminGroupEmail"
+      },
+      {
+        "type": "any",
+        "value": "12345678901",
+        "key": "registerAdminGroupProfessionalNumber"
+      },
+      {
+        "type": "any",
+        "value": "Cabinet Groupe Test Lyon",
+        "key": "registerAdminGroupCabinetName"
+      },
+      {
+        "type": "any",
+        "value": "73282932000074",
+        "key": "registerAdminGroupSiret"
+      },
+      {
+        "type": "any",
+        "value": "20 rue de la République",
+        "key": "registerAdminGroupStreet"
+      },
+      {
+        "type": "any",
+        "value": "69002",
+        "key": "registerAdminGroupPostalCode"
+      },
+      {
+        "type": "any",
+        "value": "Lyon",
+        "key": "registerAdminGroupCity"
+      },
+      {
+        "type": "any",
+        "value": "emma.nouvelle.student@testmail.fr",
+        "key": "registerStudentEmail"
+      },
+      {
+        "type": "any",
+        "value": "Emma",
+        "key": "registerStudentFirstName"
+      },
+      {
+        "type": "any",
+        "value": "Laurent",
+        "key": "registerStudentLastName"
+      },
+      {
+        "type": "any",
+        "value": "IFMK Marseille",
+        "key": "registerStudentSchool"
+      },
+      {
+        "type": "any",
+        "value": "3e",
+        "key": "registerStudentStudyYear"
+      },
+      {
+        "type": "any",
+        "value": "Marseille",
+        "key": "registerStudentCity"
+      },
+      {
+        "type": "any",
+        "value": "certificat_ifmk.pdf",
+        "key": "registerStudentProofFilename"
+      },
+      {
+        "type": "any",
+        "value": "View",
+        "key": "rbacActionViewName"
+      },
+      {
+        "type": "any",
+        "value": "view",
+        "key": "rbacActionViewSlug"
+      },
+      {
+        "type": "any",
+        "value": "Create",
+        "key": "rbacActionCreateName"
+      },
+      {
+        "type": "any",
+        "value": "create",
+        "key": "rbacActionCreateSlug"
+      },
+      {
+        "type": "any",
+        "value": "Patients",
+        "key": "rbacModulePatientsName"
+      },
+      {
+        "type": "any",
+        "value": "patients",
+        "key": "rbacModulePatientsSlug"
+      },
+      {
+        "type": "any",
+        "value": "QA_TEST_ROLE",
+        "key": "rbacRoleQaName"
+      }
+    ]
+  },
+  "globals": {
+    "id": "ac7c740e-ba64-4acf-8840-7068b284ec20",
+    "values": []
+  },
+  "run": {
+    "stats": {
+      "iterations": {
+        "total": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "items": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "scripts": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequests": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "requests": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "tests": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "assertions": {
+        "total": 6,
+        "pending": 0,
+        "failed": 0
+      },
+      "testScripts": {
+        "total": 5,
+        "pending": 0,
+        "failed": 0
+      },
+      "prerequestScripts": {
+        "total": 0,
+        "pending": 0,
+        "failed": 0
+      }
+    },
+    "timings": {
+      "responseAverage": 261.2,
+      "responseMin": 112,
+      "responseMax": 726,
+      "responseSd": 233.64366030346298,
+      "dnsAverage": 0,
+      "dnsMin": 0,
+      "dnsMax": 0,
+      "dnsSd": 0,
+      "firstByteAverage": 0,
+      "firstByteMin": 0,
+      "firstByteMax": 0,
+      "firstByteSd": 0,
+      "started": 1777973496888,
+      "completed": 1777973498718
+    },
+    "executions": [
+      {
+        "cursor": {
+          "position": 0,
+          "iteration": 0,
+          "length": 5,
+          "cycles": 1,
+          "empty": false,
+          "eof": false,
+          "bof": true,
+          "cr": false,
+          "ref": "dbc766e4-8c71-464a-941e-66a404c7bf0a",
+          "httpRequestId": "1370d57b-d8a4-453d-b890-4b97d26c9018"
+        },
+        "item": {
+          "id": "a99197a2-7d70-4e49-b4b9-64cd60414ddc",
+          "name": "STC-REGISTER-SOLO-001/B | Register LIBERAL nominal",
+          "request": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "register"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "5ebf649f-b619-4884-b5f3-4fd2724a51ff",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-REGISTER-SOLO-001/B",
+                  "pm.test('[STC-REGISTER-SOLO-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-REGISTER-SOLO-001/B] status in [201,400]', function () {",
+                  "  pm.expect([201,400]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "_lastExecutionId": "18ae0e91-96a3-441e-abe8-621a5102ebab"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "875a34bd-d70e-414a-a95d-11b16ebe12ac",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 404,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"jean.nouveau.solo@testmail.fr\",\n  \"password\": \"QaTest123!\",\n  \"passwordConfirmation\": \"QaTest123!\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"+33655554444\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"123456789\",\n  \"cabinetName\": \"Cabinet Test Marseille\",\n  \"street\": \"12 rue des Lilas\",\n  \"postalCode\": \"13001\",\n  \"city\": \"Marseille\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "34053a27-d2dd-40d8-9324-32e7a632ce01",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "114"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 05 May 2026 10:31:45 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"72-ec72fd1XZcugM1FpCrnDZUj5yaA\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              115,
+              117,
+              99,
+              99,
+              101,
+              115,
+              115,
+              34,
+              58,
+              116,
+              114,
+              117,
+              101,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              65,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              32,
+              115,
+              117,
+              99,
+              99,
+              101,
+              115,
+              115,
+              102,
+              117,
+              108,
+              108,
+              121,
+              32,
+              99,
+              114,
+              101,
+              97,
+              116,
+              101,
+              100,
+              46,
+              32,
+              80,
+              108,
+              101,
+              97,
+              115,
+              101,
+              32,
+              115,
+              105,
+              103,
+              110,
+              32,
+              105,
+              110,
+              46,
+              34,
+              44,
+              34,
+              101,
+              109,
+              97,
+              105,
+              108,
+              34,
+              58,
+              34,
+              106,
+              101,
+              97,
+              110,
+              46,
+              110,
+              111,
+              117,
+              118,
+              101,
+              97,
+              117,
+              46,
+              115,
+              111,
+              108,
+              111,
+              64,
+              116,
+              101,
+              115,
+              116,
+              109,
+              97,
+              105,
+              108,
+              46,
+              102,
+              114,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 726,
+          "responseSize": 114
+        },
+        "id": "a99197a2-7d70-4e49-b4b9-64cd60414ddc",
+        "assertions": [
+          {
+            "assertion": "[STC-REGISTER-SOLO-001/B] response time OK",
+            "skipped": false
+          },
+          {
+            "assertion": "[STC-REGISTER-SOLO-001/B] status in [201,400]",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "f0cf36ee-bc89-49a1-9aa6-4accc43d9aa4",
+          "length": 5,
+          "cycles": 1,
+          "position": 1,
+          "iteration": 0,
+          "httpRequestId": "9b00a3e4-0a05-4e02-97c0-fe971a5f28ca"
+        },
+        "item": {
+          "id": "79f18a80-d5d6-45be-b599-1fe74de5f8ca",
+          "name": "STC-REGISTER-SOLO-003/B | LIBERAL missing professionalNumber 400",
+          "request": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "register"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "09a1f024-0c62-4f59-93d8-48bdaee0b15b",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-REGISTER-SOLO-003/B",
+                  "pm.test('[STC-REGISTER-SOLO-003/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "_lastExecutionId": "94550e50-4865-495d-b91d-8fd1d2942907"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "35f61645-8e24-475c-bf1c-7d3bd3de1634",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 367,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"jean.nouveau.solo@testmail.fr\",\n  \"password\": \"QaTest123!\",\n  \"passwordConfirmation\": \"QaTest123!\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"+33655554444\",\n  \"profileType\": \"LIBERAL\",\n  \"cabinetName\": \"Cabinet Test Marseille\",\n  \"street\": \"12 rue des Lilas\",\n  \"postalCode\": \"13001\",\n  \"city\": \"Marseille\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "c0006839-fa4a-4e3b-a397-d3d73d5b3e35",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "305"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 05 May 2026 10:31:45 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"131-nFqedfJy8128E+JwGhAfGatO3Fs\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              86,
+              65,
+              76,
+              73,
+              68,
+              65,
+              84,
+              73,
+              79,
+              78,
+              95,
+              70,
+              65,
+              73,
+              76,
+              69,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              32,
+              112,
+              97,
+              121,
+              108,
+              111,
+              97,
+              100,
+              32,
+              105,
+              115,
+              32,
+              105,
+              110,
+              118,
+              97,
+              108,
+              105,
+              100,
+              46,
+              34,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              115,
+              34,
+              58,
+              91,
+              123,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              34,
+              58,
+              34,
+              112,
+              114,
+              111,
+              102,
+              101,
+              115,
+              115,
+              105,
+              111,
+              110,
+              97,
+              108,
+              78,
+              117,
+              109,
+              98,
+              101,
+              114,
+              34,
+              44,
+              34,
+              109,
+              115,
+              103,
+              34,
+              58,
+              34,
+              112,
+              114,
+              111,
+              102,
+              101,
+              115,
+              115,
+              105,
+              111,
+              110,
+              97,
+              108,
+              78,
+              117,
+              109,
+              98,
+              101,
+              114,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              57,
+              32,
+              100,
+              105,
+              103,
+              105,
+              116,
+              115,
+              32,
+              40,
+              65,
+              68,
+              69,
+              76,
+              73,
+              41,
+              32,
+              111,
+              114,
+              32,
+              49,
+              49,
+              32,
+              100,
+              105,
+              103,
+              105,
+              116,
+              115,
+              32,
+              40,
+              82,
+              80,
+              80,
+              83,
+              41,
+              46,
+              34,
+              125,
+              44,
+              123,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              34,
+              58,
+              34,
+              112,
+              114,
+              111,
+              102,
+              101,
+              115,
+              115,
+              105,
+              111,
+              110,
+              97,
+              108,
+              78,
+              117,
+              109,
+              98,
+              101,
+              114,
+              34,
+              44,
+              34,
+              109,
+              115,
+              103,
+              34,
+              58,
+              34,
+              112,
+              114,
+              111,
+              102,
+              101,
+              115,
+              115,
+              105,
+              111,
+              110,
+              97,
+              108,
+              78,
+              117,
+              109,
+              98,
+              101,
+              114,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              97,
+              32,
+              115,
+              116,
+              114,
+              105,
+              110,
+              103,
+              34,
+              125,
+              93,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 139,
+          "responseSize": 305
+        },
+        "id": "79f18a80-d5d6-45be-b599-1fe74de5f8ca",
+        "assertions": [
+          {
+            "assertion": "[STC-REGISTER-SOLO-003/B] status 400",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "8da989ad-ce74-4e80-9bfe-b8c86010e842",
+          "length": 5,
+          "cycles": 1,
+          "position": 2,
+          "iteration": 0,
+          "httpRequestId": "90005cd5-148d-41ec-9237-8bc1f23b189c"
+        },
+        "item": {
+          "id": "d28ec530-2138-4293-a397-1bc08b107884",
+          "name": "STC-REGISTER-SOLO-004/B | Invalid email 400",
+          "request": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "register"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"not-an-email\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "673ab1d8-2788-4410-adf0-44136f759999",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-REGISTER-SOLO-004/B",
+                  "pm.test('[STC-REGISTER-SOLO-004/B] status in [400,422]', function () {",
+                  "  pm.expect([400,422]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "_lastExecutionId": "02e7dd64-0f9e-4ff3-bbf9-c0d48d82e50c"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "52ed01f2-9bb6-41fb-964f-54d59c3c8c63",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 387,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"not-an-email\",\n  \"password\": \"QaTest123!\",\n  \"passwordConfirmation\": \"QaTest123!\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"+33655554444\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"123456789\",\n  \"cabinetName\": \"Cabinet Test Marseille\",\n  \"street\": \"12 rue des Lilas\",\n  \"postalCode\": \"13001\",\n  \"city\": \"Marseille\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "de94ae6b-3e91-4070-83e2-f7d9ad7c8594",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "175"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 05 May 2026 10:31:45 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"af-k5mrvvazhSklKIav2l8YU55TiMI\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              86,
+              65,
+              76,
+              73,
+              68,
+              65,
+              84,
+              73,
+              79,
+              78,
+              95,
+              70,
+              65,
+              73,
+              76,
+              69,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              32,
+              112,
+              97,
+              121,
+              108,
+              111,
+              97,
+              100,
+              32,
+              105,
+              115,
+              32,
+              105,
+              110,
+              118,
+              97,
+              108,
+              105,
+              100,
+              46,
+              34,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              115,
+              34,
+              58,
+              91,
+              123,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              34,
+              58,
+              34,
+              101,
+              109,
+              97,
+              105,
+              108,
+              34,
+              44,
+              34,
+              109,
+              115,
+              103,
+              34,
+              58,
+              34,
+              101,
+              109,
+              97,
+              105,
+              108,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              98,
+              101,
+              32,
+              97,
+              110,
+              32,
+              101,
+              109,
+              97,
+              105,
+              108,
+              34,
+              125,
+              93,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 187,
+          "responseSize": 175
+        },
+        "id": "d28ec530-2138-4293-a397-1bc08b107884",
+        "assertions": [
+          {
+            "assertion": "[STC-REGISTER-SOLO-004/B] status in [400,422]",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "fd8e3d7a-d11c-4fae-acbf-7e5cd6a0c8e6",
+          "length": 5,
+          "cycles": 1,
+          "position": 3,
+          "iteration": 0,
+          "httpRequestId": "2a293562-caa7-4c13-a4c7-5b00ac213434"
+        },
+        "item": {
+          "id": "5a58d1d4-652d-48da-9cbc-b9229596948c",
+          "name": "STC-REGISTER-SOLO-005/B | Duplicate email 409",
+          "request": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "register"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{kineEmail}}\",\n  \"password\": \"{{registerDefaultPassword}}\",\n  \"passwordConfirmation\": \"{{registerDefaultPassword}}\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "82abcedc-0dcc-41a8-8f74-02a1d2d3b921",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-REGISTER-SOLO-005/B — uses existing kineEmail",
+                  "pm.test('[STC-REGISTER-SOLO-005/B] status in [409,400]', function () {",
+                  "  pm.expect([409,400]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "_lastExecutionId": "d5c25bd2-f474-45ca-a31e-89e2e7123713"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "8d55d8a3-3ecc-434d-a597-90f7b09fc91f",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 405,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"sophie.martin@cabinet-paris.fr\",\n  \"password\": \"QaTest123!\",\n  \"passwordConfirmation\": \"QaTest123!\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"+33655554444\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"123456789\",\n  \"cabinetName\": \"Cabinet Test Marseille\",\n  \"street\": \"12 rue des Lilas\",\n  \"postalCode\": \"13001\",\n  \"city\": \"Marseille\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "b932de1b-da0f-4b11-901d-0850c3ff941e",
+          "status": "Conflict",
+          "code": 409,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "129"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 05 May 2026 10:31:45 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"81-e6C1YxQQ0/4gfseMCR5+ThUziNI\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              69,
+              77,
+              65,
+              73,
+              76,
+              95,
+              65,
+              76,
+              82,
+              69,
+              65,
+              68,
+              89,
+              95,
+              85,
+              83,
+              69,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              65,
+              110,
+              32,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              32,
+              97,
+              108,
+              114,
+              101,
+              97,
+              100,
+              121,
+              32,
+              101,
+              120,
+              105,
+              115,
+              116,
+              115,
+              32,
+              119,
+              105,
+              116,
+              104,
+              32,
+              116,
+              104,
+              105,
+              115,
+              32,
+              101,
+              109,
+              97,
+              105,
+              108,
+              46,
+              34,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              57,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              67,
+              111,
+              110,
+              102,
+              108,
+              105,
+              99,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 112,
+          "responseSize": 129
+        },
+        "id": "5a58d1d4-652d-48da-9cbc-b9229596948c",
+        "assertions": [
+          {
+            "assertion": "[STC-REGISTER-SOLO-005/B] status in [409,400]",
+            "skipped": false
+          }
+        ]
+      },
+      {
+        "cursor": {
+          "ref": "a9658c3e-8810-42e2-b6d3-e2e020c210f4",
+          "length": 5,
+          "cycles": 1,
+          "position": 4,
+          "iteration": 0,
+          "httpRequestId": "13fd4639-1873-45f8-a3e6-5454ba32b2af"
+        },
+        "item": {
+          "id": "f52ab47d-e245-4e68-83c1-de9f9082184b",
+          "name": "STC-REGISTER-SOLO-006/B | Weak password 400",
+          "request": {
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "register"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{registerLiberalSoloEmail}}\",\n  \"password\": \"weak1\",\n  \"passwordConfirmation\": \"weak1\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"{{registerLiberalPhone}}\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"{{registerLiberalProfessionalNumber}}\",\n  \"cabinetName\": \"{{registerLiberalCabinetName}}\",\n  \"street\": \"{{registerLiberalStreet}}\",\n  \"postalCode\": \"{{registerLiberalPostalCode}}\",\n  \"city\": \"{{registerLiberalCity}}\",\n  \"cguAccepted\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "b1779d39-2bcd-4316-9180-b4a0bd9e1d3c",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-REGISTER-SOLO-006/B",
+                  "pm.test('[STC-REGISTER-SOLO-006/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "_lastExecutionId": "c2204616-6671-4bf3-a6d7-104dbdee1f31"
+              }
+            }
+          ]
+        },
+        "request": {
+          "url": {
+            "protocol": "https",
+            "path": [
+              "api",
+              "v1",
+              "kine",
+              "auth",
+              "register"
+            ],
+            "host": [
+              "identity",
+              "physio",
+              "agregatech",
+              "com"
+            ],
+            "query": [],
+            "variable": []
+          },
+          "header": [
+            {
+              "key": "Accept",
+              "value": "application/json"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "User-Agent",
+              "value": "PostmanRuntime/7.24.1",
+              "system": true
+            },
+            {
+              "key": "Cache-Control",
+              "value": "no-cache",
+              "system": true
+            },
+            {
+              "key": "Postman-Token",
+              "value": "3a7d0ed7-b7fe-4d1b-bb66-8fe3a99021b1",
+              "system": true
+            },
+            {
+              "key": "Host",
+              "value": "identity.physio.agregatech.com",
+              "system": true
+            },
+            {
+              "key": "Accept-Encoding",
+              "value": "gzip, deflate, br",
+              "system": true
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive",
+              "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": 394,
+              "system": true
+            }
+          ],
+          "method": "POST",
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"email\": \"jean.nouveau.solo@testmail.fr\",\n  \"password\": \"weak1\",\n  \"passwordConfirmation\": \"weak1\",\n  \"firstName\": \"Jean\",\n  \"lastName\": \"LiberalSolo\",\n  \"phone\": \"+33655554444\",\n  \"profileType\": \"LIBERAL\",\n  \"professionalNumber\": \"123456789\",\n  \"cabinetName\": \"Cabinet Test Marseille\",\n  \"street\": \"12 rue des Lilas\",\n  \"postalCode\": \"13001\",\n  \"city\": \"Marseille\",\n  \"cguAccepted\": true\n}",
+            "options": {
+              "raw": {
+                "language": "json"
+              }
+            }
+          }
+        },
+        "response": {
+          "id": "ada9d9a9-1c69-4a9b-8c20-7c6ad1ff57db",
+          "status": "Bad Request",
+          "code": 400,
+          "header": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Content-Length",
+              "value": "253"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Date",
+              "value": "Tue, 05 May 2026 10:31:46 GMT"
+            },
+            {
+              "key": "Etag",
+              "value": "W/\"fd-RCawawFg4+unRXda3DTCGXRGIzk\""
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              99,
+              111,
+              100,
+              101,
+              34,
+              58,
+              34,
+              86,
+              65,
+              76,
+              73,
+              68,
+              65,
+              84,
+              73,
+              79,
+              78,
+              95,
+              70,
+              65,
+              73,
+              76,
+              69,
+              68,
+              34,
+              44,
+              34,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              34,
+              58,
+              34,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              32,
+              112,
+              97,
+              121,
+              108,
+              111,
+              97,
+              100,
+              32,
+              105,
+              115,
+              32,
+              105,
+              110,
+              118,
+              97,
+              108,
+              105,
+              100,
+              46,
+              34,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              115,
+              34,
+              58,
+              91,
+              123,
+              34,
+              102,
+              105,
+              101,
+              108,
+              100,
+              34,
+              58,
+              34,
+              112,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              34,
+              44,
+              34,
+              109,
+              115,
+              103,
+              34,
+              58,
+              34,
+              80,
+              97,
+              115,
+              115,
+              119,
+              111,
+              114,
+              100,
+              32,
+              109,
+              117,
+              115,
+              116,
+              32,
+              99,
+              111,
+              110,
+              116,
+              97,
+              105,
+              110,
+              32,
+              97,
+              116,
+              32,
+              108,
+              101,
+              97,
+              115,
+              116,
+              32,
+              56,
+              32,
+              99,
+              104,
+              97,
+              114,
+              97,
+              99,
+              116,
+              101,
+              114,
+              115,
+              44,
+              32,
+              49,
+              32,
+              117,
+              112,
+              112,
+              101,
+              114,
+              99,
+              97,
+              115,
+              101,
+              32,
+              108,
+              101,
+              116,
+              116,
+              101,
+              114,
+              44,
+              32,
+              49,
+              32,
+              100,
+              105,
+              103,
+              105,
+              116,
+              32,
+              97,
+              110,
+              100,
+              32,
+              49,
+              32,
+              115,
+              112,
+              101,
+              99,
+              105,
+              97,
+              108,
+              32,
+              99,
+              104,
+              97,
+              114,
+              97,
+              99,
+              116,
+              101,
+              114,
+              46,
+              34,
+              125,
+              93,
+              44,
+              34,
+              115,
+              116,
+              97,
+              116,
+              117,
+              115,
+              67,
+              111,
+              100,
+              101,
+              34,
+              58,
+              52,
+              48,
+              48,
+              44,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              66,
+              97,
+              100,
+              82,
+              101,
+              113,
+              117,
+              101,
+              115,
+              116,
+              69,
+              120,
+              99,
+              101,
+              112,
+              116,
+              105,
+              111,
+              110,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 142,
+          "responseSize": 253
+        },
+        "id": "f52ab47d-e245-4e68-83c1-de9f9082184b",
+        "assertions": [
+          {
+            "assertion": "[STC-REGISTER-SOLO-006/B] status 400",
+            "skipped": false
+          }
+        ]
+      }
+    ],
+    "transfers": {
+      "responseTotal": 976
+    },
+    "failures": [],
+    "error": null
+  }
+}

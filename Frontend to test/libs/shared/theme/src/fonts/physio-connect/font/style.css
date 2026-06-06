@@ -1,0 +1,160 @@
+@font-face {
+    font-family: "physio-connect";
+    src: url("fonts/physio-connect.woff2") format("woff2"),
+        url("fonts/physio-connect.ttf") format("truetype"),
+        url("fonts/physio-connect.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+@font-palette-values --palette0 {
+    font-family: "physio-connect";
+    base-palette: 0
+}
+.icon, [class^="icon-"], [class*=" icon-"] {
+    /* Use !important to prevent extensions from overriding this font. */
+    font-family: "physio-connect" !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.palette0 {
+    font-palette: --palette0;
+    color: currentColor;
+}
+:root {
+    --icon-ai-supervision: "\f00a";
+    --icon-wallet: "\f005";
+    --icon-setting: "\f010";
+    --icon-right-arrow: "\f011";
+    --icon-return: "\f012";
+    --icon-person: "\f013";
+    --icon-microphone: "\f014";
+    --icon-left-arrow-two: "\f015";
+    --icon-left-arrow: "\f016";
+    --icon-gallery: "\f017";
+    --icon-file: "\f018";
+    --icon-download: "\f019";
+    --icon-disk: "\f01a";
+    --icon-cursor: "\f01b";
+    --icon-close: "\f01c";
+    --icon-checked: "\f01d";
+    --icon-calendar: "\f01e";
+    --icon-bottom-arrow: "\f01f";
+    --icon-support: "\f007";
+    --icon-faqs: "\f008";
+    --icon-plans: "\f009";
+    --icon-library: "\f00b";
+    --icon-clinics: "\f00c";
+    --icon-users: "\f00d";
+    --icon-roles: "\f00e";
+    --icon-access-management: "\f00f";
+    --icon-worning: "\f006";
+    --icon-edit: "\f000";
+    --icon-delete: "\f001";
+    --icon-eye: "\f002";
+    --icon-add: "\f003";
+    --icon-dashboard: "\f004";
+}
+.icon-ai-supervision:before {
+    content: var(--icon-ai-supervision);
+}
+.icon-wallet:before {
+    content: var(--icon-wallet);
+}
+.icon-setting:before {
+    content: var(--icon-setting);
+}
+.icon-right-arrow:before {
+    content: var(--icon-right-arrow);
+}
+.icon-return:before {
+    content: var(--icon-return);
+}
+.icon-person:before {
+    content: var(--icon-person);
+}
+.icon-microphone:before {
+    content: var(--icon-microphone);
+}
+.icon-left-arrow-two:before {
+    content: var(--icon-left-arrow-two);
+}
+.icon-left-arrow:before {
+    content: var(--icon-left-arrow);
+}
+.icon-gallery:before {
+    content: var(--icon-gallery);
+}
+.icon-file:before {
+    content: var(--icon-file);
+}
+.icon-download:before {
+    content: var(--icon-download);
+}
+.icon-disk:before {
+    content: var(--icon-disk);
+}
+.icon-cursor:before {
+    content: var(--icon-cursor);
+}
+.icon-close:before {
+    content: var(--icon-close);
+}
+.icon-checked:before {
+    content: var(--icon-checked);
+}
+.icon-calendar:before {
+    content: var(--icon-calendar);
+}
+.icon-bottom-arrow:before {
+    content: var(--icon-bottom-arrow);
+}
+.icon-support:before {
+    content: var(--icon-support);
+}
+.icon-faqs:before {
+    content: var(--icon-faqs);
+}
+.icon-plans:before {
+    content: var(--icon-plans);
+}
+.icon-library:before {
+    content: var(--icon-library);
+}
+.icon-clinics:before {
+    content: var(--icon-clinics);
+}
+.icon-users:before {
+    content: var(--icon-users);
+}
+.icon-roles:before {
+    content: var(--icon-roles);
+}
+.icon-access-management:before {
+    content: var(--icon-access-management);
+}
+.icon-worning:before {
+    content: var(--icon-worning);
+}
+.icon-edit:before {
+    content: var(--icon-edit);
+}
+.icon-delete:before {
+    content: var(--icon-delete);
+}
+.icon-eye:before {
+    content: var(--icon-eye);
+}
+.icon-add:before {
+    content: var(--icon-add);
+}
+.icon-dashboard:before {
+    content: var(--icon-dashboard);
+}

@@ -1,0 +1,10 @@
+<svg viewBox="0 0 37 37" fill="none" width="32" height="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>cursor</title>
+    <style>
+        :root, .palette0 {color: currentColor;
+            --color0: #414246;
+            --color1: #292d32;
+        }
+    </style>
+    <path stroke="currentColor" stroke-linejoin="round" d="M16.4171 19.6005 0.5 13.2337 35.5176 0.5 22.7839 35.5176zM16.4171 19.6005l7.9585-7.9585" />
+</svg>

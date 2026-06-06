@@ -1,0 +1,32 @@
+{
+  "project": {
+    "name": "XXX&Connect",
+    "module": "Authentication / Identity Backend",
+    "clientName": "AgregaTech / XXXConnect",
+    "sprint": "Sprint 1",
+    "applicationVersion": ""
+  },
+  "tester": {
+    "name": "Oussema Karbia",
+    "role": "QA Intern"
+  },
+  "testenvironment": {
+    "baseUrl": "https://identity.physio.agregatech.com",
+    "platform": "Backend API",
+    "browser": "N/A - API testing with Postman/Newman",
+    "os": "Windows 10",
+    "database": "N/A - not directly exposed during API testing",
+    "server": "identity.physio.agregatech.com"
+  },
+  "reporting": {
+    "testType": "API Automated Test - Postman/Newman",
+    "testingTools": "Postman, Newman",
+    "testingApproach": "Backend API functional testing based on Sprint 1 authentication user stories",
+    "evaluationCriteria": "Each STC is passed only if the HTTP status code, response body, token/profile behavior, and security expectations match the expected result."
+  },
+  "sqtr": {
+    "raisedBy": "Oussema Karbia",
+    "qualityManager": "Mohamed Hedi Limem",
+    "techLead": "Ahmed Mrabet"
+  }
+}
