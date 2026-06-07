@@ -1,11 +1,14 @@
 # QA automation: Newman + Playwright ? Markdown reports ? n8n webhook
 #
-# Required GitHub Secrets (Settings ? Secrets and variables ? Actions):
-#   N8N_WEBHOOK_URL          Public/tunnel webhook URL (NOT localhost from cloud runners)
-#   KINE_EMAIL / KINE_PASSWORD / KINE_ADMIN_EMAIL / KINE_ADMIN_PASSWORD (frontend)
+# Jobs run independently based on changed paths:
+#   backend-testing/** or Backend to test/**  ? backend job only
+#   frontend-testing/** or Frontend to test/** ? frontend job only
+#   both areas changed in one push            ? both jobs in parallel
+#   workflow_dispatch                         ? both jobs
 #
-# Note: localhost:5678 is NOT reachable from GitHub-hosted runners.
-# Use ngrok/Cloudflare Tunnel, deploy n8n publicly, or a self-hosted runner.
+# Required GitHub Secrets:
+#   N8N_WEBHOOK_URL
+#   KINE_EMAIL / KINE_PASSWORD / KINE_ADMIN_EMAIL / KINE_ADMIN_PASSWORD (frontend)
 
 name: QA CI — Tests & n8n Reports
 
@@ -18,6 +21,7 @@ on:
       - 'Backend to test/**'
       - 'Frontend to test/**'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/qa-ci-n8n.yml'
   pull_request:
     branches: [main, develop]
@@ -27,6 +31,7 @@ on:
       - 'Backend to test/**'
       - 'Frontend to test/**'
       - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/qa-ci-n8n.yml'
   workflow_dispatch:
 
@@ -38,8 +43,58 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  detect-changes:
+    name: Detect changed areas
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.scope.outputs.backend }}
+      frontend: ${{ steps.scope.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        if: github.event_name != 'workflow_dispatch'
+        with:
+          filters: |
+            backend:
+              - 'backend-testing/**'
+              - 'Backend to test/**'
+              - 'package.json'
+              - 'package-lock.json'
+            frontend:
+              - 'frontend-testing/**'
+              - 'Frontend to test/**'
+            workflow:
+              - '.github/workflows/qa-ci-n8n.yml'
+
+      - name: Resolve which test suites to run
+        id: scope
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "backend=true" >> "$GITHUB_OUTPUT"
+            echo "frontend=true" >> "$GITHUB_OUTPUT"
+            echo "Manual run ? both backend and frontend suites."
+            exit 0
+          fi
+
+          BACKEND="${{ steps.filter.outputs.backend }}"
+          FRONTEND="${{ steps.filter.outputs.frontend }}"
+          WORKFLOW="${{ steps.filter.outputs.workflow }}"
+
+          if [ "$WORKFLOW" = "true" ]; then
+            BACKEND=true
+            FRONTEND=true
+          fi
+
+          echo "backend=$BACKEND" >> "$GITHUB_OUTPUT"
+          echo "frontend=$FRONTEND" >> "$GITHUB_OUTPUT"
+          echo "Backend suite: $BACKEND | Frontend suite: $FRONTEND"
+
   backend-api-tests:
     name: Backend API (Newman + Markdown)
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -56,7 +111,7 @@ jobs:
       - name: Install root dependencies
         run: npm ci
 
-      - name: Run Physio Newman chain
+      - name: Run Newman API test chain
         continue-on-error: true
         id: newman
         run: npm run test:physio:chain
@@ -78,8 +133,7 @@ jobs:
             exit 0
           fi
           if echo "$N8N_WEBHOOK_URL" | grep -qiE 'localhost|127\.0\.0\.1'; then
-            echo "::warning::N8N_WEBHOOK_URL points to localhost. GitHub-hosted runners cannot reach it."
-            echo "::warning::Use a tunnel (ngrok), public n8n URL, or a self-hosted runner."
+            echo "::warning::N8N_WEBHOOK_URL points to localhost. Skipping upload from cloud runner."
             exit 0
           fi
           node backend-testing/scripts/upload-stc-bugs-markdown-webhook-curl.js
@@ -99,7 +153,7 @@ jobs:
         run: |
           echo "## Backend QA summary" >> "$GITHUB_STEP_SUMMARY"
           echo "- Newman chain: ${{ steps.newman.outcome }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Markdown reports: generated under backend-testing/reports/markdown" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Markdown reports: backend-testing/reports/markdown" >> "$GITHUB_STEP_SUMMARY"
           echo "- n8n webhook: ${{ steps.webhook.outcome }}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Fail job if Newman tests failed
@@ -110,9 +164,10 @@ jobs:
 
   frontend-e2e-tests:
     name: Frontend E2E (Playwright + Markdown)
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    needs: backend-api-tests
 
     steps:
       - name: Checkout repository
@@ -144,7 +199,7 @@ jobs:
           KINE_PASSWORD: ${{ secrets.KINE_PASSWORD }}
           KINE_ADMIN_EMAIL: ${{ secrets.KINE_ADMIN_EMAIL }}
           KINE_ADMIN_PASSWORD: ${{ secrets.KINE_ADMIN_PASSWORD }}
-          PROJECT_NAME: Physio & Connect
+          PROJECT_NAME: Application under test
           TESTER_NAME: GitHub Actions
         run: npm run test:smoke
 
