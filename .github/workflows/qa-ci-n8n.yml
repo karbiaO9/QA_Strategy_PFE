@@ -1,4 +1,4 @@
-# QA automation: Newman + Playwright ? Markdown reports ? n8n webhook
+git push# QA automation: Newman + Playwright ? Markdown reports ? n8n webhook
 #
 # Manual demo recording (workflow_dispatch):
 #   demo_mode=true                   ? skip live API/UI tests (dead URLs OK)
@@ -125,26 +125,23 @@ jobs:
       - name: Install root dependencies
         run: npm ci
 
-      - name: Run Newman API test chain
-        if: needs.detect-changes.outputs.demo_mode != 'true'
-        continue-on-error: true
-        id: newman
-        run: npm run test:physio:chain
-
-      - name: Demo mode � use archived Newman JSON
-        if: needs.detect-changes.outputs.demo_mode == 'true'
+      - name: Run Newman API test chain or demo archive
         id: newman
         run: |
-          echo "::notice::Demo mode: skipping live API tests (hosted URLs not required)."
-          JSON="backend-testing/reports/newman/physio-merged.json"
-          if [ ! -f "$JSON" ]; then
-            echo "::error::Missing archived Newman JSON at $JSON"
-            echo "Commit physio-merged.json or download it from a prior workflow artifact."
-            exit 1
+          if [ "${{ needs.detect-changes.outputs.demo_mode }}" = "true" ]; then
+            echo "::notice::Demo mode: skipping live API tests (hosted URLs not required)."
+            JSON="backend-testing/reports/newman/physio-merged.json"
+            if [ ! -f "$JSON" ]; then
+              echo "::error::Missing archived Newman JSON at $JSON"
+              echo "Commit physio-merged.json or download it from a prior workflow artifact."
+              exit 1
+            fi
+            BYTES=$(wc -c < "$JSON" | tr -d ' ')
+            echo "Using archived results: $JSON ($BYTES bytes)"
+            echo "Source: committed snapshot in repository (not a live API run)."
+            exit 0
           fi
-          BYTES=$(wc -c < "$JSON" | tr -d ' ')
-          echo "Using archived results: $JSON ($BYTES bytes)"
-          echo "Source: committed snapshot in repository (not a live API run)."
+          npm run test:physio:chain
 
       - name: Generate Markdown STC / bug reports
         if: always() && !(github.event_name == 'workflow_dispatch' && inputs.demo_mode == true && inputs.demo_use_committed_markdown == true)
@@ -239,9 +236,7 @@ jobs:
         working-directory: frontend-testing
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright tests
-        if: needs.detect-changes.outputs.demo_mode != 'true'
-        continue-on-error: true
+      - name: Run Playwright tests or demo skip
         id: playwright
         working-directory: frontend-testing
         env:
@@ -253,20 +248,19 @@ jobs:
           KINE_ADMIN_PASSWORD: ${{ secrets.KINE_ADMIN_PASSWORD }}
           PROJECT_NAME: Application under test
           TESTER_NAME: GitHub Actions
-        run: npm run test:smoke
-
-      - name: Demo mode � skip Playwright (no live frontend)
-        if: needs.detect-changes.outputs.demo_mode == 'true'
-        id: playwright
         run: |
-          echo "::notice::Demo mode: skipping live UI tests (hosted frontend not required)."
-          MD_COUNT=$(find frontend-testing/reports/markdown -name '*.md' -type f 2>/dev/null | wc -l | tr -d ' ')
-          if [ "$MD_COUNT" = "0" ]; then
-            echo "No frontend Markdown in repo (expected � frontend reports are usually CI-only)."
-            echo "Backend demo + n8n upload still runs; frontend artifact may be empty."
-          else
-            echo "Found $MD_COUNT committed frontend Markdown file(s) for upload."
+          if [ "${{ needs.detect-changes.outputs.demo_mode }}" = "true" ]; then
+            echo "::notice::Demo mode: skipping live UI tests (hosted frontend not required)."
+            MD_COUNT=$(find reports/markdown -name '*.md' -type f 2>/dev/null | wc -l | tr -d ' ')
+            if [ "$MD_COUNT" = "0" ]; then
+              echo "No frontend Markdown in repo (expected - frontend reports are usually CI-only)."
+              echo "Backend demo + n8n upload still runs; frontend artifact may be empty."
+            else
+              echo "Found $MD_COUNT committed frontend Markdown file(s) for upload."
+            fi
+            exit 0
           fi
+          npm run test:smoke
 
       - name: Upload frontend Markdown reports to n8n (cURL)
         if: always()
