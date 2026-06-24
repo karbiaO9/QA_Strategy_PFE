@@ -1,13 +1,13 @@
-git push# QA automation: Newman + Playwright ? Markdown reports ? n8n webhook
+# QA automation: Newman + Playwright → Markdown reports → n8n webhook
 #
 # Manual demo recording (workflow_dispatch):
-#   demo_mode=true                   ? skip live API/UI tests (dead URLs OK)
-#   demo_use_committed_markdown=true ? upload committed .md as-is (exact old reports)
-#   demo_use_committed_markdown=false ? regenerate .md from archived physio-merged.json
+#   demo_mode=true                   - skip live API/UI tests (dead URLs OK)
+#   demo_use_committed_markdown=true - upload committed .md as-is (exact old reports)
+#   demo_use_committed_markdown=false - regenerate .md from archived physio-merged.json
 #
 # Required GitHub Secrets: N8N_WEBHOOK_URL (+ frontend credentials for live runs)
 
-name: QA CI � Tests & n8n Reports
+name: QA CI — Tests & n8n Reports
 
 on:
   push:
@@ -33,11 +33,11 @@ on:
   workflow_dispatch:
     inputs:
       demo_mode:
-        description: 'Demo mode � skip live API/UI tests; use archived data in repo'
+        description: 'Demo mode - skip live API/UI tests; use archived data in repo'
         type: boolean
         default: false
       demo_use_committed_markdown:
-        description: 'Demo only � upload committed Markdown as-is (no regeneration)'
+        description: 'Demo only - upload committed Markdown as-is (no regeneration)'
         type: boolean
         default: false
 
@@ -147,7 +147,7 @@ jobs:
         if: always() && !(github.event_name == 'workflow_dispatch' && inputs.demo_mode == true && inputs.demo_use_committed_markdown == true)
         run: npm run report:md:physio
 
-      - name: Demo mode � use committed Markdown reports
+      - name: Demo mode - use committed Markdown reports
         if: github.event_name == 'workflow_dispatch' && inputs.demo_mode == true && inputs.demo_use_committed_markdown == true
         run: |
           echo "::notice::Demo mode: using committed Markdown reports (no regeneration)."
