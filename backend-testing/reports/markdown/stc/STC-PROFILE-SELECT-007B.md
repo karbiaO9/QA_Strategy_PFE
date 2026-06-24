@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | May 14, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | HIGH | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-PROFILE-SELECT-007B (STC-PROFILE-SELECT-007/B \| Select with inactive kine 403) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/select-profile \| Body: { "profileId": "6a04a5695097a1ea13a2a999" } \| Headers: Content-Type: application/json; Authorization: Bearer | • Response status code : HTTP 403 • Body contains : { "statusCode": 403, "error": "...", "code": "KINE_INACTIVE" } • No side effects in database Execution sheet: HTTP ∈ {403}. | 401 Unauthorized in 81 ms 1 failed, 2 passed. expected [ 403, 200 ] to include 401 Body keys: code: TOKEN_MISSING; message: Token missing; statusCode: 401; error: UnauthorizedException expected [ 403, 200 ] to include 401 | HTTP 403 KINE_INACTIVE | FAIL | BUG-PROFILE-004 | Medium |
+| 1 | Execute POST request for STC-PROFILE-SELECT-007B (STC-PROFILE-SELECT-007/B \| Select with inactive kine 403) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/select-profile \| Body: { "profileId": "6a0e174e73797a63a4ac8467" } \| Headers: Content-Type: application/json | • Response status code : HTTP 403 • Body contains : { "statusCode": 403, "error": "...", "code": "KINE_INACTIVE" } • No side effects in database Execution sheet: HTTP ∈ {403}. | 200 OK in 75 ms 3 assertion(s) passed. Body keys: user: {…}; profile: {…}; lastProfileId: 6a0e174e73797a63a4ac8467; permissions: {…} | HTTP 403 KINE_INACTIVE | PASS |  |  |
 

@@ -5,9 +5,9 @@
 | Field | Value |
 |-------|--------|
 | **ID Number#** | BUG-INVIT-008 |
-| **Title** | STC-INVIT-ACCEPT-002B: POST — Accept invalid token 401 |
+| **Title** | STC-INVIT-ACCEPT-007B: POST — Assistant professional number forbidden 400 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | May 14, 2026 |
+| **Submit Date** | Jun 6, 2026 |
 | **Verifier** |  |
 
 ---
@@ -16,8 +16,8 @@
 
 | Field | Value |
 |-------|--------|
-| **Summary** | STC-INVIT-ACCEPT-002B: STC-INVIT-ACCEPT-002/B \| Accept invalid token 401 — HTTP 400 Bad Request; Excel-allowed HTTP {401}. Also: expected response to have status code 401 but got 400 |
-| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation \| Body: { "invitationToken": "invalid-or-expired-token", "firstName": "Jean", "lastName": "Dupuis", "password": "QaTest123!", "passwordConfirmation": "QaTest123!", "cguAccepted": true } \| Headers: Content-Type: application/json |
+| **Summary** | STC-INVIT-ACCEPT-007B: STC-INVIT-ACCEPT-007/B \| Assistant professional number forbidden 400 — assertion failure (HTTP 400 Bad Request). expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' |
+| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation \| Body: { "invitationToken": "", "firstName": "Sophie", "lastName": "Roux", "password": "KineAdmin123!", "passwordConfirmation": "KineAdmin123!", "cguAccepted": true, "professionalNumber": "12345678901" } \| Headers: Content-Type: application/json |
 | **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation |
 | **Screenshot** | Use Newman HTML/JSON export for this run for full request/response capture. |
 
@@ -37,10 +37,10 @@
 
 | Field | Value |
 |-------|--------|
-| **Precondition** | STC STC-INVIT-ACCEPT-002/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
-| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-ACCEPT-002/B \| Accept invalid token 401".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
-| **Expected Result** | • Response status code : HTTP 401 • Body contains : { "statusCode": 401, "error": "...", "code": "Unauthorized (token invalid / credentials incorrects)" } • No side effects in database Allowed HTTP status (execution sheet): {401}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 77 ms. 1 failed, 0 passed. expected response to have status code 401 but got 400 — expected response to have status code 401 but got 400 |
+| **Precondition** | STC STC-INVIT-ACCEPT-007/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
+| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-ACCEPT-007/B \| Assistant professional number forbidden 400".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
+| **Expected Result** | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PROFESSIONAL_NUMBER_FORBIDDEN' } • Aucun Compte créé Allowed HTTP status (execution sheet): {400}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
+| **Actual Result** | 400 Bad Request in 60 ms. 1 failed, 2 passed. expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' — expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' |
 
 ---
 
@@ -61,5 +61,5 @@
 
 | Field | Value |
 |-------|--------|
-| **Notes** | expected response to have status code 401 but got 400 \| Excel Expected Result requires HTTP in {401}; received 400. |
+| **Notes** | expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' |
 

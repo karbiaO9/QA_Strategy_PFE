@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | May 14, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | MEDIUM | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-PROFILE-ADD-004B (STC-PROFILE-ADD-004/B \| Add MEMBER conflict 409) | POST https://identity.physio.agregatech.com/api/v1/kine/profiles \| Body: { "profileType": "MEMBER", "subscriptionPlanId": "507f1f77bcf86cd799439011", "cabinetId": "6a04a5695097a1ea13a2a996" } \| Headers: Content-Type: application/json; Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTA0YTU2OTUwOTdhMWVhMTNhMmE5OTMiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjgsImlhdCI… | • Response status code : HTTP 409 • Body contains : { "statusCode": 409, "error": "...", "code": "Conflict (doublon, état incompatible)" } • No side effects in database Execution sheet: HTTP ∈ {409}. | 409 Conflict in 78 ms 3 assertion(s) passed. Body keys: code: PROFILE_ALREADY_EXISTS; message: …; statusCode: 409; error: ConflictException | HTTP 409 | PASS |  |  |
+| 1 | Execute POST request for STC-PROFILE-ADD-004B (STC-PROFILE-ADD-004/B \| Add MEMBER conflict 409) | POST https://identity.physio.agregatech.com/api/v1/kine/profiles \| Body: { "profileType": "MEMBER", "subscriptionPlanId": "507f1f77bcf86cd799439011", "cabinetId": "6a0e174e73797a63a4ac8464" } \| Headers: Content-Type: application/json | • Response status code : HTTP 409 • Body contains : { "statusCode": 409, "error": "...", "code": "Conflict (doublon, état incompatible)" } • No side effects in database Execution sheet: HTTP ∈ {409}. | 400 Bad Request in 87 ms 1 failed, 2 passed. expected [ 409, 201 ] to include 400 Body keys: code: VALIDATION_FAILED; message: Request payload is invalid.; errors: {…}; statusCode: 400; error: BadRequestException expected [ 409, 201 ] to include 400 | HTTP 409 | FAIL | BUG-PROFILE-004 | Medium |
 

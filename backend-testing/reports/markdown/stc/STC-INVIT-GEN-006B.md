@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | May 14, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | HIGH | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-INVIT-GEN-006B (STC-INVIT-GEN-006/B \| Preview without auth 401) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview \| Body: { "invitationToken": "invalid-or-missing-context" } \| Headers: Content-Type: application/json | • Response status code : HTTP 401 • Body contains : { "statusCode": 401, "error": "...", "code": "Unauthorized (token invalid / credentials incorrects)" } • No side effects in database Execution sheet: HTTP ∈ {401}. Newman: expect HTTP 401. | 400 Bad Request in 69 ms 1 failed, 1 passed. expected response to have status code 401 but got 400 Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException expected response to have status code 401 but got 400 | HTTP 401 | FAIL | BUG-INVIT-005 | Medium |
+| 1 | Execute POST request for STC-INVIT-GEN-006B (STC-INVIT-GEN-006/B \| Preview without auth 401) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview \| Body: { "invitationToken": "invalid-or-missing-context" } \| Headers: Content-Type: application/json | • Response status code : HTTP 401 • Body contains : { "statusCode": 401, "error": "...", "code": "Unauthorized (token invalid / credentials incorrects)" } • No side effects in database Execution sheet: HTTP ∈ {401}. Newman: expect HTTP 401. | 400 Bad Request in 85 ms 1 failed, 1 passed. expected response to have status code 401 but got 400 Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException expected response to have status code 401 but got 400 | HTTP 401 | FAIL | BUG-INVIT-005 | Medium |
 

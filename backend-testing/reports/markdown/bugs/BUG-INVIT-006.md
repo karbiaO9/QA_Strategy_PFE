@@ -5,9 +5,9 @@
 | Field | Value |
 |-------|--------|
 | **ID Number#** | BUG-INVIT-006 |
-| **Title** | STC-INVIT-ASST-001B: POST — Invite ASSISTANT → oussemak9999@gmail.com |
+| **Title** | STC-INVIT-GEN-007B: POST — Preview conflict 409 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | May 14, 2026 |
+| **Submit Date** | Jun 6, 2026 |
 | **Verifier** |  |
 
 ---
@@ -16,9 +16,9 @@
 
 | Field | Value |
 |-------|--------|
-| **Summary** | STC-INVIT-ASST-001B: STC-INVIT-ASST-001/B \| Invite ASSISTANT → oussemak9999@gmail.com — assertion failure (HTTP 400 Bad Request). expected response to have status code 201 but got 400 |
-| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations \| Body: { "email": "oussemak9999@gmail.com", "firstName": "Jean", "lastName": "Nouveau", "targetProfileType": "ASSISTANT" } \| Headers: Content-Type: application/json; Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTA0YTU2OTUwOTdhMWVhMTNhMmE5OTMiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjcsImlhdCI… |
-| **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/invitations |
+| **Summary** | STC-INVIT-GEN-007B: STC-INVIT-GEN-007/B \| Preview conflict 409 — HTTP 400 Bad Request; Excel-allowed HTTP {409}. Also: expected [ 409, 200 ] to include 400 |
+| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview \| Body: { "invitationToken": "", "email": "existing@example.fr" } \| Headers: Content-Type: application/json |
+| **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview |
 | **Screenshot** | Use Newman HTML/JSON export for this run for full request/response capture. |
 
 ---
@@ -37,10 +37,10 @@
 
 | Field | Value |
 |-------|--------|
-| **Precondition** | STC STC-INVIT-ASST-001/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
-| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-ASST-001/B \| Invite ASSISTANT → oussemak9999@gmail.com".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
-| **Expected Result** | Cas nominal validé selon les AC du ticket : • Le payload d'invitation accepte role=ASSISTANT • Profil créé with profileeType=ASSISTANT (verrouillé dans l'enum côté backend) • Aucune permission clinique accordée par défaut • Pas de champ number professionnel ex... Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 75 ms. 1 failed, 1 passed. expected response to have status code 201 but got 400 — expected response to have status code 201 but got 400 |
+| **Precondition** | STC STC-INVIT-GEN-007/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
+| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-GEN-007/B \| Preview conflict 409".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
+| **Expected Result** | • Response status code : HTTP 409 • Body contains : { "statusCode": 409, "error": "...", "code": "Conflict (doublon, état incompatible)" } • No side effects in database Allowed HTTP status (execution sheet): {409}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
+| **Actual Result** | 400 Bad Request in 63 ms. 1 failed, 1 passed. expected [ 409, 200 ] to include 400 — expected [ 409, 200 ] to include 400 |
 
 ---
 
@@ -61,5 +61,5 @@
 
 | Field | Value |
 |-------|--------|
-| **Notes** | expected response to have status code 201 but got 400 |
+| **Notes** | expected [ 409, 200 ] to include 400 \| Excel Expected Result requires HTTP in {409}; received 400. |
 

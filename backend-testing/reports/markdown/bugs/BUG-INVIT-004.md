@@ -5,9 +5,9 @@
 | Field | Value |
 |-------|--------|
 | **ID Number#** | BUG-INVIT-004 |
-| **Title** | STC-INVIT-GEN-007B: POST — Preview conflict 409 |
+| **Title** | STC-INVIT-GEN-005B: POST — Generate invitation forbidden 403 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | May 14, 2026 |
+| **Submit Date** | Jun 6, 2026 |
 | **Verifier** |  |
 
 ---
@@ -16,9 +16,9 @@
 
 | Field | Value |
 |-------|--------|
-| **Summary** | STC-INVIT-GEN-007B: STC-INVIT-GEN-007/B \| Preview conflict 409 — HTTP 400 Bad Request; Excel-allowed HTTP {409}. Also: expected [ 409, 200 ] to include 400 |
-| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview \| Body: { "invitationToken": "", "email": "existing@example.fr" } \| Headers: Content-Type: application/json; Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTA0YTU2OTUwOTdhMWVhMTNhMmE5OTMiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjcsImlhdCI… |
-| **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview |
+| **Summary** | STC-INVIT-GEN-005B: STC-INVIT-GEN-005/B \| Generate invitation forbidden 403 — HTTP 400 Bad Request; Excel-allowed HTTP {403}. Also: expected [ 403, 201 ] to include 400 |
+| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations \| Body: { "email": "jean.nouveau.member@testmail.fr", "targetProfileType": "MEMBER" } \| Headers: Content-Type: application/json |
+| **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/invitations |
 | **Screenshot** | Use Newman HTML/JSON export for this run for full request/response capture. |
 
 ---
@@ -37,10 +37,10 @@
 
 | Field | Value |
 |-------|--------|
-| **Precondition** | STC STC-INVIT-GEN-007/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
-| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-GEN-007/B \| Preview conflict 409".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
-| **Expected Result** | • Response status code : HTTP 409 • Body contains : { "statusCode": 409, "error": "...", "code": "Conflict (doublon, état incompatible)" } • No side effects in database Allowed HTTP status (execution sheet): {409}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 378 ms. 1 failed, 1 passed. expected [ 409, 200 ] to include 400 — expected [ 409, 200 ] to include 400 |
+| **Precondition** | STC STC-INVIT-GEN-005/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
+| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-GEN-005/B \| Generate invitation forbidden 403".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
+| **Expected Result** | • Response status code : HTTP 403 • Body contains : { "statusCode": 403, "error": "...", "code": "Forbidden (permission refusée)" } • No side effects in database Allowed HTTP status (execution sheet): {403}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
+| **Actual Result** | 400 Bad Request in 83 ms. 1 failed, 1 passed. expected [ 403, 201 ] to include 400 — expected [ 403, 201 ] to include 400 |
 
 ---
 
@@ -61,5 +61,5 @@
 
 | Field | Value |
 |-------|--------|
-| **Notes** | expected [ 409, 200 ] to include 400 \| Excel Expected Result requires HTTP in {409}; received 400. |
+| **Notes** | expected [ 403, 201 ] to include 400 \| Excel Expected Result requires HTTP in {403}; received 400. |
 

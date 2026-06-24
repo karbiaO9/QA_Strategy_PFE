@@ -5,9 +5,9 @@
 | Field | Value |
 |-------|--------|
 | **ID Number#** | BUG-REGISTER-001 |
-| **Title** | STC-REGISTER-SOLO-001B: POST — Register LIBERAL nominal |
+| **Title** | STC-REGISTER-ADMIN-003B: POST — Register admin missing RPPS 400 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | May 14, 2026 |
+| **Submit Date** | Jun 6, 2026 |
 | **Verifier** |  |
 
 ---
@@ -16,8 +16,8 @@
 
 | Field | Value |
 |-------|--------|
-| **Summary** | STC-REGISTER-SOLO-001B: STC-REGISTER-SOLO-001/B \| Register LIBERAL nominal — assertion failure (HTTP 409 Conflict). expected [ 201, 400 ] to include 409 |
-| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/register \| Body: { "email": "jean.nouveau.solo@testmail.fr", "password": "QaTest123!", "passwordConfirmation": "QaTest123!", "firstName": "Jean", "lastName": "LiberalSolo", "phone": "+33655554444", "profileType": "LIBERAL", "professionalNumber": "123456789", "cabinetName": "Cabinet Test Marseille", "street": "12 rue des Lilas", "postalCode": "13001", "city": "Marseille", "cguAccepted": true } \| Headers: Content-Type: application/json |
+| **Summary** | STC-REGISTER-ADMIN-003B: STC-REGISTER-ADMIN-003/B \| Register admin missing RPPS 400 — assertion failure (HTTP 400 Bad Request). expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' |
+| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/register \| Body: { "email": "jean.nouveau.member@testmail.fr", "password": "KineAdmin123!", "firstName": "Pierre", "lastName": "Martin", "raisonSociale": "Cabinet SARL", "siret": "12345678901234", "cguAccepted": true } \| Headers: Content-Type: application/json |
 | **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/register |
 | **Screenshot** | Use Newman HTML/JSON export for this run for full request/response capture. |
 
@@ -37,10 +37,10 @@
 
 | Field | Value |
 |-------|--------|
-| **Precondition** | STC STC-REGISTER-SOLO-001/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
-| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-REGISTER-SOLO-001/B \| Register LIBERAL nominal".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/register with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
-| **Expected Result** | Newman assertions must pass for POST (expected behavior per story). |
-| **Actual Result** | 409 Conflict in 276 ms. 1 failed, 1 passed. expected [ 201, 400 ] to include 409 — expected [ 201, 400 ] to include 409 |
+| **Precondition** | STC STC-REGISTER-ADMIN-003/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
+| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-REGISTER-ADMIN-003/B \| Register admin missing RPPS 400".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/register with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
+| **Expected Result** | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PROFESSIONAL_NUMBER_REQUIRED' } Allowed HTTP status (execution sheet): {400}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
+| **Actual Result** | 400 Bad Request in 93 ms. 1 failed, 2 passed. expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' — expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' |
 
 ---
 
@@ -61,5 +61,5 @@
 
 | Field | Value |
 |-------|--------|
-| **Notes** | expected [ 201, 400 ] to include 409 |
+| **Notes** | expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' |
 

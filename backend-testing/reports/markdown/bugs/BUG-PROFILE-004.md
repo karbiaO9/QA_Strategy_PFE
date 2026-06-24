@@ -5,9 +5,9 @@
 | Field | Value |
 |-------|--------|
 | **ID Number#** | BUG-PROFILE-004 |
-| **Title** | STC-PROFILE-SELECT-007B: POST — Select with inactive kine 403 |
+| **Title** | STC-PROFILE-ADD-004B: POST — Add MEMBER conflict 409 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | May 14, 2026 |
+| **Submit Date** | Jun 6, 2026 |
 | **Verifier** |  |
 
 ---
@@ -16,9 +16,9 @@
 
 | Field | Value |
 |-------|--------|
-| **Summary** | STC-PROFILE-SELECT-007B: STC-PROFILE-SELECT-007/B \| Select with inactive kine 403 — HTTP 401 Unauthorized; Excel-allowed HTTP {403}. Also: expected [ 403, 200 ] to include 401 |
-| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/select-profile \| Body: { "profileId": "6a04a5695097a1ea13a2a999" } \| Headers: Content-Type: application/json; Authorization: Bearer |
-| **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/select-profile |
+| **Summary** | STC-PROFILE-ADD-004B: STC-PROFILE-ADD-004/B \| Add MEMBER conflict 409 — HTTP 400 Bad Request; Excel-allowed HTTP {409}. Also: expected [ 409, 201 ] to include 400 |
+| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/profiles \| Body: { "profileType": "MEMBER", "subscriptionPlanId": "507f1f77bcf86cd799439011", "cabinetId": "6a0e174e73797a63a4ac8464" } \| Headers: Content-Type: application/json |
+| **URL** | https://identity.physio.agregatech.com/api/v1/kine/profiles |
 | **Screenshot** | Use Newman HTML/JSON export for this run for full request/response capture. |
 
 ---
@@ -37,10 +37,10 @@
 
 | Field | Value |
 |-------|--------|
-| **Precondition** | STC STC-PROFILE-SELECT-007/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
-| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-PROFILE-SELECT-007/B \| Select with inactive kine 403".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/select-profile with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
-| **Expected Result** | • Response status code : HTTP 403 • Body contains : { "statusCode": 403, "error": "...", "code": "KINE_INACTIVE" } • No side effects in database Allowed HTTP status (execution sheet): {403}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 401 Unauthorized in 81 ms. 1 failed, 2 passed. expected [ 403, 200 ] to include 401 — expected [ 403, 200 ] to include 401 |
+| **Precondition** | STC STC-PROFILE-ADD-004/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
+| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-PROFILE-ADD-004/B \| Add MEMBER conflict 409".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/profiles with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
+| **Expected Result** | • Response status code : HTTP 409 • Body contains : { "statusCode": 409, "error": "...", "code": "Conflict (doublon, état incompatible)" } • No side effects in database Allowed HTTP status (execution sheet): {409}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
+| **Actual Result** | 400 Bad Request in 87 ms. 1 failed, 2 passed. expected [ 409, 201 ] to include 400 — expected [ 409, 201 ] to include 400 |
 
 ---
 
@@ -61,5 +61,5 @@
 
 | Field | Value |
 |-------|--------|
-| **Notes** | expected [ 403, 200 ] to include 401 \| Excel Expected Result requires HTTP in {403}; received 401. |
+| **Notes** | expected [ 409, 201 ] to include 400 \| Excel Expected Result requires HTTP in {409}; received 400. |
 

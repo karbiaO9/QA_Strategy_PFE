@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | May 14, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | MEDIUM | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-PROFILE-ADD-010B (STC-PROFILE-ADD-010/B \| Add LIBERAL profile) | POST https://identity.physio.agregatech.com/api/v1/kine/profiles \| Body: { "profileType": "LIBERAL", "cabinetName": "Cabinet Manuel", "address": "12 rue X" } \| Headers: Content-Type: application/json; Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTA0YTU2OTUwOTdhMWVhMTNhMmE5OTMiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjgsImlhdCI… | • Profil LIBERAL créé • Aucun patient fictif cloné • La méthode cloneFictifTemplatesForStudent N'EST PAS appelée | 400 Bad Request in 81 ms 1 assertion(s) passed. Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException | Le clonage de patients fictifs est réservé au profil STUDENT | PASS |  |  |
+| 1 | Execute POST request for STC-PROFILE-ADD-010B (STC-PROFILE-ADD-010/B \| Add LIBERAL profile) | POST https://identity.physio.agregatech.com/api/v1/kine/profiles \| Body: { "profileType": "LIBERAL", "cabinetName": "Cabinet Manuel", "address": "12 rue X" } \| Headers: Content-Type: application/json | • Profil LIBERAL créé • Aucun patient fictif cloné • La méthode cloneFictifTemplatesForStudent N'EST PAS appelée | 400 Bad Request in 86 ms 1 assertion(s) passed. Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException | Le clonage de patients fictifs est réservé au profil STUDENT | PASS |  |  |
 

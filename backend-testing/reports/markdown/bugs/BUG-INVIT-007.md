@@ -5,9 +5,9 @@
 | Field | Value |
 |-------|--------|
 | **ID Number#** | BUG-INVIT-007 |
-| **Title** | STC-INVIT-ACCEPT-007B: POST — Assistant must not send professionalNumber |
+| **Title** | STC-INVIT-ATTACH-001B: POST — Attach existing user to cabinet |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | May 14, 2026 |
+| **Submit Date** | Jun 6, 2026 |
 | **Verifier** |  |
 
 ---
@@ -16,9 +16,9 @@
 
 | Field | Value |
 |-------|--------|
-| **Summary** | STC-INVIT-ACCEPT-007B: STC-INVIT-ACCEPT-007/B \| Assistant must not send professionalNumber — assertion failure (HTTP 400 Bad Request). expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' |
-| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation \| Body: { "invitationToken": "", "firstName": "Sophie", "lastName": "Roux", "password": "QaTest123!", "passwordConfirmation": "QaTest123!", "cguAccepted": true, "professionalNumber": "12345678901" } \| Headers: Content-Type: application/json |
-| **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation |
+| **Summary** | STC-INVIT-ATTACH-001B: STC-INVIT-ATTACH-001/B \| Attach existing user to cabinet — assertion failure (HTTP 401 Unauthorized). expected [ 201, 409 ] to include 401 |
+| **Test Data** | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/attach \| Body: { "invitationToken": "", "password": "KineAdmin123!" } \| Headers: Content-Type: application/json |
+| **URL** | https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/attach |
 | **Screenshot** | Use Newman HTML/JSON export for this run for full request/response capture. |
 
 ---
@@ -37,10 +37,10 @@
 
 | Field | Value |
 |-------|--------|
-| **Precondition** | STC STC-INVIT-ACCEPT-007/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
-| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-ACCEPT-007/B \| Assistant must not send professionalNumber".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
-| **Expected Result** | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PROFESSIONAL_NUMBER_FORBIDDEN' } • Aucun Compte créé Allowed HTTP status (execution sheet): {400}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 71 ms. 1 failed, 1 passed. expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' — expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' |
+| **Precondition** | STC STC-INVIT-ATTACH-001/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
+| **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-ATTACH-001/B \| Attach existing user to cabinet".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/attach with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
+| **Expected Result** | Cas nominal validé selon les AC du ticket : • POST /invitations/attach accepte {invitationToken, password} • Vérification password contre le Compte kine existant • Création d'un nouveau Profil MEMBER with cabinetId de l'inviteur • Le Profil hérite du roleId=KI... Align API with spreadsheet specification or adjust Newman tests after agreement. |
+| **Actual Result** | 401 Unauthorized in 63 ms. 1 failed, 1 passed. expected [ 201, 409 ] to include 401 — expected [ 201, 409 ] to include 401 |
 
 ---
 
@@ -61,5 +61,5 @@
 
 | Field | Value |
 |-------|--------|
-| **Notes** | expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' |
+| **Notes** | expected [ 201, 409 ] to include 401 |
 

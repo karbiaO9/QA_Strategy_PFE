@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | May 14, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | HIGH | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -36,9 +36,9 @@
 
 ---
 
-### TEST SCRIPT STEPS / RESULTS - STC-INVIT-ACCEPT-001/B | Accept ASSISTANT invitation (nominal)
+### TEST SCRIPT STEPS / RESULTS - STC-INVIT-ACCEPT-001/B | Accept invitation create account
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-INVIT-ACCEPT-001B (STC-INVIT-ACCEPT-001/B \| Accept ASSISTANT invitation (nominal)) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation \| Body: { "invitationToken": "", "firstName": "Jean", "lastName": "Nouveau", "password": "QaTest123!", "passwordConfirmation": "QaTest123!", "cguAccepted": true } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/auth/accept-invitation accepte {invitationToken, firstName, lastName, password, passwordConfirmation, cguAccepted, professionalNumber?} • Vérification token JWT (signature, jti single-use Redis, T... Newman: expect HTTP 201. | 400 Bad Request in 61 ms 1 failed, 0 passed. expected response to have status code 201 but got 400 Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException expected response to have status code 201 but got 400 | • POST /api/v1/kine/auth/accept-invitation accepte {invitationToken, firstName, lastName, password, passwordConfirmation, cguAccepted, professionalNumber?} • Vérification token JWT (signature, jti single-use Redis, TTL) • Création atomique Compte + profil MEMBER ou ASSISTANT selon targetProfileType • MEMBER : professi… | FAIL | BUG-INVIT-010 | Medium |
+| 1 | Execute POST request for STC-INVIT-ACCEPT-001B (STC-INVIT-ACCEPT-001/B \| Accept invitation create account) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation \| Body: { "invitationToken": "", "firstName": "Jean", "lastName": "Dupuis", "password": "KineAdmin123!", "passwordConfirmation": "KineAdmin123!", "cguAccepted": true, "professionalNumber": "12345678901" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/auth/accept-invitation accepte {invitationToken, firstName, lastName, password, passwordConfirmation, cguAccepted, professionalNumber?} • Vérification token JWT (signature, jti single-use Redis, T... | 400 Bad Request in 60 ms 2 assertion(s) passed. Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException | • POST /api/v1/kine/auth/accept-invitation accepte {invitationToken, firstName, lastName, password, passwordConfirmation, cguAccepted, professionalNumber?} • Vérification token JWT (signature, jti single-use Redis, TTL) • Création atomique Compte + profil MEMBER ou ASSISTANT selon targetProfileType • MEMBER : professi… | PASS |  |  |
 

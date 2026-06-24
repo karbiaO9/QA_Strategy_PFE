@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | May 14, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | MEDIUM | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute PATCH request for STC-PROFILE-UPDATE-003B (STC-PROFILE-UPDATE-003/B \| Patch activate forbidden 400) | PATCH https://identity.physio.agregatech.com/api/v1/kine/profiles/6a04a5695097a1ea13a2a999 \| Body: { "isActive": true } \| Headers: Content-Type: application/json; Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTA0YTU2OTUwOTdhMWVhMTNhMmE5OTMiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjgsImlhdCI… | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "PROFILE_ACTIVATION_ADMIN_ONLY" } • No side effects in database Execution sheet: HTTP ∈ {400}. | 403 Forbidden in 75 ms 3 assertion(s) passed. Body keys: code: PROFILE_ACTIVATION_ADMIN_ONLY; message: …; statusCode: 403; error: ForbiddenException | HTTP 400 PROFILE_ACTIVATION_ADMIN_ONLY | PASS |  |  |
+| 1 | Execute PATCH request for STC-PROFILE-UPDATE-003B (STC-PROFILE-UPDATE-003/B \| Patch activate forbidden 400) | PATCH https://identity.physio.agregatech.com/api/v1/kine/profiles/6a0e174e73797a63a4ac8467 \| Body: { "isActive": true } \| Headers: Content-Type: application/json | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "PROFILE_ACTIVATION_ADMIN_ONLY" } • No side effects in database Execution sheet: HTTP ∈ {400}. | 403 Forbidden in 67 ms 3 assertion(s) passed. Body keys: code: PROFILE_ACTIVATION_ADMIN_ONLY; message: …; statusCode: 403; error: ForbiddenException | HTTP 400 PROFILE_ACTIVATION_ADMIN_ONLY | PASS |  |  |
 
