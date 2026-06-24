@@ -2,14 +2,15 @@
 #
 # Manual demo mode (workflow_dispatch ? demo_mode: true):
 #   - Skips live Newman / Playwright (no API or frontend URL required)
-#   - Regenerates Markdown from archived backend-testing/reports/newman/physio-merged.json
+#   - Regenerates Markdown from backend-testing/reports/newman/physio-merged.demo-archive.json
+#     (Newman results frozen from before commit "tes")
 #   - Uploads reports to n8n and archives artifacts (same pipeline steps, demo-friendly logs)
 #
 # Required GitHub Secrets:
 #   N8N_WEBHOOK_URL
 #   KINE_EMAIL / KINE_PASSWORD / KINE_ADMIN_EMAIL / KINE_ADMIN_PASSWORD (frontend, live runs only)
 
-name: QA CI ó Tests & n8n Reports
+name: QA CI ù Tests & n8n Reports
 
 on:
   push:
@@ -35,7 +36,7 @@ on:
   workflow_dispatch:
     inputs:
       demo_mode:
-        description: 'Demo mode ó skip live tests, use archived Newman JSON in the repo'
+        description: 'Demo mode ù skip live tests, use archived Newman JSON in the repo'
         type: boolean
         default: false
 
@@ -130,20 +131,24 @@ jobs:
         if: env.DEMO_MODE == 'true'
         id: demo-newman
         run: |
-          ARCHIVE="backend-testing/reports/newman/physio-merged.json"
+          ARCHIVE="backend-testing/reports/newman/physio-merged.demo-archive.json"
           echo "::notice::Demo mode ó skipping live API tests (hosted URLs not required)."
+          echo "Using frozen Newman results from before commit \"tes\" (monorepo baseline)."
           if [ ! -f "$ARCHIVE" ]; then
-            echo "::error::Missing archived Newman JSON at $ARCHIVE"
-            echo "Commit a physio-merged.json from a previous successful run, or run without demo mode."
+            echo "::error::Missing demo archive at $ARCHIVE"
             exit 1
           fi
           BYTES=$(wc -c < "$ARCHIVE")
-          echo "Using archived Newman results: $ARCHIVE ($BYTES bytes)"
-          echo "Reports will be regenerated from this file (not from a live API run)."
+          echo "Demo archive: $ARCHIVE ($BYTES bytes)"
 
       - name: Generate Markdown STC / bug reports
         if: always()
-        run: npm run report:md:physio
+        run: |
+          if [ "${{ env.DEMO_MODE }}" = "true" ]; then
+            node backend-testing/scripts/generate-md-reports-from-newman.js reports/newman/physio-merged.demo-archive.json
+          else
+            npm run report:md:physio
+          fi
 
       - name: Upload backend Markdown reports to n8n
         if: always()
@@ -154,7 +159,7 @@ jobs:
           WEBHOOK_MARKDOWN_URL: ${{ secrets.N8N_WEBHOOK_URL }}
         run: |
           if [ -z "$N8N_WEBHOOK_URL" ]; then
-            echo "::notice::N8N_WEBHOOK_URL secret not set ó skipping webhook upload."
+            echo "::notice::N8N_WEBHOOK_URL secret not set ù skipping webhook upload."
             exit 0
           fi
           if echo "$N8N_WEBHOOK_URL" | grep -qiE 'localhost|127\.0\.0\.1'; then
@@ -235,11 +240,11 @@ jobs:
           TESTER_NAME: GitHub Actions
         run: npm run test:smoke
 
-      - name: Demo mode ó skip Playwright tests
+      - name: Demo mode ù skip Playwright tests
         if: env.DEMO_MODE == 'true'
         id: demo-playwright
         run: |
-          echo "::notice::Demo mode ó skipping Playwright (no live frontend URL required)."
+          echo "::notice::Demo mode ù skipping Playwright (no live frontend URL required)."
           echo "Frontend webhook upload will run only if committed .md files exist under frontend-testing/reports/markdown/."
 
       - name: Upload frontend Markdown reports to n8n (cURL)
@@ -250,7 +255,7 @@ jobs:
           N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
         run: |
           if [ -z "$N8N_WEBHOOK_URL" ]; then
-            echo "::notice::N8N_WEBHOOK_URL secret not set ó skipping webhook upload."
+            echo "::notice::N8N_WEBHOOK_URL secret not set ù skipping webhook upload."
             exit 0
           fi
           if echo "$N8N_WEBHOOK_URL" | grep -qiE 'localhost|127\.0\.0\.1'; then
