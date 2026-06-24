@@ -98,4 +98,7 @@ Generated files:
 
 ## Credential Handling
 
+
+
+
 - Local Postman environment contains credentials and is ignored in git via `.gitignore`.

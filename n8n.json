@@ -1,0 +1,1630 @@
+{
+    "nodes": [
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "rule-stc",
+                      "leftValue": "={{ $json._meta.reportType }}",
+                      "rightValue": "stc",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "stc"
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "rule-bug",
+                      "leftValue": "={{ $json._meta.reportType }}",
+                      "rightValue": "bug",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                },
+                "renameOutput": true,
+                "outputKey": "bug"
+              }
+            ]
+          },
+          "options": {
+            "fallbackOutput": "extra"
+          }
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -208,
+          672
+        ],
+        "id": "c8c5190a-0a7f-44b3-83ea-0e585a45314a",
+        "name": "Switch STC vs Bug"
+      },
+      {
+        "parameters": {
+          "jsCode": "throw new Error(\n  'Workflow routing error: reportType did not match stc or bug. Value: ' +\n    JSON.stringify($json._meta?.reportType)\n);"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -688,
+          1168
+        ],
+        "id": "249e55d6-ad4e-404e-a187-1b3c2ec15d3f",
+        "name": "Stop Unsupported Branch"
+      },
+      {
+        "parameters": {
+          "fileSelector": "={{ $json.outPath }}",
+          "options": {
+            "dataPropertyName": "data"
+          }
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [
+          2144,
+          208
+        ],
+        "id": "e6897ca4-f8d0-425b-9cec-2a5b3a6be93f",
+        "name": "Read/Write Files from Disk3"
+      },
+      {
+        "parameters": {
+          "fileSelector": "={{ $json.outPath }}",
+          "options": {
+            "dataPropertyName": "data"
+          }
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [
+          2112,
+          736
+        ],
+        "id": "9da1894a-6319-4e85-8515-5755e9540da5",
+        "name": "Read/Write Files from Disk4"
+      },
+      {
+        "parameters": {
+          "fileSelector": "={{ $json.outPath }}",
+          "options": {
+            "dataPropertyName": "data"
+          }
+        },
+        "type": "n8n-nodes-base.readWriteFile",
+        "typeVersion": 1.1,
+        "position": [
+          2144,
+          1536
+        ],
+        "id": "ed1903ca-e215-4cb7-9a35-9b641026560a",
+        "name": "Read/Write Files from Disk5"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "104f4af2-b30e-4867-b321-524d6361dab9",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -1376,
+          784
+        ],
+        "id": "550b45ca-fa54-4233-8f08-24303fc52871",
+        "name": "Receive Reports",
+        "webhookId": "104f4af2-b30e-4867-b321-524d6361dab9"
+      },
+      {
+        "parameters": {
+          "jsCode": "const root = $input.first();\nconst bin = root.binary || {};\nconst keys = Object.keys(bin).filter((k) => bin[k]).sort();\nif (!keys.length) {\n  throw new Error(\n    'No binary uploads found. Send multipart files (e.g. file_0, file_1, … or any keys under binary).'\n  );\n}\n\nconst baseJson = { ...(root.json || {}) };\nconst out = [];\n\nfor (let i = 0; i < keys.length; i++) {\n  const key = keys[i];\n  const blob = bin[key];\n  out.push({\n    json: {\n      ...baseJson,\n      _trace: {\n        binaryKey: key,\n        uploadIndex: i,\n        sourceFileName: blob.fileName || key\n      }\n    },\n    binary: {\n      file: { ...blob }\n    }\n  });\n}\n\nreturn out;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1136,
+          352
+        ],
+        "id": "16c73d6b-fd30-41cf-8531-3ebbb33e6f8c",
+        "name": "Split Multi-file Uploads"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\n\nif (!item.binary?.file) {\n  throw new Error(\"Missing binary field 'file' after split (expected normalized upload).\");\n}\n\nconst reportType = (item.json?.reportType || 'auto').toLowerCase();\nif (!['auto', 'stc', 'bug'].includes(reportType)) {\n  throw new Error('reportType must be auto|stc|bug');\n}\n\nitem.json._meta = item.json._meta || {};\nitem.json._meta.reportTypeHint = reportType;\nitem.json._meta.outputName = item.json?.outputName || '';\nitem.json._meta.receivedAt = new Date().toISOString();\n\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -976,
+          352
+        ],
+        "id": "000ac58e-00c4-4659-9038-e83337fb712d",
+        "name": "Init File Meta",
+        "notesInFlow": true
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "binaryPropertyName": "file",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1.1,
+        "position": [
+          -752,
+          352
+        ],
+        "id": "84ef765e-306f-48b8-ac97-bf45a10e5134",
+        "name": "Extract Markdown"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\nitem.json = item.json || {};\nitem.json._meta = item.json._meta || {};\nitem.json._trace = item.json._trace || {};\n\nconst md = item.json.data ?? item.json.text ?? item.json.markdown ?? '';\nif (!md || !String(md).trim()) {\n  throw new Error('Markdown is empty after extract');\n}\n\nconst hint = (item.json._meta.reportTypeHint || item.json.reportType || 'auto')\n  .toString()\n  .toLowerCase();\n\nconst isStc =\n  /#\\s*SOFTWARE TEST CASE SHEET/i.test(md) ||\n  /\\|\\s*\\*\\*STC ID\\*\\*\\s*\\|/i.test(md);\n\nconst isBug =\n  /#\\s*Bug Report Template/i.test(md) ||\n  /##\\s*1\\.\\s*Bug Report/i.test(md) ||\n  /bug report\\b|steps to reproduce|expected result|actual result/i.test(md);\n\nlet reportType = hint;\nif (hint === 'auto') {\n  if (isStc && !isBug) reportType = 'stc';\n  else if (isBug && !isStc) reportType = 'bug';\n  else if (isStc) reportType = 'stc';\n  else if (isBug) reportType = 'bug';\n  else {\n    throw new Error(\n      'Unsupported markdown format (cannot detect stc vs bug). Upload STC and/or Bug markdown only; SQTR is generated after AI Agent2 and AI Agent3. Filename: ' +\n        (item.json._trace.sourceFileName || 'unknown')\n    );\n  }\n} else if (hint === 'stc' && !isStc) {\n  throw new Error('reportType=stc but document does not look like an STC sheet');\n} else if (hint === 'bug' && !isBug) {\n  throw new Error('reportType=bug but document does not look like a Bug Report');\n}\n\nitem.json._meta.reportType = reportType;\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -480,
+          352
+        ],
+        "id": "b93bd0b4-b71c-42be-82ce-ae645690fcc3",
+        "name": "Classify Report Type",
+        "notesInFlow": false
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\n\n// Ensure json container exists\nitem.json = item.json || {};\nitem.json._meta = item.json._meta || {};\n\nconst md =\n  item.json.data ??\n  item.json.text ??\n  item.json.markdown ??\n  '';\n\nif (!md || !String(md).trim()) {\n  throw new Error('Markdown is empty');\n}\n\nconst hint = (item.json._meta.reportTypeHint || item.json.reportType || 'auto')\n  .toString()\n  .toLowerCase();\n\n// Detect format\nconst isStc =\n  /#\\s*SOFTWARE TEST CASE SHEET/i.test(md) ||\n  /\\|\\s*\\*\\*STC ID\\*\\*\\s*\\|/i.test(md);\n\nconst isBug =\n  /#\\s*Bug Report Template/i.test(md) ||\n  /##\\s*1\\.\\s*Bug Report/i.test(md) ||\n  /bug report\\b|steps to reproduce|expected result|actual result/i.test(md);\n\nlet reportType = hint;\nif (hint === 'auto') {\n  if (isStc) reportType = 'stc';\n  else if (isBug) reportType = 'bug';\n  else throw new Error('Unsupported markdown format (cannot detect stc/bug)');\n}\n\n// Derive IDs\nconst stcId = (md.match(/\\|\\s*\\*\\*STC ID\\*\\*\\s*\\|\\s*([^|]+)\\|/i)?.[1] || '').trim();\nconst bugId = (md.match(/\\|\\s*\\*\\*ID Number#?\\*\\*\\s*\\|\\s*([^|]+)\\|/i)?.[1] || '').trim();\n\n// Set meta safely\nitem.json._meta.reportType = reportType;\nitem.json._meta.stcId = stcId;\nitem.json._meta.bugId = bugId;\n\nconst base =\n  item.json._meta.outputName ||\n  stcId ||\n  bugId ||\n  `juridika-${reportType}-${Date.now()}`;\n\nconst safeBase = String(base)\n  .replace(/[\\/\\\\:*?\"<>|]+/g, '-')\n  .replace(/\\s+/g, ' ')\n  .trim()\n  .slice(0, 140) || `juridika-${reportType}-${Date.now()}`;\n\nitem.json._meta.outputHtmlName = `${safeBase}.html`;\n\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          48,
+          304
+        ],
+        "id": "b86fcff5-bf4a-45d1-97cd-4f64823f267c",
+        "name": "Build STC Meta"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst item = $input.item;\nitem.json = item.json || {};\n\nconst md = item.json.data ?? item.json.text ?? '';\nif (!String(md).trim()) throw new Error('No markdown in data/text');\n\nconst safeExec = String($execution.id || Date.now()).replace(/[^\\w.-]+/g, '_');\nconst trace = item.json._trace || {};\nconst meta = item.json._meta || {};\nlet slug = '';\nif (meta.outputHtmlName) {\n  slug = String(meta.outputHtmlName).replace(/\\.html$/i, '').replace(/[^\\w.-]+/g, '_').slice(0, 120);\n}\nif (!slug) {\n  slug = (trace.sourceFileName || 'file')\n    .replace(/\\.[^.]+$/, '')\n    .replace(/[^\\w.-]+/g, '_')\n    .slice(0, 80);\n}\nconst idx = trace.uploadIndex ?? 0;\nconst mdPath = path.join('/home/node/.n8n-files/work/', `juridika-md-${safeExec}-${idx}-${slug}.md`);\n\nfs.writeFileSync(mdPath, md, 'utf8');\nitem.json.mdPath = mdPath;\nitem.json._sqtrSourceMd = md;\n\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          272,
+          304
+        ],
+        "id": "28b9997a-0665-4992-9ccf-41ba83e39423",
+        "name": "Write STC Markdown"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\n\n// Ensure json container exists\nitem.json = item.json || {};\nitem.json._meta = item.json._meta || {};\n\nconst md =\n  item.json.data ??\n  item.json.text ??\n  item.json.markdown ??\n  '';\n\nif (!md || !String(md).trim()) {\n  throw new Error('Markdown is empty');\n}\n\nconst hint = (item.json._meta.reportTypeHint || item.json.reportType || 'auto')\n  .toString()\n  .toLowerCase();\n\n// Detect format\nconst isStc =\n  /#\\s*SOFTWARE TEST CASE SHEET/i.test(md) ||\n  /\\|\\s*\\*\\*STC ID\\*\\*\\s*\\|/i.test(md);\n\nconst isBug =\n  /#\\s*Bug Report Template/i.test(md) ||\n  /##\\s*1\\.\\s*Bug Report/i.test(md) ||\n  /bug report\\b|steps to reproduce|expected result|actual result/i.test(md);\n\nlet reportType = hint;\nif (hint === 'auto') {\n  if (isStc) reportType = 'stc';\n  else if (isBug) reportType = 'bug';\n  else throw new Error('Unsupported markdown format (cannot detect stc/bug)');\n}\n\n// Derive IDs\nconst stcId = (md.match(/\\|\\s*\\*\\*STC ID\\*\\*\\s*\\|\\s*([^|]+)\\|/i)?.[1] || '').trim();\nconst bugId = (md.match(/\\|\\s*\\*\\*ID Number#?\\*\\*\\s*\\|\\s*([^|]+)\\|/i)?.[1] || '').trim();\n\n// Set meta safely\nitem.json._meta.reportType = reportType;\nitem.json._meta.stcId = stcId;\nitem.json._meta.bugId = bugId;\n\nconst rawBase =\n  item.json._meta.outputName ||\n  stcId ||\n  bugId ||\n  `juridika-${reportType}-${Date.now()}`;\n\nconst safeBase = String(rawBase)\n  .replace(/[\\/\\\\]+/g, '-')      // critical: prevent nested paths like STC-.../B.html\n  .replace(/[^\\w.-]+/g, '_')\n  .replace(/_+/g, '_')\n  .replace(/^_+|_+$/g, '')\n  .slice(0, 150) || `juridika-${reportType}-${Date.now()}`;\n\nitem.json._meta.outputHtmlName = `${safeBase}.html`;\n\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          112,
+          1520
+        ],
+        "id": "80a11751-9d0d-4bf3-8943-c8b05c253a1a",
+        "name": "Build Bug Meta"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst item = $input.item;\nitem.json = item.json || {};\n\nconst md = item.json.data ?? item.json.text ?? '';\nif (!String(md).trim()) throw new Error('No markdown in data/text');\n\nconst safeExec = String($execution.id || Date.now()).replace(/[^\\w.-]+/g, '_');\nconst trace = item.json._trace || {};\nconst meta = item.json._meta || {};\nlet slug = '';\nif (meta.outputHtmlName) {\n  slug = String(meta.outputHtmlName).replace(/\\.html$/i, '').replace(/[^\\w.-]+/g, '_').slice(0, 120);\n}\nif (!slug) {\n  slug = (trace.sourceFileName || 'file')\n    .replace(/\\.[^.]+$/, '')\n    .replace(/[^\\w.-]+/g, '_')\n    .slice(0, 80);\n}\nconst idx = trace.uploadIndex ?? 0;\nconst mdPath = path.join(\n  '/home/node/.n8n-files/work/',\n  `juridika-md-${safeExec}-${idx}-${slug}.md`\n);\n\nfs.writeFileSync(mdPath, md, 'utf8');\nitem.json.mdPath = mdPath;\nitem.json._sqtrSourceMd = md;\n\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          336,
+          1520
+        ],
+        "id": "baef8d7b-200d-4f24-a49a-781de6c4d1b6",
+        "name": "Write Bug Markdown"
+      },
+      {
+        "parameters": {
+          "executeOnce": false,
+          "command": "=NODE_PATH=/home/node/.n8n-files/node_modules node -e '\nconst fs = require(\"fs\");\nconst path = require(\"path\");\nconst m = require(\"/home/node/.n8n-files/juridika-html-fill.cjs\");\n\n(async () => {\n  const md = fs.readFileSync(process.argv[1], \"utf8\");\n  const outName = process.argv[2];\n  const outDir = \"/home/node/.n8n-files/work\";\n  const outPath = path.join(outDir, outName);\n  const stcTemplate = \"/home/node/.n8n-files/SOFTWARE TEST CASE SHEET-template.html\";\n\n  if (!md.trim()) throw new Error(\"MD empty\");\n\n  await m.writeStcHtmlFromMarkdown(md, outPath, stcTemplate);\n\n  console.log(JSON.stringify({\n    outPath,\n    fileName: outName,\n    reportType: \"stc\",\n    sourceFileName: process.argv[3] || \"\",\n    uploadIndex: process.argv[4] || \"\"\n  }));\n})().catch(e => {\n  console.error(e && e.stack ? e.stack : String(e));\n  process.exit(1);\n});\n' '{{ $json.mdPath }}' '{{ $json._meta.outputHtmlName }}' '{{ $json._trace.sourceFileName }}' '{{ $json._trace.uploadIndex }}'"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          1696,
+          208
+        ],
+        "id": "c7f3a12d-58f6-4351-bbad-f42f650956fe",
+        "name": "Fill STC HTML"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\nconst raw = item.json.stdout || '';\nconst parsed = JSON.parse(raw.trim());\nitem.json.outPath = parsed.outPath;\nitem.json.fileName = parsed.fileName;\nitem.json.sourceFileName = parsed.sourceFileName;\nitem.json.uploadIndex = parsed.uploadIndex;\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1920,
+          208
+        ],
+        "id": "773fa3ea-c344-4de1-a0c8-c1aee9681b9c",
+        "name": "Parse STC Output"
+      },
+      {
+        "parameters": {
+          "executeOnce": false,
+          "command": "=NODE_PATH=/home/node/.n8n-files/node_modules node -e '\nconst fs = require(\"fs\");\nconst path = require(\"path\");\nconst m = require(\"/home/node/.n8n-files/juridika-html-fill.cjs\");\n\n(async () => {\n  const md = fs.readFileSync(process.argv[1], \"utf8\");\n  const outName = process.argv[2];\n\n  const outDir = \"/home/node/.n8n-files/work\";\n  const outPath = path.join(outDir, outName);\n\n  const bugTemplate = \"/home/node/.n8n-files/bug-report-template.html\";\n\n  if (!md.trim()) throw new Error(\"MD empty\");\n\n  await m.writeBugHtmlFromMarkdown(md, outPath, bugTemplate);\n\n  console.log(JSON.stringify({\n    outPath,\n    fileName: outName,\n    reportType: \"bug\",\n    sourceFileName: process.argv[3] || \"\",\n    uploadIndex: process.argv[4] || \"\"\n  }));\n})().catch(e => {\n  console.error(e && e.stack ? e.stack : String(e));\n  process.exit(1);\n});\n' '{{ $json.mdPath }}' '{{ $json._meta.outputHtmlName }}' '{{ $json._trace.sourceFileName }}' '{{ $json._trace.uploadIndex }}'"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          1696,
+          1536
+        ],
+        "id": "725240e3-6c11-4207-9791-01c7ad1e8462",
+        "name": "Fill Bug HTML"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\nconst raw = item.json.stdout || '';\nconst parsed = JSON.parse(raw.trim());\nitem.json.outPath = parsed.outPath;\nitem.json.fileName = parsed.fileName;\nitem.json.sourceFileName = parsed.sourceFileName;\nitem.json.uploadIndex = parsed.uploadIndex;\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1920,
+          1536
+        ],
+        "id": "d78c7e7c-d1b4-47a6-bb63-f3ba840f1922",
+        "name": "Parse Bug Output"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fs = require('fs');\n\nconst templatePath = '/home/node/.n8n-files/SQTR.md';\nconst sqtrTemplate = fs.readFileSync(templatePath, 'utf8');\n\nif (!sqtrTemplate || !sqtrTemplate.trim()) {\n  throw new Error('SQTR.md template is missing or empty.');\n}\n\nconst items = $input.all();\n\nif (!items.length) {\n  throw new Error('No STC items received for SQTR generation.');\n}\n\nconst blocks = [];\n\nfor (let i = 0; i < items.length; i++) {\n  const item = items[i];\n  const md = (item.json?.data || item.json?.text || item.json?.markdown || '').trim();\n\n  if (!md) continue;\n\n  const sourceFileName =\n    item.json?._trace?.sourceFileName || `stc_${i + 1}.md`;\n\n  const stcId =\n    item.json?._meta?.stcId ||\n    (md.match(/\\|\\s*\\*\\*STC ID\\*\\*\\s*\\|\\s*([^|]+)\\|/i)?.[1] || '').trim();\n\n  blocks.push([\n    `### STC_EVIDENCE_${i + 1}`,\n    `SOURCE_FILE: ${sourceFileName}`,\n    stcId ? `STC_ID: ${stcId}` : '',\n    md\n  ].filter(Boolean).join('\\n'));\n}\n\nif (!blocks.length) {\n  throw new Error('No valid STC markdown content found to build SQTR input.');\n}\n\nreturn [\n  {\n    json: {\n      sqtrTemplate,\n      stcEvidenceBlocks: blocks.join('\\n\\n---\\n\\n'),\n      stcCount: blocks.length,\n      _meta: {\n        reportType: 'sqtr',\n        outputName: `SQTR-${new Date().toISOString().slice(0, 10)}`\n      },\n      _trace: {\n        sourceFileName: 'SQTR.md',\n        uploadIndex: 0\n      }\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          352,
+          736
+        ],
+        "id": "14d3adda-d11c-48c8-9346-d326391bcda6",
+        "name": "Build SQTR Evidence"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ `[SQTR_TEMPLATE_START]\\n${$json.sqtrTemplate}\\n[SQTR_TEMPLATE_END]\\n\\n[STC_EVIDENCE_START]\\n${$json.stcEvidenceBlocks}\\n[STC_EVIDENCE_END]` }}",
+          "options": {
+            "systemMessage": "=You are a senior QA technical editor.\n\nThe user message always contains:\n1) the OFFICIAL SQTR TEMPLATE in Markdown\n2) one or more STC evidence blocks\n\nYour only job is to output ONE filled Markdown document that is a strict copy of the OFFICIAL SQTR TEMPLATE in structure.\n\nMISSION\n- Fill the SQTR template using ONLY the provided STC evidence blocks.\n- Produce ONE combined SQTR for all uploaded STCs together.\n- Keep the exact template structure unchanged.\n- Do not invent a new format.\n- Do not add explanations, commentary, code fences, or any text outside the final filled Markdown document.\n\nSTRICT OUTPUT RULES\n- Output MUST be the filled SQTR template only.\n- Preserve the exact title: `# SOFTWARE QUALITY TEST REPORT`\n- Preserve the exact section titles:\n  - `## 1. Test Report Information`\n  - `## 2. Test Performed`\n  - `## 3. Testing Methodology`\n  - `## 4. Bug Fix Summary`\n  - `## 5. Test & Fixes Validation`\n- Preserve the exact tables, pipe columns, bold labels, and row count.\n- Do not add or remove rows in any table.\n- In `## 2. Test Performed`, keep exactly the same number of rows as the template.\n- Unused rows must remain empty cells.\n\nThe STC evidence blocks are already STC-level summaries.\nEach `STC_SUMMARY_*` block represents exactly one STC sheet.\nIn `## 2. Test Performed`, create one row per `STC_SUMMARY_*` block only.\nDo not inspect, infer, or create rows from individual test steps.\nUse the provided `COUNTS` block for Passed, Failed, Blocked, and Total.\n\nSOURCE OF TRUTH\n- Use ONLY the STC evidence blocks in the user message.\n- Do not use outside knowledge.\n- Do not invent product facts not supported by the STC evidence.\n\nEMPTY FIELDS RULE\nThe following fields must always remain completely blank unless the user explicitly changes the rule later:\n- `REF:`\n- `VER-REV:`\n- `Creation/Update Date:`\n- `Editor/Verifier:`\n- `Sprint`\n- `Closed By`\n- `Closed On`\n- `Release Decision` in section 1\n- all content under `## 4. Bug Fix Summary`\n- `Release Decision` in section 5\n- footer `Date`\n- footer `Signature`\n\nDo not write:\n- `Not specified in test run; confirm with team.`\n- `GO / NO-GO`\n- `N/A`\nin any of those blank-only fields.\n\nSECTION 1 RULES\nFill only these fields when supported by the STC evidence:\n- `Project`\n- `Operating System`\n- `Location/Server`\n- `Raised By`\n- `Raised On`\n- `Test Environment`\n\nCOUNTS RULES\nIn `## 1. Test Report Information`:\n- `Executed Tests` must represent the STC execution summary.\n- `Passed` = number of STC rows in section 2 whose status is `Passed`\n- `Failed` = number of STC rows in section 2 whose status is `Failed`\n- `Blocked` = number of STC rows in section 2 whose status is `Blocked`\n- `Total` = total number of STC rows actually filled in section 2\n- Counts must be internally consistent.\n\nSECTION 2 RULES\nThis section must contain one row per STC sheet.\nthere areExecuted Tests :\n-Passed: 45\n-Failed: 12\n-Blocked:  0\n-Total: 57\n \nColumn mapping:\n- `Test Case ID` → STC ID only\n- `Short Description` → short description only, without repeating the STC ID\n- `Result` → concise actual outcome summary\n- `Status (Passed/Failed)` → use exactly `Passed`, `Failed`, or `Blocked`\n\nDo NOT add:\n- bug IDs\n- feedback\n- extra columns\n- long paragraphs inside cells\n\nIf more STCs are provided than the table can hold:\n- use only as many as the template allows\n- keep remaining rows unchanged and empty\n- do not add extra rows\n\nSECTION 3 RULES\nFill concisely from the STCs:\n- `Testing Tools`\n- `Testing Approach`\n- `Evaluation Criteria`\n\nSECTION 4 RULES\n- Leave `## 4. Bug Fix Summary` blank.\n- Do not add any sentence or summary there.\n\nSECTION 5 RULES\n- Fill `Reporter` only if supported by the STC evidence.\n- Keep `Quality Manager` and `Tech Lead` exactly as they appear in the template if already present there.\n- Leave all signature value cells blank.\n- Leave the final `Release Decision` blank.\n\nSTATUS NORMALIZATION\nNormalize status values strictly as:\n- `PASS`, `Pass`, `PASSED` → `Passed`\n- `FAIL`, `Fail`, `FAILED` → `Failed`\n- `BLOCK`, `Blocked`, `BLOCKED` → `Blocked`\n\nFINAL QUALITY CHECK BEFORE OUTPUT\nBefore producing the final Markdown, verify:\n1. The structure exactly matches the provided SQTR template.\n2. No sections are renamed.\n3. No rows are added or removed.\n4. `Test Case ID` contains only the STC ID.\n5. `Short Description` does not repeat the STC ID.\n6. `Passed`, `Failed`, `Blocked`, and `Total` match the statuses in section 2.\n7. All blank-only fields remain truly blank.\n8. Output contains only the final filled Markdown document."
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          576,
+          736
+        ],
+        "id": "dfa36592-e0d7-48d4-b65e-407e5afb8dc5",
+        "name": "Generate SQTR Markdown"
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.5-flash-lite",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          528,
+          1216
+        ],
+        "id": "42c67e19-be6b-4be3-b2cc-9c2f6b12c2f3",
+        "name": "SQTR Gemini Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "RCThCstYD4PVHXaR",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const item = $input.item;\nconst out = item.json.output || item.json.text || '';\n\nif (!out.includes('# SOFTWARE QUALITY TEST REPORT') || !out.includes('| Field | Value |')) {\n  throw new Error('AI did not return full SQTR markdown; refusing to continue.');\n}\n\nconst lines = out.split(/\\r?\\n/);\nlet inTable = false;\nlet rowCount = 0;\n\nfor (const line of lines) {\n  if (/^\\|\\s*Test Case ID\\s*\\|/i.test(line)) {\n    inTable = true;\n    continue;\n  }\n\n  if (!inTable) continue;\n\n  if (!line.trim().startsWith('|')) break;\n  if (/^\\|\\s*-+/.test(line)) continue;\n\n  const cells = line.split('|').map((c) => c.trim()).slice(1, -1);\n  if (cells.length >= 4) {\n    const hasAnyValue = cells.some((c) => c);\n    if (hasAnyValue) rowCount++;\n  }\n}\n\nconst expected = Number(item.json.stcCount || 0);\n\nif (expected && rowCount !== expected) {\n  throw new Error(`SQTR row mismatch: expected ${expected} STC rows but AI returned ${rowCount}.`);\n}\n\nitem.json.data = out;\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          928,
+          752
+        ],
+        "id": "d532920b-556e-4571-b2b1-e5b6444fd8dc",
+        "name": "Validate SQTR Markdown"
+      },
+      {
+        "parameters": {
+          "jsCode": "const item = $input.item;\nitem.json = item.json || {};\nitem.json._meta = item.json._meta || {};\n\nconst md =\n  item.json.data ??\n  item.json.text ??\n  item.json.markdown ??\n  '';\n\nif (!md || !String(md).trim()) {\n  throw new Error('Markdown is empty');\n}\n\nconst refRaw = (md.match(/\\|\\s*\\*\\*REF:?\\*\\*\\s*\\|\\s*([^|]+)\\|/i)?.[1] || '').trim();\nconst ref = refRaw.replace(/[^\\w.-]+/g, '_').slice(0, 80);\n\nitem.json._meta.reportType = 'sqtr';\nitem.json._meta.sqtrRef = refRaw;\n\nconst base =\n  item.json._meta.outputName ||\n  ref ||\n  `sqtr-${item.json._trace?.uploadIndex ?? 0}-${Date.now()}`;\n\nitem.json._meta.outputHtmlName = `${base}.html`;\n\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1152,
+          752
+        ],
+        "id": "92cde235-a8fe-4df4-b8dc-da37699c2dca",
+        "name": "Build SQTR Meta"
+      },
+      {
+        "parameters": {
+          "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst item = $input.item;\nitem.json = item.json || {};\n\nconst md = item.json.data ?? item.json.text ?? '';\nif (!String(md).trim()) throw new Error('No markdown in data/text');\n\nconst safeExec = String($execution.id || Date.now()).replace(/[^\\w.-]+/g, '_');\nconst trace = item.json._trace || {};\nconst meta = item.json._meta || {};\nlet slug = '';\nif (meta.outputHtmlName) {\n  slug = String(meta.outputHtmlName).replace(/\\.html$/i, '').replace(/[^\\w.-]+/g, '_').slice(0, 120);\n}\nif (!slug) {\n  slug = (trace.sourceFileName || 'file')\n    .replace(/\\.[^.]+$/, '')\n    .replace(/[^\\w.-]+/g, '_')\n    .slice(0, 80);\n}\nconst idx = trace.uploadIndex ?? 0;\nconst mdPath = path.join('/home/node/.n8n-files/work/', `juridika-md-${safeExec}-${idx}-${slug}.md`);\n\nfs.writeFileSync(mdPath, md, 'utf8');\nitem.json.mdPath = mdPath;\nitem.json._sqtrSourceMd = md;\n\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1376,
+          752
+        ],
+        "id": "e145c9a4-dd12-4fe7-9223-f0e12a412735",
+        "name": "Write SQTR Markdown"
+      },
+      {
+        "parameters": {
+          "command": "=NODE_PATH=/home/node/.n8n-files/node_modules node -e '\nconst fs = require(\"fs\");\nconst path = require(\"path\");\nconst m = require(\"/home/node/.n8n-files/juridika-html-fill.cjs\");\n\n(async () => {\n  const md = fs.readFileSync(process.argv[1], \"utf8\");\n  const outName = process.argv[2];\n  const outDir = \"/home/node/.n8n-files/work\";\n  const outPath = path.join(outDir, outName);\n  const sqtrTemplate = \"/home/node/.n8n-files/SQTR-template.html\";\n\n  if (!md.trim()) throw new Error(\"MD empty\");\n\n  await m.writeSqtrHtmlFromMarkdown(md, outPath, sqtrTemplate);\n\n  console.log(JSON.stringify({\n    outPath,\n    fileName: outName,\n    reportType: \"sqtr\",\n    sourceFileName: process.argv[3] || \"\",\n    uploadIndex: process.argv[4] || \"\"\n  }));\n})().catch(e => {\n  console.error(e && e.stack ? e.stack : String(e));\n  process.exit(1);\n});\n' '{{ $json.mdPath }}' '{{ $json._meta.outputHtmlName }}' '{{ $json._trace.sourceFileName }}' '{{ $json._trace.uploadIndex }}'"
+        },
+        "type": "n8n-nodes-base.executeCommand",
+        "typeVersion": 1,
+        "position": [
+          1648,
+          752
+        ],
+        "id": "917f5cd8-72c0-4a19-901e-c2a2013272c9",
+        "name": "Fill SQTR HTML"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\nconst raw = item.json.stdout || '';\nconst parsed = JSON.parse(raw.trim());\nitem.json.outPath = parsed.outPath;\nitem.json.fileName = parsed.fileName;\nitem.json.sourceFileName = parsed.sourceFileName;\nitem.json.uploadIndex = parsed.uploadIndex;\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1872,
+          752
+        ],
+        "id": "cb9432d6-2514-4668-8baa-2a2696987f53",
+        "name": "Parse SQTR Output"
+      },
+      {
+        "parameters": {
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1i6U3drPhN37zSH2NuvTUHIEbqU9pdiQV",
+            "mode": "list",
+            "cachedResultName": "QA reports",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1i6U3drPhN37zSH2NuvTUHIEbqU9pdiQV"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          3312,
+          752
+        ],
+        "id": "80886a38-c0b0-4f02-bfa3-b0bd35efc93e",
+        "name": "Upload To Drive",
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "9lthZfDFqrXwmrFH",
+            "name": "Google AUTH"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\nconst md = String(item.json?.data ?? item.json?.text ?? item.json?.markdown ?? '').trim();\n\nif (!md) {\n  throw new Error('Bug markdown is empty before ClickUp mapping.');\n}\n\nfunction extract(patterns) {\n  for (const pattern of patterns) {\n    const m = md.match(pattern);\n    if (m && m[1] != null) return String(m[1]).trim();\n  }\n  return '';\n}\n\nconst stcId = extract([\n  /\\|\\s*\\*\\*STC ID\\*\\*\\s*\\|\\s*([^|]+)\\|/i,\n  /\\|\\s*\\*\\*Linked STC ID\\*\\*\\s*\\|\\s*([^|]+)\\|/i,\n  /\\bSTC[-\\w/]+\\b/i\n]);\n\nconst title = extract([\n  /\\|\\s*\\*\\*Title\\*\\*\\s*\\|\\s*([^|]+)\\|/i,\n  /\\|\\s*\\*\\*Bug Title\\*\\*\\s*\\|\\s*([^|]+)\\|/i,\n  /\\|\\s*\\*\\*Summary\\*\\*\\s*\\|\\s*([^|]+)\\|/i\n]);\n\nconst endpointUrl = extract([\n  /\\|\\s*\\*\\*(?:Endpoint URL|Endpoint|URL)\\*\\*\\s*\\|\\s*([^|]+)\\|/i\n]);\n\nconst expectedResult = extract([\n  /\\|\\s*\\*\\*Expected Result\\*\\*\\s*\\|\\s*([\\s\\S]*?)\\|(?:\\r?\\n|$)/i\n]);\n\nconst actualResult = extract([\n  /\\|\\s*\\*\\*Actual Result\\*\\*\\s*\\|\\s*([\\s\\S]*?)\\|(?:\\r?\\n|$)/i\n]);\n\nconst requestBody = extract([\n  /\\|\\s*\\*\\*Request Body\\*\\*\\s*\\|\\s*([\\s\\S]*?)\\|(?:\\r?\\n|$)/i,\n  /\\|\\s*\\*\\*Payload\\*\\*\\s*\\|\\s*([\\s\\S]*?)\\|(?:\\r?\\n|$)/i\n]);\n\nconst fallbackTitle =\n  title ||\n  extract([/\\|\\s*\\*\\*ID Number#?\\*\\*\\s*\\|\\s*([^|]+)\\|/i]) ||\n  'Untitled bug';\n\nconst taskName = [stcId, fallbackTitle].filter(Boolean).join(' - ').slice(0, 255);\n\nlet bugSummary = '';\nif (expectedResult || actualResult) {\n  bugSummary = `Expected: ${expectedResult || 'Not provided'}\\nActual: ${actualResult || 'Not provided'}`;\n} else {\n  bugSummary = 'Expected vs actual result was not fully available in the parsed bug markdown.';\n}\n\nitem.json.clickup = {\n  stcId,\n  title: fallbackTitle,\n  taskName,\n  bugSummary,\n  endpointUrl,\n  expectedResult,\n  actualResult,\n  requestBody,\n  description: [\n    'Bug Summary',\n    bugSummary,\n    '',\n    stcId ? `STC ID: ${stcId}` : '',\n    endpointUrl ? `Endpoint URL: ${endpointUrl}` : '',\n    expectedResult ? `Expected Result:\\n${expectedResult}` : '',\n    actualResult ? `Actual Result:\\n${actualResult}` : '',\n    requestBody ? `Request Body:\\n${requestBody}` : ''\n  ].filter(Boolean).join('\\n')\n};\n\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          608,
+          1520
+        ],
+        "id": "64d34555-f16e-4a5c-9e26-1791174d2caf",
+        "name": "Parse Bug Fields for ClickUp"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "has-task-name",
+                "leftValue": "={{ $json.clickup.taskName }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty"
+                }
+              },
+              {
+                "id": "has-expected",
+                "leftValue": "={{ $json.clickup.expectedResult }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty"
+                }
+              },
+              {
+                "id": "has-actual",
+                "leftValue": "={{ $json.clickup.actualResult }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          848,
+          1520
+        ],
+        "id": "63aeed6b-3461-49b9-9c99-0239d239bcc3",
+        "name": "Has Required ClickUp Fields"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\nitem.json.clickupTaskStatus = 'skipped';\nitem.json.clickupTaskMessage = 'ClickUp task was skipped because one or more required fields were missing.';\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1296,
+          2480
+        ],
+        "id": "b3685604-1333-4684-b315-f49d84c449e7",
+        "name": "Flag ClickUp Skip"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const item = $input.item;\nconst taskId = item.json?.id || item.json?.task?.id || item.json?.data?.id || '';\nconst hasError = !!(item.json?.error || item.json?.message && !taskId);\n\nitem.json.clickupTaskStatus = hasError ? 'failed' : 'created';\nitem.json.clickupTaskId = taskId || '';\nitem.json.clickupTaskMessage = hasError\n  ? String(item.json.error?.message || item.json.message || 'ClickUp task creation failed.')\n  : 'ClickUp task created successfully.';\nreturn item;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1792,
+          2160
+        ],
+        "id": "fb8c330c-6dd9-413e-80df-ea8bb11ac926",
+        "name": "Normalize ClickUp Result"
+      },
+      {
+        "parameters": {
+          "team": "90152363516",
+          "space": "901510601480",
+          "folderless": true,
+          "list": "901523285190",
+          "name": "={{ $json.clickup.title }}",
+          "additionalFields": {
+            "assignees": [
+              93830998
+            ],
+            "content": "=Bug Summary : {{ $json.clickup.bugSummary }}\nEndpoint URL : \n{{ $json.clickup.endpointUrl }}\nExpected Result : {{ $json.clickup.expectedResult }} \nActual Result : {{ $json.clickup.actualResult }}\nRequest Body :{{ $json.clickup.requestBody }}"
+          }
+        },
+        "type": "n8n-nodes-base.clickUp",
+        "typeVersion": 1,
+        "position": [
+          1472,
+          2160
+        ],
+        "id": "2d86a01c-7d9a-4934-83b5-067888737261",
+        "name": "Create a Task",
+        "credentials": {
+          "clickUpApi": {
+            "id": "BINiUdrzdzTBtFAc",
+            "name": "ClickUp account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "modelName": "models/gemini-2.5-flash-lite",
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+        "typeVersion": 1,
+        "position": [
+          480,
+          1696
+        ],
+        "id": "25b8e5fb-396f-4012-aef7-c384d6b9e659",
+        "name": "Google Gemini Chat Model",
+        "credentials": {
+          "googlePalmApi": {
+            "id": "RCThCstYD4PVHXaR",
+            "name": "Google Gemini(PaLM) Api account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $json.data }}",
+          "options": {
+            "systemMessage": "You are a senior QA engineer reviewing a Bug Report written in Markdown. The document will be parsed automatically and used to fill an official **fillable** Bug Report HTML template. Your job is to **analyze** the bug for quality and then **output the full improved Markdown**—not a summary, not questions, not advice only.\n\nAnalysis (do mentally; reflect only by improving the document):\n- Repro: Are steps ordered, minimal, and executable? Fill gaps from URL/environment/stack traces if present.\n- Expected vs actual: Clear, non-overlapping, consistent with severity/status if shown.\n- Environment: Platform/OS/browser URLs consistent with the URL field.\n- Tracking: Severity, priority, status, bug type (Functional/UI/Performance/Security/Compatibility), assignment—use checklist style already in the doc (☐/☑) where applicable; do not invent final business decisions—use \"Not specified in test run; confirm with team.\" when unknown.\n- Security/PII: Do not add real secrets; redact or generalize if the input already contains credentials.\n\nEdits you may make:\n1) Improve clarity, grammar, and professional QA tone without changing the factual outcome.\n2) Replace empty cells, placeholders (\"TBD\", \"TODO\", \"—\", \"N/A\" as filler) with concise, internally consistent content inferred from the rest of the document. If you cannot infer, use exactly: \"Not specified in test run; confirm with team.\"\n\nHard constraints (critical):\n- Output MUST be the **complete** Markdown document only. No preamble, no markdown code fences, no \"Here is\", no commentary after the document.\n- Preserve structure exactly: heading text `# Bug Report Template`, `## 1. Bug Report` … `## 6. Notes`, all `| Field | Value |` tables, pipe characters, and **field labels** such as **ID Number#**, **Steps to Reproduce**, **Expected Result**, **Actual Result**, **Assigned To**, **Severity**, **Bug Type**, etc. Do not merge sections or remove tables.\n- Do **not** change the bug ID string unless it is clearly a typo fix (same format, e.g. BUG-XX-###).\n- If checkboxes (☐/☑) appear in tracking fields, keep that pattern; only adjust which box is checked when the document clearly supports it—otherwise leave ambiguous rows as neutral/unselected with a note in **Notes** if needed.\n- Prefer short bullets where the template already uses bullet-style body text.\n\nThe user message will be the raw Markdown bug report only."
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          464,
+          1520
+        ],
+        "id": "2012fb98-85bc-40e2-abf3-50857b40a8e9",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "content": "Ingestion and Routing Workflow Nodes",
+          "height": 1284,
+          "width": 1364,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1408,
+          144
+        ],
+        "typeVersion": 1,
+        "id": "fcc23dcb-7dc9-4299-ba3e-3c99ed850eec",
+        "name": "Section - Ingestion and Routing Workflow Nodes"
+      },
+      {
+        "parameters": {
+          "content": "Webhook entry point: receives uploaded report files via POST.",
+          "height": 112,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1392,
+          656
+        ],
+        "typeVersion": 1,
+        "id": "3ba31662-638a-482c-93fa-b4fdd2d44578",
+        "name": "Note - Receive Reports"
+      },
+      {
+        "parameters": {
+          "content": "Splits a multi-file upload into one item per binary file.",
+          "height": 112,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -1152,
+          224
+        ],
+        "typeVersion": 1,
+        "id": "a46e6692-4fb4-478a-b619-eef502ba55ad",
+        "name": "Note - Split Multi-file Uploads"
+      },
+      {
+        "parameters": {
+          "content": "Initializes per-file metadata like report type hint and received date.",
+          "height": 112,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -992,
+          224
+        ],
+        "typeVersion": 1,
+        "id": "82673251-b97f-4114-b92b-12c90e995bea",
+        "name": "Note - Init File Meta"
+      },
+      {
+        "parameters": {
+          "content": "Extracts Markdown text content from the uploaded file.",
+          "height": 80,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -768,
+          224
+        ],
+        "typeVersion": 1,
+        "id": "4064a4b5-402b-42fe-a3d1-42f216f2a647",
+        "name": "Note - Extract Markdown"
+      },
+      {
+        "parameters": {
+          "content": "Detects whether the Markdown is STC or Bug.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -496,
+          224
+        ],
+        "typeVersion": 1,
+        "id": "74ee846c-0d2a-4c7a-93d8-13a81ea6c696",
+        "name": "Note - Classify Report Type"
+      },
+      {
+        "parameters": {
+          "content": "Routes the item to the STC or Bug branch.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -224,
+          544
+        ],
+        "typeVersion": 1,
+        "id": "67c07450-ba97-4316-afa3-24874d4a8b6c",
+        "name": "Note - Switch STC vs Bug"
+      },
+      {
+        "parameters": {
+          "content": "Stops files that do not match supported report types.",
+          "height": 80,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -704,
+          1040
+        ],
+        "typeVersion": 1,
+        "id": "8a4faeda-2ebc-43c4-a1de-884e6c8413fc",
+        "name": "Note - Stop Unsupported Branch"
+      },
+      {
+        "parameters": {
+          "content": "STC Processing Branch Nodes",
+          "height": 500,
+          "width": 2468,
+          "color": 5
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          0,
+          0
+        ],
+        "typeVersion": 1,
+        "id": "648710de-4a73-470f-afaa-ae25c918a059",
+        "name": "Section - STC Processing Branch Nodes"
+      },
+      {
+        "parameters": {
+          "content": "Extracts STC ID and prepares STC output HTML name.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          32,
+          176
+        ],
+        "typeVersion": 1,
+        "id": "b3b2519d-b02d-4b33-be0a-e88918d3272c",
+        "name": "Note - Build STC Meta"
+      },
+      {
+        "parameters": {
+          "content": "Writes the STC Markdown to disk before HTML filling.",
+          "height": 80,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          256,
+          176
+        ],
+        "typeVersion": 1,
+        "id": "4c897fe6-f17c-42e9-aecb-189af1184ba5",
+        "name": "Note - Write STC Markdown"
+      },
+      {
+        "parameters": {
+          "content": "Runs the HTML fill script for STC reports.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1680,
+          80
+        ],
+        "typeVersion": 1,
+        "id": "4e305eaf-1da6-434f-8f6e-23ad3a188c6c",
+        "name": "Note - Fill STC HTML"
+      },
+      {
+        "parameters": {
+          "content": "Parses command output from STC HTML generation.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1904,
+          80
+        ],
+        "typeVersion": 1,
+        "id": "3b4f5084-e3bd-41ab-b2a9-37836c60f208",
+        "name": "Note - Parse STC Output"
+      },
+      {
+        "parameters": {
+          "content": "Reads the generated STC HTML file from disk for upload.",
+          "height": 80,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          2128,
+          80
+        ],
+        "typeVersion": 1,
+        "id": "60e8f840-8b8f-4032-bd9b-2d64c84969f1",
+        "name": "Note - Read/Write Files from Disk3"
+      },
+      {
+        "parameters": {
+          "content": "SQTR Generation Branch Nodes",
+          "height": 580,
+          "width": 2532,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          48,
+          512
+        ],
+        "typeVersion": 1,
+        "id": "8175c15e-01fd-446b-866c-e8829f32b895",
+        "name": "Section - SQTR Generation Branch Nodes"
+      },
+      {
+        "parameters": {
+          "content": "Builds the combined STC-level evidence for one SQTR.",
+          "height": 80,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          336,
+          608
+        ],
+        "typeVersion": 1,
+        "id": "5808b5ca-0732-434b-8ca9-1e9a96baaf39",
+        "name": "Note - Build SQTR Evidence"
+      },
+      {
+        "parameters": {
+          "content": "Uses Gemini to generate the filled SQTR Markdown.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          560,
+          608
+        ],
+        "typeVersion": 1,
+        "id": "c3a0e13f-6411-40f3-a23c-686b0cdb9a72",
+        "name": "Note - Generate SQTR Markdown"
+      },
+      {
+        "parameters": {
+          "content": "Google Gemini language model for SQTR generation.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          480,
+          864
+        ],
+        "typeVersion": 1,
+        "id": "ba3e5680-54b3-4355-ba32-cd2181835061",
+        "name": "Note - SQTR Gemini Model"
+      },
+      {
+        "parameters": {
+          "content": "Checks that the SQTR AI output is valid Markdown.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          912,
+          624
+        ],
+        "typeVersion": 1,
+        "id": "5b9d72ff-c71f-44b2-905b-0b723a3850d2",
+        "name": "Note - Validate SQTR Markdown"
+      },
+      {
+        "parameters": {
+          "content": "Prepares SQTR metadata and output filename.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1136,
+          624
+        ],
+        "typeVersion": 1,
+        "id": "d53ae284-4157-4879-84e2-bd0817538641",
+        "name": "Note - Build SQTR Meta"
+      },
+      {
+        "parameters": {
+          "content": "Writes the generated SQTR Markdown to disk.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1360,
+          624
+        ],
+        "typeVersion": 1,
+        "id": "25978255-55d9-480b-9ec5-e7eb5684df33",
+        "name": "Note - Write SQTR Markdown"
+      },
+      {
+        "parameters": {
+          "content": "Runs the HTML fill script for SQTR.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1632,
+          624
+        ],
+        "typeVersion": 1,
+        "id": "10f3e500-d1a3-4fb2-9359-ebdee6c589c2",
+        "name": "Note - Fill SQTR HTML"
+      },
+      {
+        "parameters": {
+          "content": "Parses command output from SQTR HTML generation.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1856,
+          624
+        ],
+        "typeVersion": 1,
+        "id": "d16b9cac-2a78-4d40-8565-d694226c1143",
+        "name": "Note - Parse SQTR Output"
+      },
+      {
+        "parameters": {
+          "content": "Reads the generated SQTR HTML file from disk for upload.",
+          "height": 112,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          2096,
+          608
+        ],
+        "typeVersion": 1,
+        "id": "c47129e1-f82c-4309-a509-f1c55e9779fa",
+        "name": "Note - Read/Write Files from Disk4"
+      },
+      {
+        "parameters": {
+          "content": "Bug Report Processing Branch Nodes",
+          "height": 756,
+          "width": 2404,
+          "color": 2
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          48,
+          1152
+        ],
+        "typeVersion": 1,
+        "id": "fb70d873-65ac-4404-a0f3-09dd2e774894",
+        "name": "Section - Bug Report Processing Branch Nodes"
+      },
+      {
+        "parameters": {
+          "content": "Extracts Bug ID and prepares Bug output HTML name.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          96,
+          1392
+        ],
+        "typeVersion": 1,
+        "id": "74026e68-3dcf-4d2a-a422-671d16f7a29c",
+        "name": "Note - Build Bug Meta"
+      },
+      {
+        "parameters": {
+          "content": "Writes the Bug Markdown to disk before HTML filling.",
+          "height": 80,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          320,
+          1392
+        ],
+        "typeVersion": 1,
+        "id": "188a2017-8e6f-463f-b600-2a9d81a64764",
+        "name": "Note - Write Bug Markdown"
+      },
+      {
+        "parameters": {
+          "content": "Runs the HTML fill script for Bug reports.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1680,
+          1408
+        ],
+        "typeVersion": 1,
+        "id": "46885fdf-ab15-473c-97ad-758f59d834e8",
+        "name": "Note - Fill Bug HTML"
+      },
+      {
+        "parameters": {
+          "content": "Parses command output from Bug HTML generation.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1904,
+          1408
+        ],
+        "typeVersion": 1,
+        "id": "bce28355-add2-4539-98ac-5755108fd27b",
+        "name": "Note - Parse Bug Output"
+      },
+      {
+        "parameters": {
+          "content": "Reads the generated Bug HTML file from disk for upload.",
+          "height": 80,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          2128,
+          1408
+        ],
+        "typeVersion": 1,
+        "id": "14fe0366-3ea9-4b9c-87a8-5fd48ff08a4d",
+        "name": "Note - Read/Write Files from Disk5"
+      },
+      {
+        "parameters": {
+          "content": "# **ClickUp Integration Branch Nodes**",
+          "height": 740,
+          "width": 1108
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          944,
+          1968
+        ],
+        "typeVersion": 1,
+        "id": "e25032f0-77b9-4050-b711-f33bb24caebd",
+        "name": "Section - ClickUp Integration Branch Nodes"
+      },
+      {
+        "parameters": {
+          "content": "Reviews and improves Bug Report Markdown with Gemini before ClickUp.",
+          "height": 112,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          448,
+          1392
+        ],
+        "typeVersion": 1,
+        "id": "d8323dfe-7b69-4663-83d2-c444652baaf1",
+        "name": "Note - AI Agent"
+      },
+      {
+        "parameters": {
+          "content": "Google Gemini language model powering the ClickUp AI Agent.",
+          "height": 112,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          464,
+          1568
+        ],
+        "typeVersion": 1,
+        "id": "22e0758a-d433-4b73-bcf0-5a74e274f603",
+        "name": "Note - Google Gemini Chat Model"
+      },
+      {
+        "parameters": {
+          "content": "Extracts bug fields from Markdown for ClickUp task creation.",
+          "height": 112,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          592,
+          1392
+        ],
+        "typeVersion": 1,
+        "id": "b43a5b92-d94b-4458-a6b2-f9503a59efbb",
+        "name": "Note - Parse Bug Fields for ClickUp"
+      },
+      {
+        "parameters": {
+          "content": "Checks required fields before creating a ClickUp task.",
+          "height": 80,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          832,
+          1392
+        ],
+        "typeVersion": 1,
+        "id": "d0f09474-1f72-4ef2-9e62-daf7f91402fb",
+        "name": "Note - Has Required ClickUp Fields"
+      },
+      {
+        "parameters": {
+          "content": "Creates a ClickUp task with parsed bug details.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1440,
+          2032
+        ],
+        "typeVersion": 1,
+        "id": "a9ab221d-28a0-4b64-96d8-033df472072c",
+        "name": "Note - Create a Task"
+      },
+      {
+        "parameters": {
+          "content": "Flags items skipped when required ClickUp fields are missing.",
+          "height": 112,
+          "width": 214,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1200,
+          2352
+        ],
+        "typeVersion": 1,
+        "id": "409a2e2b-212c-414e-8c67-a1af14a08709",
+        "name": "Note - Flag ClickUp Skip"
+      },
+      {
+        "parameters": {
+          "content": "Normalizes ClickUp task creation result status.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1776,
+          2032
+        ],
+        "typeVersion": 1,
+        "id": "ab4be815-9d35-444c-83ed-32082a8378a8",
+        "name": "Note - Normalize ClickUp Result"
+      },
+      {
+        "parameters": {
+          "content": "Output and Archiving Nodes",
+          "height": 100,
+          "width": 320,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          3264,
+          544
+        ],
+        "typeVersion": 1,
+        "id": "5200acb5-c5d9-40d2-89f5-896c521dc606",
+        "name": "Section - Output and Archiving Nodes"
+      },
+      {
+        "parameters": {
+          "content": "Uploads generated HTML reports to Google Drive.",
+          "height": 80,
+          "width": 150,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          3296,
+          624
+        ],
+        "typeVersion": 1,
+        "id": "4063a0de-d893-46a4-b81b-a28c3d816ae2",
+        "name": "Note - Upload To Drive"
+      }
+    ],
+    "connections": {
+      "Switch STC vs Bug": {
+        "main": [
+          [
+            {
+              "node": "Build STC Meta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Build Bug Meta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Stop Unsupported Branch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk3": {
+        "main": [
+          [
+            {
+              "node": "Upload To Drive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk4": {
+        "main": [
+          [
+            {
+              "node": "Upload To Drive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read/Write Files from Disk5": {
+        "main": [
+          [
+            {
+              "node": "Upload To Drive",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Receive Reports": {
+        "main": [
+          [
+            {
+              "node": "Split Multi-file Uploads",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Multi-file Uploads": {
+        "main": [
+          [
+            {
+              "node": "Init File Meta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Init File Meta": {
+        "main": [
+          [
+            {
+              "node": "Extract Markdown",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract Markdown": {
+        "main": [
+          [
+            {
+              "node": "Classify Report Type",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Classify Report Type": {
+        "main": [
+          [
+            {
+              "node": "Switch STC vs Bug",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build STC Meta": {
+        "main": [
+          [
+            {
+              "node": "Write STC Markdown",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Write STC Markdown": {
+        "main": [
+          [
+            {
+              "node": "Build SQTR Evidence",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Fill STC HTML",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Bug Meta": {
+        "main": [
+          [
+            {
+              "node": "Write Bug Markdown",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Write Bug Markdown": {
+        "main": [
+          [
+            {
+              "node": "Fill Bug HTML",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fill STC HTML": {
+        "main": [
+          [
+            {
+              "node": "Parse STC Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse STC Output": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk3",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fill Bug HTML": {
+        "main": [
+          [
+            {
+              "node": "Parse Bug Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Bug Output": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk5",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build SQTR Evidence": {
+        "main": [
+          [
+            {
+              "node": "Generate SQTR Markdown",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Generate SQTR Markdown": {
+        "main": [
+          [
+            {
+              "node": "Validate SQTR Markdown",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SQTR Gemini Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Generate SQTR Markdown",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate SQTR Markdown": {
+        "main": [
+          [
+            {
+              "node": "Build SQTR Meta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build SQTR Meta": {
+        "main": [
+          [
+            {
+              "node": "Write SQTR Markdown",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Write SQTR Markdown": {
+        "main": [
+          [
+            {
+              "node": "Fill SQTR HTML",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fill SQTR HTML": {
+        "main": [
+          [
+            {
+              "node": "Parse SQTR Output",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse SQTR Output": {
+        "main": [
+          [
+            {
+              "node": "Read/Write Files from Disk4",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Parse Bug Fields for ClickUp": {
+        "main": [
+          [
+            {
+              "node": "Has Required ClickUp Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Has Required ClickUp Fields": {
+        "main": [
+          [
+            {
+              "node": "Create a Task",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Flag ClickUp Skip",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create a Task": {
+        "main": [
+          [
+            {
+              "node": "Normalize ClickUp Result",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Gemini Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Parse Bug Fields for ClickUp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "pinData": {},
+    "meta": {
+      "instanceId": "1e8fd8d01304976aa04d629fc720219cbf25fee0dacd8ea57150f5cef0a2c5a3"
+    }
+  }
