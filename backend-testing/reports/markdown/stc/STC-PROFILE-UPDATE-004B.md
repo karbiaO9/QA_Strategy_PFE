@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 7, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | MEDIUM | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute PATCH request for STC-PROFILE-UPDATE-004B (STC-PROFILE-UPDATE-004/B \| Patch assistant field N/A 400) | PATCH https://identity.physio.agregatech.com/api/v1/kine/profiles/6a0e174e73797a63a4ac8467 \| Body: { "professionalNumber": "123456789" } \| Headers: Content-Type: application/json | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "FIELD_NOT_APPLICABLE" } • No side effects in database Execution sheet: HTTP ∈ {400}. | 400 Bad Request in 61 ms 3 assertion(s) passed. Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException | HTTP 400 FIELD_NOT_APPLICABLE | PASS |  |  |
+| 1 | Execute PATCH request for STC-PROFILE-UPDATE-004B (STC-PROFILE-UPDATE-004/B \| Patch assistant field N/A 400) | PATCH https://identity.physio.agregatech.com/api/v1/kine/profiles/6a0e174e73797a63a4ac8467 \| Body: { "professionalNumber": "123456789" } \| Headers: Content-Type: application/json | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "FIELD_NOT_APPLICABLE" } • No side effects in database Execution sheet: HTTP ∈ {400}. | 401 Unauthorized in 154 ms 2 failed, 1 passed. expected [ 400, 200 ] to include 401 \| expected 'TOKEN_INVALID' to deeply equal 'FIELD_NOT_APPLICABLE' Body keys: code: TOKEN_INVALID; message: Token superseded by a newer session.; statusCode: 401; error: UnauthorizedException expected [ 400, 200 ] to include 401 \| expected 'TOKEN_INVALID' to deeply equal 'FIELD_NOT_APPLICABLE' | HTTP 400 FIELD_NOT_APPLICABLE | FAIL | BUG-PROFILE-008 | Medium |
 

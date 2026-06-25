@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-PROFILE-003 |
 | **Title** | STC-PROFILE-SELECT-006B: POST — Select inactive profile 403 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-PROFILE-SELECT-006/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-PROFILE-SELECT-006/B \| Select inactive profile 403".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/select-profile with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | • Response status code : HTTP 403 • Body contains : { "statusCode": 403, "error": "...", "code": "PROFILE_INACTIVE" } • No side effects in database Allowed HTTP status (execution sheet): {403}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 62 ms. 1 failed, 2 passed. expected 'VALIDATION_FAILED' to deeply equal 'PROFILE_INACTIVE' — expected 'VALIDATION_FAILED' to deeply equal 'PROFILE_INACTIVE' |
+| **Actual Result** | 400 Bad Request in 154 ms. 1 failed, 2 passed. expected 'VALIDATION_FAILED' to deeply equal 'PROFILE_INACTIVE' — expected 'VALIDATION_FAILED' to deeply equal 'PROFILE_INACTIVE' |
 
 ---
 

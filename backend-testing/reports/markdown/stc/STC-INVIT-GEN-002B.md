@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 7, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | HIGH | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-INVIT-GEN-002B (STC-INVIT-GEN-002/B \| Preview invitation token) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview \| Body: { "invitationToken": "" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/auth/invitations/preview accepte {invitationToken} • Vérification validité token (signature, jti, TTL) • Retourne accountExists=true si email correspond à un Compte kine existant • Retourne accoun... Newman: expect HTTP 200. | 400 Bad Request in 82 ms 1 failed, 1 passed. expected response to have status code 200 but got 400 Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException expected response to have status code 200 but got 400 | • POST /api/v1/kine/auth/invitations/preview accepte {invitationToken} • Vérification validité token (signature, jti, TTL) • Retourne accountExists=true si email correspond à un Compte kine existant • Retourne accountExists=false sinon • Retourne aussi cabinetName, inviterName, role pour affichage UI • HTTP 401 si tok… | FAIL | BUG-INVIT-003 | Medium |
+| 1 | Execute POST request for STC-INVIT-GEN-002B (STC-INVIT-GEN-002/B \| Preview invitation token) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview \| Body: { "invitationToken": "" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/auth/invitations/preview accepte {invitationToken} • Vérification validité token (signature, jti, TTL) • Retourne accountExists=true si email correspond à un Compte kine existant • Retourne accoun... Newman: expect HTTP 200. | 400 Bad Request in 155 ms 1 failed, 1 passed. expected response to have status code 200 but got 400 Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException expected response to have status code 200 but got 400 | • POST /api/v1/kine/auth/invitations/preview accepte {invitationToken} • Vérification validité token (signature, jti, TTL) • Retourne accountExists=true si email correspond à un Compte kine existant • Retourne accountExists=false sinon • Retourne aussi cabinetName, inviterName, role pour affichage UI • HTTP 401 si tok… | FAIL | BUG-INVIT-003 | Medium |
 

@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-REGISTER-001 |
 | **Title** | STC-REGISTER-ADMIN-003B: POST — Register admin missing RPPS 400 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-REGISTER-ADMIN-003/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-REGISTER-ADMIN-003/B \| Register admin missing RPPS 400".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/register with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PROFESSIONAL_NUMBER_REQUIRED' } Allowed HTTP status (execution sheet): {400}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 93 ms. 1 failed, 2 passed. expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' — expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' |
+| **Actual Result** | 400 Bad Request in 155 ms. 1 failed, 2 passed. expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' — expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' |
 
 ---
 

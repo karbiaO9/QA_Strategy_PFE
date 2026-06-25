@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 7, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | LOW | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute GET request for STC-HEALTHZ-001B (STC-HEALTHZ-001/B \| Liveness healthcheck) | GET https://identity.physio.agregatech.com \| Headers: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NWIiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiw… | Cas nominal validé selon les AC du ticket : • Toutes les configs critiques en variables d'env • Validation des env vars au démarrage (joi ou class-validator) • Documentation des variables (.env.example) • Changement de config without rebuild Newman: expect HTTP 200. | 200 OK in 62 ms 2 assertion(s) passed. Hello World! | • Toutes les configs critiques en variables d'env • Validation des env vars au démarrage (joi ou class-validator) • Documentation des variables (.env.example) • Changement de config sans rebuild | PASS |  |  |
+| 1 | Execute GET request for STC-HEALTHZ-001B (STC-HEALTHZ-001/B \| Liveness healthcheck) | GET https://identity.physio.agregatech.com \| Headers: Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NWIiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiw… | Cas nominal validé selon les AC du ticket : • Toutes les configs critiques en variables d'env • Validation des env vars au démarrage (joi ou class-validator) • Documentation des variables (.env.example) • Changement de config without rebuild Newman: expect HTTP 200. | 200 OK in 153 ms 2 assertion(s) passed. Hello World! | • Toutes les configs critiques en variables d'env • Validation des env vars au démarrage (joi ou class-validator) • Documentation des variables (.env.example) • Changement de config sans rebuild | PASS |  |  |
 

@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-PROFILE-004 |
 | **Title** | STC-PROFILE-ADD-004B: POST — Add MEMBER conflict 409 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-PROFILE-ADD-004/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-PROFILE-ADD-004/B \| Add MEMBER conflict 409".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/profiles with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | • Response status code : HTTP 409 • Body contains : { "statusCode": 409, "error": "...", "code": "Conflict (doublon, état incompatible)" } • No side effects in database Allowed HTTP status (execution sheet): {409}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 87 ms. 1 failed, 2 passed. expected [ 409, 201 ] to include 400 — expected [ 409, 201 ] to include 400 |
+| **Actual Result** | 400 Bad Request in 155 ms. 1 failed, 2 passed. expected [ 409, 201 ] to include 400 — expected [ 409, 201 ] to include 400 |
 
 ---
 

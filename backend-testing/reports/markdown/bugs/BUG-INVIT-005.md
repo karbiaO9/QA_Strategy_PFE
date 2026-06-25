@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-INVIT-005 |
 | **Title** | STC-INVIT-GEN-006B: POST — Preview without auth 401 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-INVIT-GEN-006/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-GEN-006/B \| Preview without auth 401".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | • Response status code : HTTP 401 • Body contains : { "statusCode": 401, "error": "...", "code": "Unauthorized (token invalid / credentials incorrects)" } • No side effects in database Allowed HTTP status (execution sheet): {401}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 85 ms. 1 failed, 1 passed. expected response to have status code 401 but got 400 — expected response to have status code 401 but got 400 |
+| **Actual Result** | 400 Bad Request in 154 ms. 1 failed, 1 passed. expected response to have status code 401 but got 400 — expected response to have status code 401 but got 400 |
 
 ---
 

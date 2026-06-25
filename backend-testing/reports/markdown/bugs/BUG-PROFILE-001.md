@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-PROFILE-001 |
 | **Title** | STC-PROFILE-ADD-002B: POST — Admin add LIBERAL to kine |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-PROFILE-ADD-002/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-PROFILE-ADD-002/B \| Admin add LIBERAL to kine".<br>3. Send POST to https://identity.physio.agregatech.com/api/admin/v1/kines/6a0e174e73797a63a4ac8461/profiles with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | Cas nominal validé selon les AC du ticket : • POST /api/admin/v1/kines/:id/profilees accepte AddKineProfileDto + scope=admin (côté backend) • Réservé SUPER_ADMIN via PoliciesGuard • HTTP 201 with le profile créé (et freemium si applicable) • Vérification fraîc... Allowed HTTP status (execution sheet): {201}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 65 ms. 1 failed, 1 passed. expected [ 200, 201 ] to include 400 — expected [ 200, 201 ] to include 400 |
+| **Actual Result** | 400 Bad Request in 155 ms. 1 failed, 1 passed. expected [ 200, 201 ] to include 400 — expected [ 200, 201 ] to include 400 |
 
 ---
 

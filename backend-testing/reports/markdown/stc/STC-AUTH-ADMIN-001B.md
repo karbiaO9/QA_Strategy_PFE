@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 7, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | HIGH | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-AUTH-ADMIN-001B (STC-AUTH-ADMIN-001/B \| Admin login nominal) | POST https://identity.physio.agregatech.com/api/admin/v1/auth/login \| Body: { "email": "admin@physioconnect.com", "password": "Admin123!" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/admin/v1/auth/login accepte {email, password} • Recherche dans collection admins (séparée de kines/patients) • Retour accessToken + refreshToken + permissions wildcard for SUPER_ADMIN • Rate limiting appl... Newman: expect HTTP 200. | 200 OK in 302 ms 2 assertion(s) passed. Body keys: accessToken: [redacted]; refreshToken: [redacted]; user: {…}; permissions: {…} | • POST /api/admin/v1/auth/login accepte {email, password} • Recherche dans collection admins (séparée de kines/patients) • Retour accessToken + refreshToken + permissions wildcard pour SUPER_ADMIN • Rate limiting appliqué | PASS |  |  |
+| 1 | Execute POST request for STC-AUTH-ADMIN-001B (STC-AUTH-ADMIN-001/B \| Admin login nominal) | POST https://identity.physio.agregatech.com/api/admin/v1/auth/login \| Body: { "email": "admin@physioconnect.com", "password": "Admin123!" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/admin/v1/auth/login accepte {email, password} • Recherche dans collection admins (séparée de kines/patients) • Retour accessToken + refreshToken + permissions wildcard for SUPER_ADMIN • Rate limiting appl... Newman: expect HTTP 200. | 200 OK in 364 ms 2 assertion(s) passed. Body keys: accessToken: [redacted]; refreshToken: [redacted]; user: {…}; permissions: {…} | • POST /api/admin/v1/auth/login accepte {email, password} • Recherche dans collection admins (séparée de kines/patients) • Retour accessToken + refreshToken + permissions wildcard pour SUPER_ADMIN • Rate limiting appliqué | PASS |  |  |
 

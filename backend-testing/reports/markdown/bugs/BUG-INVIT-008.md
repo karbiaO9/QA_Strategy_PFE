@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-INVIT-008 |
 | **Title** | STC-INVIT-ACCEPT-007B: POST — Assistant professional number forbidden 400 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-INVIT-ACCEPT-007/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-ACCEPT-007/B \| Assistant professional number forbidden 400".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/accept-invitation with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PROFESSIONAL_NUMBER_FORBIDDEN' } • Aucun Compte créé Allowed HTTP status (execution sheet): {400}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 60 ms. 1 failed, 2 passed. expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' — expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' |
+| **Actual Result** | 400 Bad Request in 153 ms. 1 failed, 2 passed. expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' — expected 'FIELD_NOT_APPLICABLE' to deeply equal 'PROFESSIONAL_NUMBER_FORBIDDEN' |
 
 ---
 

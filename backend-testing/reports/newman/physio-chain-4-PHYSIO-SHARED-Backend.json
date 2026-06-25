@@ -5,11 +5,11 @@
     },
     "item": [
       {
-        "id": "15cf6bbd-9cf3-4b51-9729-d1ed4bea77f3",
+        "id": "04ca3153-162e-429d-8082-0dc7f6b7183d",
         "name": "Password Forgot",
         "item": [
           {
-            "id": "7dc35e5f-0481-47f2-aed3-375cb122935b",
+            "id": "f6c7a574-dee3-4c92-a70a-52c9014d72fa",
             "name": "STC-PWD-FORGOT-003/B | Forgot password unknown email 200",
             "request": {
               "description": {
@@ -56,7 +56,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "a75381c2-c6ac-48e4-a479-52ea4c6541de",
+                  "id": "f8bfc577-b6e8-4e57-b0bf-823c36bd8561",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-FORGOT-003/B",
@@ -68,13 +68,13 @@
                     "});",
                     "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                   ],
-                  "_lastExecutionId": "98076e6b-02e7-4399-8fe2-c9f27ad0b89d"
+                  "_lastExecutionId": "a9714ff9-ed05-4bbf-90b5-1868f5108bb1"
                 }
               }
             ]
           },
           {
-            "id": "f954b386-9b6c-4bc1-9a55-fc16c695f405",
+            "id": "a5139ea9-1934-4f6f-8fdb-8b0bdc3b0724",
             "name": "STC-PWD-FORGOT-004/B | Forgot password rate limit 429",
             "request": {
               "description": {
@@ -121,7 +121,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "88443fe9-9b53-42d2-bc45-d81d2e0a5f25",
+                  "id": "dc003f7e-586e-438b-b199-cbcbd84b8360",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-FORGOT-004/B",
@@ -140,13 +140,13 @@
                     "  });",
                     "}"
                   ],
-                  "_lastExecutionId": "81ae8127-de2d-4916-9594-9d5383885108"
+                  "_lastExecutionId": "a6ceb161-15fb-45e4-8d2b-f26c73af6924"
                 }
               }
             ]
           },
           {
-            "id": "9c97f1e2-23fb-4ce2-9cf9-6021c4d8e742",
+            "id": "1f551b1f-a13e-428f-8b31-77c7a64b3515",
             "name": "STC-PWD-FORGOT-001/B | Forgot password existing email",
             "request": {
               "description": {
@@ -193,7 +193,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "d53b0655-8afd-4206-80c2-d0c2e92869c9",
+                  "id": "4130c9fd-bf9a-4dd7-99e2-a1ea93dfd3a2",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-FORGOT-001/B",
@@ -205,7 +205,7 @@
                     "});",
                     "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                   ],
-                  "_lastExecutionId": "ed4c6306-32ae-4976-9e6f-570003c0d079"
+                  "_lastExecutionId": "ec19b9e7-40ea-4abd-92ab-f0855a850aa4"
                 }
               }
             ]
@@ -214,11 +214,11 @@
         "event": []
       },
       {
-        "id": "9568225a-f2ec-44c6-91da-e9534c0bed81",
+        "id": "e0fb3007-872c-4507-9a4e-3d7ef3c05663",
         "name": "Password Verify Code",
         "item": [
           {
-            "id": "901b5eb1-609b-424d-bf6c-5c3256db8594",
+            "id": "e0c5fcb4-94a4-4f30-96ba-d735f38bab9b",
             "name": "STC-PWD-VERIFY-001/B | Verify code success",
             "request": {
               "description": {
@@ -265,7 +265,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "3c357e46-8e9c-4a5d-9189-338559aeb43e",
+                  "id": "77d3c6a5-7117-4062-a33c-833b630389ee",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-VERIFY-001/B",
@@ -281,13 +281,13 @@
                     "  if (rt) pm.environment.set('resetToken', rt);",
                     "}"
                   ],
-                  "_lastExecutionId": "853e478b-cab6-4bee-8afb-d872147999af"
+                  "_lastExecutionId": "86f091e0-da5e-4577-a232-2d8039fd26be"
                 }
               }
             ]
           },
           {
-            "id": "ad5ae35c-05ee-48ae-9336-bd8021082d2a",
+            "id": "5fdf1ec3-7352-4ac0-9ab8-867a9ef0ae54",
             "name": "STC-PWD-VERIFY-003/B | Verify code invalid 400",
             "request": {
               "description": {
@@ -334,7 +334,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "edf55180-b65e-461d-918b-961c571b82db",
+                  "id": "bdeb7a90-749e-4d4e-89c0-3e62686f5cd7",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-VERIFY-003/B",
@@ -350,13 +350,13 @@
                     "  if (c != null && c !== '') { pm.expect(['CODE_INVALID', 'CODE_EXPIRED']).to.include(String(c)); }",
                     "});"
                   ],
-                  "_lastExecutionId": "d1942221-a8a5-439b-9588-91d43a55d019"
+                  "_lastExecutionId": "a21e630c-b745-4930-ba0d-d29e0d56e464"
                 }
               }
             ]
           },
           {
-            "id": "8009df42-27d3-4ef4-9795-da76a6ef7d96",
+            "id": "ad4ddc44-d4cf-44fe-b310-4178ce9cf2e7",
             "name": "STC-PWD-VERIFY-004/B | Verify code expired 400",
             "request": {
               "description": {
@@ -403,7 +403,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "6f22e584-2bef-44c1-ad11-f7b5a170345e",
+                  "id": "67f86f14-3b13-4f56-a592-1e9c2ead7a4e",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-VERIFY-004/B",
@@ -420,13 +420,13 @@
                     "  }",
                     "});"
                   ],
-                  "_lastExecutionId": "04961bf1-6cb6-467d-b1f7-f53f34655853"
+                  "_lastExecutionId": "048d44f7-4a0f-4eba-b91c-fd86a4b6c17a"
                 }
               }
             ]
           },
           {
-            "id": "f1c68209-961a-43b2-bff3-4c6a3338a3ab",
+            "id": "6a21bfa8-9643-4a3d-acb0-3fd809975581",
             "name": "STC-PWD-VERIFY-005/B | Verify code brute force",
             "request": {
               "description": {
@@ -473,7 +473,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "a91f97e3-2c34-4de5-8b7c-54102b4b4b4c",
+                  "id": "d3db2fba-6df7-4547-8783-691e9489b6a5",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-VERIFY-005/B",
@@ -490,7 +490,7 @@
                     "  pm.expect(['CODE_INVALID', 'CODE_TOO_MANY_ATTEMPTS', 'CODE_EXPIRED']).to.include(String(c || ''));",
                     "});"
                   ],
-                  "_lastExecutionId": "d1694ad5-0ec3-426d-a659-24aed7f6a978"
+                  "_lastExecutionId": "9c6ce578-0d01-4645-982f-fd3719d190a3"
                 }
               }
             ]
@@ -499,11 +499,11 @@
         "event": []
       },
       {
-        "id": "c429e1e7-5e67-4be1-8a80-69e60f317bad",
+        "id": "29038468-6fec-4bf6-a1de-c9590a3357de",
         "name": "Password Reset",
         "item": [
           {
-            "id": "3d845ab2-cbe4-45fc-a7dd-96f1e6fbfed8",
+            "id": "1573f8b9-cf55-4e46-8ee1-0af69a739391",
             "name": "STC-PWD-RESET-001/B | Reset password with token",
             "request": {
               "description": {
@@ -550,7 +550,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "f6ade7fb-019a-4788-a7be-34acee5a5266",
+                  "id": "31667599-6a64-4587-8425-10b07b8ee46c",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-RESET-001/B",
@@ -562,7 +562,7 @@
                     "});",
                     "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                   ],
-                  "_lastExecutionId": "a2267a4a-6dcb-48c6-b2ff-28f9035133b1"
+                  "_lastExecutionId": "6afd1508-cc5e-4337-83ac-e0f94d82f09d"
                 }
               }
             ]
@@ -571,11 +571,11 @@
         "event": []
       },
       {
-        "id": "f3af97db-5e73-4621-9a57-d22139dca7dc",
+        "id": "51706cc7-f662-4bce-8335-58ea72c12496",
         "name": "Password Change",
         "item": [
           {
-            "id": "92b1b0fa-3b2f-4242-8350-76fc9a1581f4",
+            "id": "44d3f93d-9b3a-4a23-81a2-5a84e43ca081",
             "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
             "request": {
               "description": {
@@ -626,7 +626,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "e76fd0f6-fa7a-4a42-ab75-791d22c6cbc2",
+                  "id": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-CHANGE-002/B",
@@ -643,13 +643,13 @@
                     "  }",
                     "});"
                   ],
-                  "_lastExecutionId": "045c125c-15d8-4d9c-8f59-c91bd7a163f9"
+                  "_lastExecutionId": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
                 }
               }
             ]
           },
           {
-            "id": "cc97dc07-93dd-419e-8d91-6f2b5b409877",
+            "id": "5bdd5f8e-0143-44a9-832a-0085490634df",
             "name": "STC-PWD-CHANGE-001/B | Change password success",
             "request": {
               "description": {
@@ -700,7 +700,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "3356b253-a5cf-4832-a2fc-ae8da525599a",
+                  "id": "d0b038fb-c9e8-423d-a6f3-c7ae1faefc49",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-PWD-CHANGE-001/B",
@@ -718,7 +718,7 @@
                     "  pm.environment.set('kinePasswordAlternate', a);",
                     "}"
                   ],
-                  "_lastExecutionId": "383ee5b4-1857-41f8-bcc9-f06776afee17"
+                  "_lastExecutionId": "ce73a39a-c9fd-4873-a67d-03bf9b84c2f4"
                 }
               }
             ]
@@ -727,11 +727,11 @@
         "event": []
       },
       {
-        "id": "ae7ca499-259b-42da-bd5f-89d993aaf9dd",
+        "id": "f6168932-5d85-496d-975f-e9fb94bf6645",
         "name": "System Healthcheck",
         "item": [
           {
-            "id": "76dba666-958c-4031-abcb-2276221e1359",
+            "id": "4e767d94-9a30-4025-814d-d080affd0e77",
             "name": "STC-HEALTHZ-001/B | Liveness healthcheck",
             "request": {
               "description": {
@@ -762,7 +762,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "848d3e76-71d0-4a78-a940-b9bc8c029c77",
+                  "id": "f240b984-0f3c-4d57-bee4-f238670f849a",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-HEALTHZ-001/B",
@@ -774,7 +774,7 @@
                     "});",
                     "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                   ],
-                  "_lastExecutionId": "61023591-94db-4ba2-914c-3a9554737d5a"
+                  "_lastExecutionId": "8d7109a5-3683-4802-b9a1-54d58dc0abd4"
                 }
               }
             ]
@@ -798,7 +798,7 @@
   "environment": {
     "_": {
       "postman_variable_scope": "environment",
-      "postman_exported_at": "2026-06-06T13:59:17.924Z",
+      "postman_exported_at": "2026-06-07T17:38:05.377Z",
       "postman_exported_using": "Newman/4.6.1"
     },
     "id": "physio-backend-exec-env",
@@ -886,17 +886,17 @@
       },
       {
         "type": "any",
-        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NWIiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6OCwiaWF0IjoxNzgwNzU3OTQwLCJleHAiOjE3ODA4NDQzNDB9.Csf6OQ3d1VMpoTTV4qHv-Y6JfNfSmJNhlIQrB3Su0r4",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NWIiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6MTIsImlhdCI6MTc4MDg1Mzg1MywiZXhwIjoxNzgwOTQwMjUzfQ.SsWKgM7Tpcu4uDfQ1QIlHGnSO4sRUMSlFWcbc_8FAyw",
         "key": "adminToken"
       },
       {
         "type": "any",
-        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjEiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjIwLCJpYXQiOjE3ODA3NTc5NTAsImV4cCI6MTc4MDg0NDM1MH0.-aHvd_1XlotlYD92wHNZYy0BS2mQ_yhpIA7WjhaaSwg",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjEiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjMxLCJpYXQiOjE3ODA4NTM4NjEsImV4cCI6MTc4MDk0MDI2MX0.uoxmG5ptGVPMwynTwuPTd4aelqelC3LnA9ZSyo3uZkA",
         "key": "kineToken"
       },
       {
         "type": "any",
-        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc1MDczNzk3YTYzYTRhYzg0YjYiLCJlbWFpbCI6Im1hcmllLmR1cmFuZEBwYXRpZW50LmZyIiwidHlwZSI6InBhdGllbnQiLCJjYWJpbmV0SWQiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjQiLCJyb2xlU2x1ZyI6IlBBVElFTlQiLCJ2IjoxMSwiaWF0IjoxNzgwNzU3OTc0LCJleHAiOjE3ODA4NDQzNzR9.gjc_vkqaF77v2vys4xMYuzQ7lrdQUMKGw5_woxDiBhA",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc1MDczNzk3YTYzYTRhYzg0YjYiLCJlbWFpbCI6Im1hcmllLmR1cmFuZEBwYXRpZW50LmZyIiwidHlwZSI6InBhdGllbnQiLCJjYWJpbmV0SWQiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjQiLCJyb2xlU2x1ZyI6IlBBVElFTlQiLCJ2IjoxNSwiaWF0IjoxNzgwODUzODg0LCJleHAiOjE3ODA5NDAyODR9.gqvlzg8nACV0AOd86FNUCj1Ca5H6J_FztE0R8vPP4jU",
         "key": "patientToken"
       },
       {
@@ -906,7 +906,7 @@
       },
       {
         "type": "any",
-        "value": "9adc20e4210898bb5190c98c916f57d48e8985f9815389fcbef7eb7f5efbacf0",
+        "value": "913948a49d86007b000482603ae522fdd6c26d7b490292eaaa9eefcef37b311e",
         "key": "refreshToken"
       },
       {
@@ -1282,7 +1282,7 @@
     ]
   },
   "globals": {
-    "id": "149f5ac4-eef6-4c1b-a564-2c3fc756d397",
+    "id": "cef8a3df-e7f3-4a59-ae4d-9e0c5b927796",
     "values": []
   },
   "run": {
@@ -1320,7 +1320,7 @@
       "assertions": {
         "total": 26,
         "pending": 0,
-        "failed": 3
+        "failed": 5
       },
       "testScripts": {
         "total": 11,
@@ -1334,10 +1334,10 @@
       }
     },
     "timings": {
-      "responseAverage": 194.45454545454547,
-      "responseMin": 61,
-      "responseMax": 657,
-      "responseSd": 166.67844035549064,
+      "responseAverage": 258.8181818181818,
+      "responseMin": 153,
+      "responseMax": 873,
+      "responseSd": 214.96968842641223,
       "dnsAverage": 0,
       "dnsMin": 0,
       "dnsMax": 0,
@@ -1346,8 +1346,8 @@
       "firstByteMin": 0,
       "firstByteMax": 0,
       "firstByteSd": 0,
-      "started": 1780754360137,
-      "completed": 1780754368453
+      "started": 1780853886253,
+      "completed": 1780853894325
     },
     "executions": [
       {
@@ -1360,11 +1360,11 @@
           "eof": false,
           "bof": true,
           "cr": false,
-          "ref": "c3a1c1bc-aba7-4d56-99a2-cd94e4799e64",
-          "httpRequestId": "7651f335-a8ca-40a0-a4a9-ef03f067c1f5"
+          "ref": "e804e6c0-6d52-4240-925c-e4652c245ab5",
+          "httpRequestId": "f49e75b9-692d-4bb4-9382-877c75187cde"
         },
         "item": {
-          "id": "7dc35e5f-0481-47f2-aed3-375cb122935b",
+          "id": "f6c7a574-dee3-4c92-a70a-52c9014d72fa",
           "name": "STC-PWD-FORGOT-003/B | Forgot password unknown email 200",
           "request": {
             "description": {
@@ -1411,7 +1411,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a75381c2-c6ac-48e4-a479-52ea4c6541de",
+                "id": "f8bfc577-b6e8-4e57-b0bf-823c36bd8561",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-FORGOT-003/B",
@@ -1423,7 +1423,7 @@
                   "});",
                   "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                 ],
-                "_lastExecutionId": "98076e6b-02e7-4399-8fe2-c9f27ad0b89d"
+                "_lastExecutionId": "a9714ff9-ed05-4bbf-90b5-1868f5108bb1"
               }
             }
           ]
@@ -1472,7 +1472,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "9d274703-6884-4b7a-805a-9fb02e337894",
+              "value": "2400b348-02e6-494e-b519-b22cd280c990",
               "system": true
             },
             {
@@ -1508,7 +1508,7 @@
           }
         },
         "response": {
-          "id": "01f48538-eec8-446b-9c83-4f9aa2cd7a26",
+          "id": "47b74183-447e-4c3f-8546-de7951408b24",
           "status": "Not Found",
           "code": 404,
           "header": [
@@ -1526,7 +1526,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:38 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:07 GMT"
             },
             {
               "key": "Etag",
@@ -1665,10 +1665,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 261,
+          "responseTime": 480,
           "responseSize": 122
         },
-        "id": "7dc35e5f-0481-47f2-aed3-375cb122935b",
+        "id": "f6c7a574-dee3-4c92-a70a-52c9014d72fa",
         "assertions": [
           {
             "assertion": "[STC-PWD-FORGOT-003/B] response time OK",
@@ -1689,15 +1689,15 @@
       },
       {
         "cursor": {
-          "ref": "a6621176-3bd9-4a28-b582-a1bdfb3046a9",
+          "ref": "97b43d52-e8a8-416b-b989-7dd5a0de50fd",
           "length": 11,
           "cycles": 1,
           "position": 1,
           "iteration": 0,
-          "httpRequestId": "049b7599-319f-4f05-aaf1-e7e9b8101c2e"
+          "httpRequestId": "842c084d-903d-457e-ad4f-aa83da45c56c"
         },
         "item": {
-          "id": "f954b386-9b6c-4bc1-9a55-fc16c695f405",
+          "id": "a5139ea9-1934-4f6f-8fdb-8b0bdc3b0724",
           "name": "STC-PWD-FORGOT-004/B | Forgot password rate limit 429",
           "request": {
             "description": {
@@ -1744,7 +1744,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "88443fe9-9b53-42d2-bc45-d81d2e0a5f25",
+                "id": "dc003f7e-586e-438b-b199-cbcbd84b8360",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-FORGOT-004/B",
@@ -1763,7 +1763,7 @@
                   "  });",
                   "}"
                 ],
-                "_lastExecutionId": "81ae8127-de2d-4916-9594-9d5383885108"
+                "_lastExecutionId": "a6ceb161-15fb-45e4-8d2b-f26c73af6924"
               }
             }
           ]
@@ -1812,7 +1812,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "fcfc5a9c-00a2-4d86-b730-602b4455fc8e",
+              "value": "af9fccc0-4347-4ba6-bfc0-1e99c68558b2",
               "system": true
             },
             {
@@ -1848,7 +1848,7 @@
           }
         },
         "response": {
-          "id": "08297bcb-663d-4595-a28e-0a4cd7d96bd2",
+          "id": "793164c6-60e0-4a9e-aa66-f7a2da19d6fe",
           "status": "Not Found",
           "code": 404,
           "header": [
@@ -1866,7 +1866,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:39 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:07 GMT"
             },
             {
               "key": "Etag",
@@ -2005,10 +2005,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 102,
+          "responseTime": 156,
           "responseSize": 122
         },
-        "id": "f954b386-9b6c-4bc1-9a55-fc16c695f405",
+        "id": "a5139ea9-1934-4f6f-8fdb-8b0bdc3b0724",
         "assertions": [
           {
             "assertion": "[STC-PWD-FORGOT-004/B] response time OK",
@@ -2029,15 +2029,15 @@
       },
       {
         "cursor": {
-          "ref": "76137395-5afe-40b4-b42f-ad8adc1788fa",
+          "ref": "ca52eae3-656e-4c25-bec1-3b7a5e367c2d",
           "length": 11,
           "cycles": 1,
           "position": 2,
           "iteration": 0,
-          "httpRequestId": "d35f68bb-36b9-4cfc-8303-5bb3a2906dbc"
+          "httpRequestId": "436cc115-1651-485e-8eb0-1c4e5fff6c54"
         },
         "item": {
-          "id": "9c97f1e2-23fb-4ce2-9cf9-6021c4d8e742",
+          "id": "1f551b1f-a13e-428f-8b31-77c7a64b3515",
           "name": "STC-PWD-FORGOT-001/B | Forgot password existing email",
           "request": {
             "description": {
@@ -2084,7 +2084,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d53b0655-8afd-4206-80c2-d0c2e92869c9",
+                "id": "4130c9fd-bf9a-4dd7-99e2-a1ea93dfd3a2",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-FORGOT-001/B",
@@ -2096,7 +2096,7 @@
                   "});",
                   "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                 ],
-                "_lastExecutionId": "ed4c6306-32ae-4976-9e6f-570003c0d079"
+                "_lastExecutionId": "ec19b9e7-40ea-4abd-92ab-f0855a850aa4"
               }
             }
           ]
@@ -2145,7 +2145,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "35446bc9-718c-4ba6-ac23-de0d74cca4c4",
+              "value": "b5ce0efd-1d1e-447d-abf7-67cc305fb00e",
               "system": true
             },
             {
@@ -2181,7 +2181,7 @@
           }
         },
         "response": {
-          "id": "d0694ac3-7f5f-4d1b-b7d0-8180e738ed34",
+          "id": "2de1b988-7de2-421b-b323-99e4095e3c9b",
           "status": "OK",
           "code": 200,
           "header": [
@@ -2199,7 +2199,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:40 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:09 GMT"
             },
             {
               "key": "Etag",
@@ -2350,10 +2350,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 657,
+          "responseTime": 873,
           "responseSize": 134
         },
-        "id": "9c97f1e2-23fb-4ce2-9cf9-6021c4d8e742",
+        "id": "1f551b1f-a13e-428f-8b31-77c7a64b3515",
         "assertions": [
           {
             "assertion": "[STC-PWD-FORGOT-001/B] response time OK",
@@ -2367,15 +2367,15 @@
       },
       {
         "cursor": {
-          "ref": "459a5a64-646c-4765-ae1f-aaaea950404f",
+          "ref": "3967e97e-518a-45e7-800d-e35227c20392",
           "length": 11,
           "cycles": 1,
           "position": 3,
           "iteration": 0,
-          "httpRequestId": "102de20e-fb6e-42bc-8dd5-77a4c86bb0c7"
+          "httpRequestId": "66afb56e-32aa-4322-ad6c-48d095291656"
         },
         "item": {
-          "id": "901b5eb1-609b-424d-bf6c-5c3256db8594",
+          "id": "e0c5fcb4-94a4-4f30-96ba-d735f38bab9b",
           "name": "STC-PWD-VERIFY-001/B | Verify code success",
           "request": {
             "description": {
@@ -2422,7 +2422,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3c357e46-8e9c-4a5d-9189-338559aeb43e",
+                "id": "77d3c6a5-7117-4062-a33c-833b630389ee",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-VERIFY-001/B",
@@ -2438,7 +2438,7 @@
                   "  if (rt) pm.environment.set('resetToken', rt);",
                   "}"
                 ],
-                "_lastExecutionId": "853e478b-cab6-4bee-8afb-d872147999af"
+                "_lastExecutionId": "86f091e0-da5e-4577-a232-2d8039fd26be"
               }
             }
           ]
@@ -2487,7 +2487,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "d8f00c99-bb03-4d6d-be20-147d1338d918",
+              "value": "7a288197-5093-4481-8a83-b5c091c40860",
               "system": true
             },
             {
@@ -2523,7 +2523,7 @@
           }
         },
         "response": {
-          "id": "cfb70d5a-a505-4217-ae49-6f70304a72e4",
+          "id": "ddb78979-c855-458b-bbea-399e4dcc24fa",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -2541,7 +2541,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:41 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:09 GMT"
             },
             {
               "key": "Etag",
@@ -2807,10 +2807,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 80,
+          "responseTime": 153,
           "responseSize": 249
         },
-        "id": "901b5eb1-609b-424d-bf6c-5c3256db8594",
+        "id": "e0c5fcb4-94a4-4f30-96ba-d735f38bab9b",
         "assertions": [
           {
             "assertion": "[STC-PWD-VERIFY-001/B] response time OK",
@@ -2824,15 +2824,15 @@
       },
       {
         "cursor": {
-          "ref": "ce9c7d32-283f-4075-a16b-e4f4f93344f0",
+          "ref": "bac553e3-a117-4d28-8a44-1548beae4f4b",
           "length": 11,
           "cycles": 1,
           "position": 4,
           "iteration": 0,
-          "httpRequestId": "dc970d50-1b6e-4c7a-8e43-33012b429952"
+          "httpRequestId": "98e91b04-cc17-4c52-ad01-99b2024e6bf8"
         },
         "item": {
-          "id": "ad5ae35c-05ee-48ae-9336-bd8021082d2a",
+          "id": "5fdf1ec3-7352-4ac0-9ab8-867a9ef0ae54",
           "name": "STC-PWD-VERIFY-003/B | Verify code invalid 400",
           "request": {
             "description": {
@@ -2879,7 +2879,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "edf55180-b65e-461d-918b-961c571b82db",
+                "id": "bdeb7a90-749e-4d4e-89c0-3e62686f5cd7",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-VERIFY-003/B",
@@ -2895,7 +2895,7 @@
                   "  if (c != null && c !== '') { pm.expect(['CODE_INVALID', 'CODE_EXPIRED']).to.include(String(c)); }",
                   "});"
                 ],
-                "_lastExecutionId": "d1942221-a8a5-439b-9588-91d43a55d019"
+                "_lastExecutionId": "a21e630c-b745-4930-ba0d-d29e0d56e464"
               }
             }
           ]
@@ -2944,7 +2944,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "8c376800-9e33-425e-9d21-0ba791be284f",
+              "value": "00b80fa6-16fb-43ed-b5b4-631db777e248",
               "system": true
             },
             {
@@ -2980,7 +2980,7 @@
           }
         },
         "response": {
-          "id": "97471375-d060-4660-a55d-fae0d88d8b78",
+          "id": "9fffa0e4-d7f6-418f-9353-57a0557fb05c",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -2998,7 +2998,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:42 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:10 GMT"
             },
             {
               "key": "Etag",
@@ -3111,10 +3111,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 142,
+          "responseTime": 209,
           "responseSize": 96
         },
-        "id": "ad5ae35c-05ee-48ae-9336-bd8021082d2a",
+        "id": "5fdf1ec3-7352-4ac0-9ab8-867a9ef0ae54",
         "assertions": [
           {
             "assertion": "[STC-PWD-VERIFY-003/B] response time OK",
@@ -3132,15 +3132,15 @@
       },
       {
         "cursor": {
-          "ref": "68473949-3f65-4db0-b814-8fbdbeea29c5",
+          "ref": "5666ba99-1c6c-45d1-a8bc-5898cfbf13d7",
           "length": 11,
           "cycles": 1,
           "position": 5,
           "iteration": 0,
-          "httpRequestId": "721dcfa8-39d9-4edf-a570-00034dde0baa"
+          "httpRequestId": "b2efb97d-f733-4931-98b6-66fe505686d1"
         },
         "item": {
-          "id": "8009df42-27d3-4ef4-9795-da76a6ef7d96",
+          "id": "ad4ddc44-d4cf-44fe-b310-4178ce9cf2e7",
           "name": "STC-PWD-VERIFY-004/B | Verify code expired 400",
           "request": {
             "description": {
@@ -3187,7 +3187,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "6f22e584-2bef-44c1-ad11-f7b5a170345e",
+                "id": "67f86f14-3b13-4f56-a592-1e9c2ead7a4e",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-VERIFY-004/B",
@@ -3204,7 +3204,7 @@
                   "  }",
                   "});"
                 ],
-                "_lastExecutionId": "04961bf1-6cb6-467d-b1f7-f53f34655853"
+                "_lastExecutionId": "048d44f7-4a0f-4eba-b91c-fd86a4b6c17a"
               }
             }
           ]
@@ -3253,7 +3253,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "118b7501-0425-4d9f-87cf-58da34d28f40",
+              "value": "42637ee7-f1a1-4c57-bfaf-616f42ef3b8e",
               "system": true
             },
             {
@@ -3289,7 +3289,7 @@
           }
         },
         "response": {
-          "id": "233448f5-aa17-4fde-9ec7-3f501accc069",
+          "id": "8582b6a5-fb2f-42ce-b892-030076315411",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -3307,7 +3307,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:42 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:11 GMT"
             },
             {
               "key": "Etag",
@@ -3573,10 +3573,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 83,
+          "responseTime": 154,
           "responseSize": 249
         },
-        "id": "8009df42-27d3-4ef4-9795-da76a6ef7d96",
+        "id": "ad4ddc44-d4cf-44fe-b310-4178ce9cf2e7",
         "assertions": [
           {
             "assertion": "[STC-PWD-VERIFY-004/B] response time OK",
@@ -3594,15 +3594,15 @@
       },
       {
         "cursor": {
-          "ref": "1d901e08-b383-4156-9b55-96125a15e5fb",
+          "ref": "9643e899-c103-4ede-ad47-704fc513331a",
           "length": 11,
           "cycles": 1,
           "position": 6,
           "iteration": 0,
-          "httpRequestId": "4d09fb6d-19c1-4556-9083-d11bb5cda8e1"
+          "httpRequestId": "70c6988d-6df8-4783-9ce9-ae0fb50d3609"
         },
         "item": {
-          "id": "f1c68209-961a-43b2-bff3-4c6a3338a3ab",
+          "id": "6a21bfa8-9643-4a3d-acb0-3fd809975581",
           "name": "STC-PWD-VERIFY-005/B | Verify code brute force",
           "request": {
             "description": {
@@ -3649,7 +3649,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a91f97e3-2c34-4de5-8b7c-54102b4b4b4c",
+                "id": "d3db2fba-6df7-4547-8783-691e9489b6a5",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-VERIFY-005/B",
@@ -3666,7 +3666,7 @@
                   "  pm.expect(['CODE_INVALID', 'CODE_TOO_MANY_ATTEMPTS', 'CODE_EXPIRED']).to.include(String(c || ''));",
                   "});"
                 ],
-                "_lastExecutionId": "d1694ad5-0ec3-426d-a659-24aed7f6a978"
+                "_lastExecutionId": "9c6ce578-0d01-4645-982f-fd3719d190a3"
               }
             }
           ]
@@ -3715,7 +3715,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "8fd07f99-f134-420c-9fca-8f7f50221382",
+              "value": "1c61da8a-e428-494f-a837-33ecc21cc8c4",
               "system": true
             },
             {
@@ -3751,7 +3751,7 @@
           }
         },
         "response": {
-          "id": "ab2f029d-fb81-4ea2-b355-2e1957b199d3",
+          "id": "ad9d95f5-c771-4894-8bf8-282fb95ba8a1",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -3769,7 +3769,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:43 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:11 GMT"
             },
             {
               "key": "Etag",
@@ -3882,10 +3882,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 144,
+          "responseTime": 208,
           "responseSize": 96
         },
-        "id": "f1c68209-961a-43b2-bff3-4c6a3338a3ab",
+        "id": "6a21bfa8-9643-4a3d-acb0-3fd809975581",
         "assertions": [
           {
             "assertion": "[STC-PWD-VERIFY-005/B] response time OK",
@@ -3903,15 +3903,15 @@
       },
       {
         "cursor": {
-          "ref": "6ac593e2-59ee-4363-8c4f-fe9ac95bffeb",
+          "ref": "e5daed9a-4bc0-4dc5-a19d-21aa668ddc06",
           "length": 11,
           "cycles": 1,
           "position": 7,
           "iteration": 0,
-          "httpRequestId": "a8bb1917-813d-4675-93e5-e31e6b6f7d15"
+          "httpRequestId": "67963ba2-794a-4b72-98b9-a5560b9e043a"
         },
         "item": {
-          "id": "3d845ab2-cbe4-45fc-a7dd-96f1e6fbfed8",
+          "id": "1573f8b9-cf55-4e46-8ee1-0af69a739391",
           "name": "STC-PWD-RESET-001/B | Reset password with token",
           "request": {
             "description": {
@@ -3958,7 +3958,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "f6ade7fb-019a-4788-a7be-34acee5a5266",
+                "id": "31667599-6a64-4587-8425-10b07b8ee46c",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-RESET-001/B",
@@ -3970,7 +3970,7 @@
                   "});",
                   "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                 ],
-                "_lastExecutionId": "a2267a4a-6dcb-48c6-b2ff-28f9035133b1"
+                "_lastExecutionId": "6afd1508-cc5e-4337-83ac-e0f94d82f09d"
               }
             }
           ]
@@ -4019,7 +4019,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "db765dfd-edce-4ce0-bb04-26e367a815e8",
+              "value": "4067c8e8-7a74-4a02-84ff-c985bb3aa592",
               "system": true
             },
             {
@@ -4055,7 +4055,7 @@
           }
         },
         "response": {
-          "id": "0f89d013-e082-407d-82ed-1fb0d2ee32c2",
+          "id": "d4b4604e-f0a2-4fbe-becb-e96b1d2c5e8d",
           "status": "Bad Request",
           "code": 400,
           "header": [
@@ -4073,7 +4073,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:44 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:12 GMT"
             },
             {
               "key": "Etag",
@@ -4269,10 +4269,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 61,
+          "responseTime": 153,
           "responseSize": 179
         },
-        "id": "3d845ab2-cbe4-45fc-a7dd-96f1e6fbfed8",
+        "id": "1573f8b9-cf55-4e46-8ee1-0af69a739391",
         "assertions": [
           {
             "assertion": "[STC-PWD-RESET-001/B] response time OK",
@@ -4286,15 +4286,15 @@
       },
       {
         "cursor": {
-          "ref": "36fed94f-5433-46e8-a34c-be60b3c3a6b4",
+          "ref": "d3a24539-9e14-4c60-9f7b-2a024368071b",
           "length": 11,
           "cycles": 1,
           "position": 8,
           "iteration": 0,
-          "httpRequestId": "5db8882e-c7b5-4a1d-af51-2cd3aee7101f"
+          "httpRequestId": "ea6bed5f-3165-46ca-99f9-a1501df2885a"
         },
         "item": {
-          "id": "92b1b0fa-3b2f-4242-8350-76fc9a1581f4",
+          "id": "44d3f93d-9b3a-4a23-81a2-5a84e43ca081",
           "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
           "request": {
             "description": {
@@ -4345,7 +4345,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "e76fd0f6-fa7a-4a42-ab75-791d22c6cbc2",
+                "id": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-CHANGE-002/B",
@@ -4362,7 +4362,7 @@
                   "  }",
                   "});"
                 ],
-                "_lastExecutionId": "045c125c-15d8-4d9c-8f59-c91bd7a163f9"
+                "_lastExecutionId": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
               }
             }
           ]
@@ -4401,7 +4401,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjEiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjIwLCJpYXQiOjE3ODA3NTc5NTAsImV4cCI6MTc4MDg0NDM1MH0.-aHvd_1XlotlYD92wHNZYy0BS2mQ_yhpIA7WjhaaSwg"
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjEiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjMxLCJpYXQiOjE3ODA4NTM4NjEsImV4cCI6MTc4MDk0MDI2MX0.uoxmG5ptGVPMwynTwuPTd4aelqelC3LnA9ZSyo3uZkA"
             },
             {
               "key": "User-Agent",
@@ -4415,7 +4415,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "1584246d-7c71-46b7-9bcd-b09e7001921c",
+              "value": "e87776b2-7939-4b41-8efa-962f75c3bd83",
               "system": true
             },
             {
@@ -4451,9 +4451,9 @@
           }
         },
         "response": {
-          "id": "06ad74e4-c734-4289-9a96-45f1c5f31a66",
-          "status": "Bad Request",
-          "code": 400,
+          "id": "c9cec295-5fc2-405f-a3dc-1bf4608b0af4",
+          "status": "Unauthorized",
+          "code": 401,
           "header": [
             {
               "key": "Access-Control-Allow-Origin",
@@ -4461,7 +4461,7 @@
             },
             {
               "key": "Content-Length",
-              "value": "152"
+              "value": "122"
             },
             {
               "key": "Content-Type",
@@ -4469,11 +4469,11 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:44 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:12 GMT"
             },
             {
               "key": "Etag",
-              "value": "W/\"98-JPrybppLN+OOXABPTU6zk07p+7Q\""
+              "value": "W/\"7a-7gXFyfcON+qCyK7Dlzs4Ij1i0tI\""
             },
             {
               "key": "X-Powered-By",
@@ -4492,25 +4492,18 @@
               34,
               58,
               34,
-              80,
-              65,
-              83,
-              83,
-              87,
+              84,
               79,
-              82,
-              68,
-              95,
-              83,
-              65,
-              77,
+              75,
               69,
+              78,
               95,
+              73,
+              78,
+              86,
               65,
-              83,
-              95,
-              79,
               76,
+              73,
               68,
               34,
               44,
@@ -4526,65 +4519,40 @@
               58,
               34,
               84,
-              104,
-              101,
-              32,
-              110,
-              101,
-              119,
-              32,
-              112,
-              97,
-              115,
-              115,
-              119,
               111,
-              114,
-              100,
+              107,
+              101,
+              110,
               32,
-              109,
-              117,
               115,
-              116,
+              117,
+              112,
+              101,
+              114,
+              115,
+              101,
+              100,
+              101,
+              100,
               32,
               98,
-              101,
+              121,
               32,
-              100,
-              105,
-              102,
-              102,
-              101,
-              114,
-              101,
-              110,
-              116,
-              32,
-              102,
-              114,
-              111,
-              109,
-              32,
-              116,
-              104,
-              101,
-              32,
-              99,
-              117,
-              114,
-              114,
-              101,
-              110,
-              116,
-              32,
-              112,
               97,
-              115,
-              115,
+              32,
+              110,
+              101,
               119,
-              111,
+              101,
               114,
-              100,
+              32,
+              115,
+              101,
+              115,
+              115,
+              105,
+              111,
+              110,
               46,
               34,
               44,
@@ -4603,7 +4571,7 @@
               58,
               52,
               48,
-              48,
+              49,
               44,
               34,
               101,
@@ -4614,16 +4582,18 @@
               34,
               58,
               34,
-              66,
+              85,
+              110,
               97,
-              100,
-              82,
-              101,
-              113,
               117,
-              101,
-              115,
               116,
+              104,
+              111,
+              114,
+              105,
+              122,
+              101,
+              100,
               69,
               120,
               99,
@@ -4638,10 +4608,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 275,
-          "responseSize": 152
+          "responseTime": 155,
+          "responseSize": 122
         },
-        "id": "92b1b0fa-3b2f-4242-8350-76fc9a1581f4",
+        "id": "44d3f93d-9b3a-4a23-81a2-5a84e43ca081",
         "assertions": [
           {
             "assertion": "[STC-PWD-CHANGE-002/B] response time OK",
@@ -4649,25 +4619,39 @@
           },
           {
             "assertion": "[STC-PWD-CHANGE-002/B] status 400",
-            "skipped": false
+            "skipped": false,
+            "error": {
+              "name": "AssertionError",
+              "index": 1,
+              "test": "[STC-PWD-CHANGE-002/B] status 400",
+              "message": "expected response to have status code 400 but got 401",
+              "stack": "AssertionError: expected response to have status code 400 but got 401\n   at Object.eval sandbox-script.js:2:9)"
+            }
           },
           {
             "assertion": "[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code",
-            "skipped": false
+            "skipped": false,
+            "error": {
+              "name": "AssertionError",
+              "index": 2,
+              "test": "[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code",
+              "message": "expected [ Array(2) ] to include 'TOKEN_INVALID'",
+              "stack": "AssertionError: expected [ Array(2) ] to include 'TOKEN_INVALID'\n   at Object.eval sandbox-script.js:3:9)"
+            }
           }
         ]
       },
       {
         "cursor": {
-          "ref": "9e69c29a-a9fa-47e0-9826-3eda80b2fd36",
+          "ref": "5a2a6471-c9dc-4624-80cb-91b11e5c15ff",
           "length": 11,
           "cycles": 1,
           "position": 9,
           "iteration": 0,
-          "httpRequestId": "38ea9f1a-e031-4609-ab3a-43835aec36ff"
+          "httpRequestId": "2c8c1cd1-84d7-451c-b563-9ddccbceac8c"
         },
         "item": {
-          "id": "cc97dc07-93dd-419e-8d91-6f2b5b409877",
+          "id": "5bdd5f8e-0143-44a9-832a-0085490634df",
           "name": "STC-PWD-CHANGE-001/B | Change password success",
           "request": {
             "description": {
@@ -4718,7 +4702,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "3356b253-a5cf-4832-a2fc-ae8da525599a",
+                "id": "d0b038fb-c9e8-423d-a6f3-c7ae1faefc49",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-CHANGE-001/B",
@@ -4736,7 +4720,7 @@
                   "  pm.environment.set('kinePasswordAlternate', a);",
                   "}"
                 ],
-                "_lastExecutionId": "383ee5b4-1857-41f8-bcc9-f06776afee17"
+                "_lastExecutionId": "ce73a39a-c9fd-4873-a67d-03bf9b84c2f4"
               }
             }
           ]
@@ -4775,7 +4759,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjEiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjIwLCJpYXQiOjE3ODA3NTc5NTAsImV4cCI6MTc4MDg0NDM1MH0.-aHvd_1XlotlYD92wHNZYy0BS2mQ_yhpIA7WjhaaSwg"
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjEiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjMxLCJpYXQiOjE3ODA4NTM4NjEsImV4cCI6MTc4MDk0MDI2MX0.uoxmG5ptGVPMwynTwuPTd4aelqelC3LnA9ZSyo3uZkA"
             },
             {
               "key": "User-Agent",
@@ -4789,7 +4773,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "f86e3170-7e59-4319-8451-619ee4f1fca6",
+              "value": "2a619bed-0068-48f1-a7b5-b58c26e1152a",
               "system": true
             },
             {
@@ -4825,9 +4809,9 @@
           }
         },
         "response": {
-          "id": "ef92a3b7-3108-4ff1-8d09-199c72445235",
-          "status": "Bad Request",
-          "code": 400,
+          "id": "2df4cdfe-5559-4588-81ea-42837caf83e4",
+          "status": "Unauthorized",
+          "code": 401,
           "header": [
             {
               "key": "Access-Control-Allow-Origin",
@@ -4835,7 +4819,7 @@
             },
             {
               "key": "Content-Length",
-              "value": "152"
+              "value": "122"
             },
             {
               "key": "Content-Type",
@@ -4843,11 +4827,11 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:45 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:13 GMT"
             },
             {
               "key": "Etag",
-              "value": "W/\"98-JPrybppLN+OOXABPTU6zk07p+7Q\""
+              "value": "W/\"7a-7gXFyfcON+qCyK7Dlzs4Ij1i0tI\""
             },
             {
               "key": "X-Powered-By",
@@ -4866,25 +4850,18 @@
               34,
               58,
               34,
-              80,
-              65,
-              83,
-              83,
-              87,
+              84,
               79,
-              82,
-              68,
-              95,
-              83,
-              65,
-              77,
+              75,
               69,
+              78,
               95,
+              73,
+              78,
+              86,
               65,
-              83,
-              95,
-              79,
               76,
+              73,
               68,
               34,
               44,
@@ -4900,65 +4877,40 @@
               58,
               34,
               84,
-              104,
-              101,
-              32,
-              110,
-              101,
-              119,
-              32,
-              112,
-              97,
-              115,
-              115,
-              119,
               111,
-              114,
-              100,
+              107,
+              101,
+              110,
               32,
-              109,
-              117,
               115,
-              116,
+              117,
+              112,
+              101,
+              114,
+              115,
+              101,
+              100,
+              101,
+              100,
               32,
               98,
-              101,
+              121,
               32,
-              100,
-              105,
-              102,
-              102,
-              101,
-              114,
-              101,
-              110,
-              116,
-              32,
-              102,
-              114,
-              111,
-              109,
-              32,
-              116,
-              104,
-              101,
-              32,
-              99,
-              117,
-              114,
-              114,
-              101,
-              110,
-              116,
-              32,
-              112,
               97,
-              115,
-              115,
+              32,
+              110,
+              101,
               119,
-              111,
+              101,
               114,
-              100,
+              32,
+              115,
+              101,
+              115,
+              115,
+              105,
+              111,
+              110,
               46,
               34,
               44,
@@ -4977,7 +4929,7 @@
               58,
               52,
               48,
-              48,
+              49,
               44,
               34,
               101,
@@ -4988,16 +4940,18 @@
               34,
               58,
               34,
-              66,
+              85,
+              110,
               97,
-              100,
-              82,
-              101,
-              113,
               117,
-              101,
-              115,
               116,
+              104,
+              111,
+              114,
+              105,
+              122,
+              101,
+              100,
               69,
               120,
               99,
@@ -5012,10 +4966,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 272,
-          "responseSize": 152
+          "responseTime": 153,
+          "responseSize": 122
         },
-        "id": "cc97dc07-93dd-419e-8d91-6f2b5b409877",
+        "id": "5bdd5f8e-0143-44a9-832a-0085490634df",
         "assertions": [
           {
             "assertion": "[STC-PWD-CHANGE-001/B] response time OK",
@@ -5028,23 +4982,23 @@
               "name": "AssertionError",
               "index": 1,
               "test": "[STC-PWD-CHANGE-001/B] status 200",
-              "message": "expected response to have status code 200 but got 400",
-              "stack": "AssertionError: expected response to have status code 200 but got 400\n   at Object.eval sandbox-script.js:2:10)"
+              "message": "expected response to have status code 200 but got 401",
+              "stack": "AssertionError: expected response to have status code 200 but got 401\n   at Object.eval sandbox-script.js:2:10)"
             }
           }
         ]
       },
       {
         "cursor": {
-          "ref": "3e0b7f76-448d-48fd-89ec-415ae651ea58",
+          "ref": "152b7f68-11d6-43de-a5a3-c56edf30c3b0",
           "length": 11,
           "cycles": 1,
           "position": 10,
           "iteration": 0,
-          "httpRequestId": "bd06459c-b238-4422-8726-4d80b09d2595"
+          "httpRequestId": "eb6c990a-bc06-48a0-8460-28eeb16929f0"
         },
         "item": {
-          "id": "76dba666-958c-4031-abcb-2276221e1359",
+          "id": "4e767d94-9a30-4025-814d-d080affd0e77",
           "name": "STC-HEALTHZ-001/B | Liveness healthcheck",
           "request": {
             "description": {
@@ -5075,7 +5029,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "848d3e76-71d0-4a78-a940-b9bc8c029c77",
+                "id": "f240b984-0f3c-4d57-bee4-f238670f849a",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-HEALTHZ-001/B",
@@ -5087,7 +5041,7 @@
                   "});",
                   "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                 ],
-                "_lastExecutionId": "61023591-94db-4ba2-914c-3a9554737d5a"
+                "_lastExecutionId": "8d7109a5-3683-4802-b9a1-54d58dc0abd4"
               }
             }
           ]
@@ -5118,7 +5072,7 @@
             },
             {
               "key": "Authorization",
-              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NWIiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6OCwiaWF0IjoxNzgwNzU3OTQwLCJleHAiOjE3ODA4NDQzNDB9.Csf6OQ3d1VMpoTTV4qHv-Y6JfNfSmJNhlIQrB3Su0r4"
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NWIiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6MTIsImlhdCI6MTc4MDg1Mzg1MywiZXhwIjoxNzgwOTQwMjUzfQ.SsWKgM7Tpcu4uDfQ1QIlHGnSO4sRUMSlFWcbc_8FAyw"
             },
             {
               "key": "User-Agent",
@@ -5132,7 +5086,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "89ae0594-77f9-40b0-b7c3-4594597ed41c",
+              "value": "6f328820-3a77-440a-9e7a-fec148536723",
               "system": true
             },
             {
@@ -5154,7 +5108,7 @@
           "method": "GET"
         },
         "response": {
-          "id": "7f0dc55b-61fb-4d5b-b2f1-9c2c9a923ecd",
+          "id": "92b00f96-cb9a-4895-a446-6f6364a780c5",
           "status": "OK",
           "code": 200,
           "header": [
@@ -5172,7 +5126,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:46 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:14 GMT"
             },
             {
               "key": "Etag",
@@ -5201,10 +5155,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 62,
+          "responseTime": 153,
           "responseSize": 12
         },
-        "id": "76dba666-958c-4031-abcb-2276221e1359",
+        "id": "4e767d94-9a30-4025-814d-d080affd0e77",
         "assertions": [
           {
             "assertion": "[STC-HEALTHZ-001/B] response time OK",
@@ -5218,7 +5172,7 @@
       }
     ],
     "transfers": {
-      "responseTotal": 1563
+      "responseTotal": 1503
     },
     "failures": [
       {
@@ -5229,8 +5183,8 @@
           "message": "expected response to have status code 200 but got 404",
           "stack": "AssertionError: expected response to have status code 200 but got 404\n   at Object.eval sandbox-script.js:2:1)",
           "checksum": "394dfb1773f67f02694c60ab5b761342",
-          "id": "47aa68d9-5f39-4896-bb02-66050bc05f58",
-          "timestamp": 1780754360965,
+          "id": "4c7049f1-20f4-4f46-b336-028b17a3cb62",
+          "timestamp": 1780853887223,
           "stacktrace": [
             {
               "fileName": "sandbox-script.js",
@@ -5245,7 +5199,7 @@
         },
         "at": "assertion:1 in test-script",
         "source": {
-          "id": "7dc35e5f-0481-47f2-aed3-375cb122935b",
+          "id": "f6c7a574-dee3-4c92-a70a-52c9014d72fa",
           "name": "STC-PWD-FORGOT-003/B | Forgot password unknown email 200",
           "request": {
             "description": {
@@ -5292,7 +5246,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "a75381c2-c6ac-48e4-a479-52ea4c6541de",
+                "id": "f8bfc577-b6e8-4e57-b0bf-823c36bd8561",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-FORGOT-003/B",
@@ -5304,17 +5258,17 @@
                   "});",
                   "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                 ],
-                "_lastExecutionId": "98076e6b-02e7-4399-8fe2-c9f27ad0b89d"
+                "_lastExecutionId": "a9714ff9-ed05-4bbf-90b5-1868f5108bb1"
               }
             }
           ]
         },
         "parent": {
-          "id": "15cf6bbd-9cf3-4b51-9729-d1ed4bea77f3",
+          "id": "04ca3153-162e-429d-8082-0dc7f6b7183d",
           "name": "Password Forgot",
           "item": [
             {
-              "id": "7dc35e5f-0481-47f2-aed3-375cb122935b",
+              "id": "f6c7a574-dee3-4c92-a70a-52c9014d72fa",
               "name": "STC-PWD-FORGOT-003/B | Forgot password unknown email 200",
               "request": {
                 "description": {
@@ -5361,7 +5315,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "id": "a75381c2-c6ac-48e4-a479-52ea4c6541de",
+                    "id": "f8bfc577-b6e8-4e57-b0bf-823c36bd8561",
                     "type": "text/javascript",
                     "exec": [
                       "// STC: STC-PWD-FORGOT-003/B",
@@ -5373,13 +5327,13 @@
                       "});",
                       "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                     ],
-                    "_lastExecutionId": "98076e6b-02e7-4399-8fe2-c9f27ad0b89d"
+                    "_lastExecutionId": "a9714ff9-ed05-4bbf-90b5-1868f5108bb1"
                   }
                 }
               ]
             },
             {
-              "id": "f954b386-9b6c-4bc1-9a55-fc16c695f405",
+              "id": "a5139ea9-1934-4f6f-8fdb-8b0bdc3b0724",
               "name": "STC-PWD-FORGOT-004/B | Forgot password rate limit 429",
               "request": {
                 "description": {
@@ -5426,7 +5380,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "id": "88443fe9-9b53-42d2-bc45-d81d2e0a5f25",
+                    "id": "dc003f7e-586e-438b-b199-cbcbd84b8360",
                     "type": "text/javascript",
                     "exec": [
                       "// STC: STC-PWD-FORGOT-004/B",
@@ -5445,13 +5399,13 @@
                       "  });",
                       "}"
                     ],
-                    "_lastExecutionId": "81ae8127-de2d-4916-9594-9d5383885108"
+                    "_lastExecutionId": "a6ceb161-15fb-45e4-8d2b-f26c73af6924"
                   }
                 }
               ]
             },
             {
-              "id": "9c97f1e2-23fb-4ce2-9cf9-6021c4d8e742",
+              "id": "1f551b1f-a13e-428f-8b31-77c7a64b3515",
               "name": "STC-PWD-FORGOT-001/B | Forgot password existing email",
               "request": {
                 "description": {
@@ -5498,7 +5452,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "id": "d53b0655-8afd-4206-80c2-d0c2e92869c9",
+                    "id": "4130c9fd-bf9a-4dd7-99e2-a1ea93dfd3a2",
                     "type": "text/javascript",
                     "exec": [
                       "// STC: STC-PWD-FORGOT-001/B",
@@ -5510,7 +5464,7 @@
                       "});",
                       "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                     ],
-                    "_lastExecutionId": "ed4c6306-32ae-4976-9e6f-570003c0d079"
+                    "_lastExecutionId": "ec19b9e7-40ea-4abd-92ab-f0855a850aa4"
                   }
                 }
               ]
@@ -5527,10 +5481,10 @@
           "eof": false,
           "bof": true,
           "cr": false,
-          "ref": "c3a1c1bc-aba7-4d56-99a2-cd94e4799e64",
-          "httpRequestId": "7651f335-a8ca-40a0-a4a9-ef03f067c1f5",
-          "scriptId": "a75381c2-c6ac-48e4-a479-52ea4c6541de",
-          "execution": "98076e6b-02e7-4399-8fe2-c9f27ad0b89d"
+          "ref": "e804e6c0-6d52-4240-925c-e4652c245ab5",
+          "httpRequestId": "f49e75b9-692d-4bb4-9382-877c75187cde",
+          "scriptId": "f8bfc577-b6e8-4e57-b0bf-823c36bd8561",
+          "execution": "a9714ff9-ed05-4bbf-90b5-1868f5108bb1"
         }
       },
       {
@@ -5541,8 +5495,8 @@
           "message": "expected [ 200, 429 ] to include 404",
           "stack": "AssertionError: expected [ 200, 429 ] to include 404\n   at Object.eval sandbox-script.js:2:2)",
           "checksum": "b59dd4d49a2f5f43f87c63926b6697d4",
-          "id": "5fbdf406-2965-49dc-af37-41edf9426f34",
-          "timestamp": 1780754361626,
+          "id": "4ca5115e-dddb-44e6-94ff-6e21e358325f",
+          "timestamp": 1780853887861,
           "stacktrace": [
             {
               "fileName": "sandbox-script.js",
@@ -5557,7 +5511,7 @@
         },
         "at": "assertion:1 in test-script",
         "source": {
-          "id": "f954b386-9b6c-4bc1-9a55-fc16c695f405",
+          "id": "a5139ea9-1934-4f6f-8fdb-8b0bdc3b0724",
           "name": "STC-PWD-FORGOT-004/B | Forgot password rate limit 429",
           "request": {
             "description": {
@@ -5604,7 +5558,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "88443fe9-9b53-42d2-bc45-d81d2e0a5f25",
+                "id": "dc003f7e-586e-438b-b199-cbcbd84b8360",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-PWD-FORGOT-004/B",
@@ -5623,17 +5577,17 @@
                   "  });",
                   "}"
                 ],
-                "_lastExecutionId": "81ae8127-de2d-4916-9594-9d5383885108"
+                "_lastExecutionId": "a6ceb161-15fb-45e4-8d2b-f26c73af6924"
               }
             }
           ]
         },
         "parent": {
-          "id": "15cf6bbd-9cf3-4b51-9729-d1ed4bea77f3",
+          "id": "04ca3153-162e-429d-8082-0dc7f6b7183d",
           "name": "Password Forgot",
           "item": [
             {
-              "id": "7dc35e5f-0481-47f2-aed3-375cb122935b",
+              "id": "f6c7a574-dee3-4c92-a70a-52c9014d72fa",
               "name": "STC-PWD-FORGOT-003/B | Forgot password unknown email 200",
               "request": {
                 "description": {
@@ -5680,7 +5634,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "id": "a75381c2-c6ac-48e4-a479-52ea4c6541de",
+                    "id": "f8bfc577-b6e8-4e57-b0bf-823c36bd8561",
                     "type": "text/javascript",
                     "exec": [
                       "// STC: STC-PWD-FORGOT-003/B",
@@ -5692,13 +5646,13 @@
                       "});",
                       "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                     ],
-                    "_lastExecutionId": "98076e6b-02e7-4399-8fe2-c9f27ad0b89d"
+                    "_lastExecutionId": "a9714ff9-ed05-4bbf-90b5-1868f5108bb1"
                   }
                 }
               ]
             },
             {
-              "id": "f954b386-9b6c-4bc1-9a55-fc16c695f405",
+              "id": "a5139ea9-1934-4f6f-8fdb-8b0bdc3b0724",
               "name": "STC-PWD-FORGOT-004/B | Forgot password rate limit 429",
               "request": {
                 "description": {
@@ -5745,7 +5699,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "id": "88443fe9-9b53-42d2-bc45-d81d2e0a5f25",
+                    "id": "dc003f7e-586e-438b-b199-cbcbd84b8360",
                     "type": "text/javascript",
                     "exec": [
                       "// STC: STC-PWD-FORGOT-004/B",
@@ -5764,13 +5718,13 @@
                       "  });",
                       "}"
                     ],
-                    "_lastExecutionId": "81ae8127-de2d-4916-9594-9d5383885108"
+                    "_lastExecutionId": "a6ceb161-15fb-45e4-8d2b-f26c73af6924"
                   }
                 }
               ]
             },
             {
-              "id": "9c97f1e2-23fb-4ce2-9cf9-6021c4d8e742",
+              "id": "1f551b1f-a13e-428f-8b31-77c7a64b3515",
               "name": "STC-PWD-FORGOT-001/B | Forgot password existing email",
               "request": {
                 "description": {
@@ -5817,7 +5771,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "id": "d53b0655-8afd-4206-80c2-d0c2e92869c9",
+                    "id": "4130c9fd-bf9a-4dd7-99e2-a1ea93dfd3a2",
                     "type": "text/javascript",
                     "exec": [
                       "// STC: STC-PWD-FORGOT-001/B",
@@ -5829,7 +5783,7 @@
                       "});",
                       "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                     ],
-                    "_lastExecutionId": "ed4c6306-32ae-4976-9e6f-570003c0d079"
+                    "_lastExecutionId": "ec19b9e7-40ea-4abd-92ab-f0855a850aa4"
                   }
                 }
               ]
@@ -5838,26 +5792,26 @@
           "event": []
         },
         "cursor": {
-          "ref": "a6621176-3bd9-4a28-b582-a1bdfb3046a9",
+          "ref": "97b43d52-e8a8-416b-b989-7dd5a0de50fd",
           "length": 11,
           "cycles": 1,
           "position": 1,
           "iteration": 0,
-          "httpRequestId": "049b7599-319f-4f05-aaf1-e7e9b8101c2e",
-          "scriptId": "88443fe9-9b53-42d2-bc45-d81d2e0a5f25",
-          "execution": "81ae8127-de2d-4916-9594-9d5383885108"
+          "httpRequestId": "842c084d-903d-457e-ad4f-aa83da45c56c",
+          "scriptId": "dc003f7e-586e-438b-b199-cbcbd84b8360",
+          "execution": "a6ceb161-15fb-45e4-8d2b-f26c73af6924"
         }
       },
       {
         "error": {
           "name": "AssertionError",
           "index": 1,
-          "test": "[STC-PWD-CHANGE-001/B] status 200",
-          "message": "expected response to have status code 200 but got 400",
-          "stack": "AssertionError: expected response to have status code 200 but got 400\n   at Object.eval sandbox-script.js:2:10)",
-          "checksum": "866e24241cf30fa6e1c1377b83e6e6dd",
-          "id": "73518c66-9512-4655-9704-e6aadd0919eb",
-          "timestamp": 1780754367834,
+          "test": "[STC-PWD-CHANGE-002/B] status 400",
+          "message": "expected response to have status code 400 but got 401",
+          "stack": "AssertionError: expected response to have status code 400 but got 401\n   at Object.eval sandbox-script.js:2:9)",
+          "checksum": "22b878236748da3502335b20354c3aeb",
+          "id": "45a9d597-4f7a-47a5-8bfd-04438a86fe1b",
+          "timestamp": 1780853893071,
           "stacktrace": [
             {
               "fileName": "sandbox-script.js",
@@ -5865,18 +5819,18 @@
               "functionName": "Object.eval",
               "typeName": "Object",
               "methodName": "eval",
-              "columnNumber": 10,
+              "columnNumber": 9,
               "native": false
             }
           ]
         },
         "at": "assertion:1 in test-script",
         "source": {
-          "id": "cc97dc07-93dd-419e-8d91-6f2b5b409877",
-          "name": "STC-PWD-CHANGE-001/B | Change password success",
+          "id": "44d3f93d-9b3a-4a23-81a2-5a84e43ca081",
+          "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
           "request": {
             "description": {
-              "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+              "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
               "type": "text/plain"
             },
             "url": {
@@ -5910,7 +5864,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+              "raw": "{\n  \"newPassword\": \"{{kinePassword}}\",\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPasswordConfirmation\": \"{{kinePassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -5923,35 +5877,34 @@
             {
               "listen": "test",
               "script": {
-                "id": "3356b253-a5cf-4832-a2fc-ae8da525599a",
+                "id": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
                 "type": "text/javascript",
                 "exec": [
-                  "// STC: STC-PWD-CHANGE-001/B",
-                  "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                  "// STC: STC-PWD-CHANGE-002/B",
+                  "pm.test('[STC-PWD-CHANGE-002/B] response time OK', function () {",
                   "  pm.expect(pm.response.responseTime).to.be.below(60000);",
                   "});",
-                  "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
-                  "  pm.response.to.have.status(200);",
+                  "pm.test('[STC-PWD-CHANGE-002/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
                   "});",
                   "var json = {}; try { json = pm.response.json(); } catch (e) {}",
-                  "if (pm.response.code === 200) {",
-                  "  var a = pm.environment.get('kinePassword');",
-                  "  var b = pm.environment.get('kinePasswordAlternate');",
-                  "  pm.environment.set('kinePassword', b);",
-                  "  pm.environment.set('kinePasswordAlternate', a);",
-                  "}"
+                  "pm.test('[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['PASSWORD_SAME_AS_OLD', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
                 ],
-                "_lastExecutionId": "383ee5b4-1857-41f8-bcc9-f06776afee17"
+                "_lastExecutionId": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
               }
             }
           ]
         },
         "parent": {
-          "id": "f3af97db-5e73-4621-9a57-d22139dca7dc",
+          "id": "51706cc7-f662-4bce-8335-58ea72c12496",
           "name": "Password Change",
           "item": [
             {
-              "id": "92b1b0fa-3b2f-4242-8350-76fc9a1581f4",
+              "id": "44d3f93d-9b3a-4a23-81a2-5a84e43ca081",
               "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
               "request": {
                 "description": {
@@ -6002,7 +5955,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "id": "e76fd0f6-fa7a-4a42-ab75-791d22c6cbc2",
+                    "id": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
                     "type": "text/javascript",
                     "exec": [
                       "// STC: STC-PWD-CHANGE-002/B",
@@ -6019,13 +5972,13 @@
                       "  }",
                       "});"
                     ],
-                    "_lastExecutionId": "045c125c-15d8-4d9c-8f59-c91bd7a163f9"
+                    "_lastExecutionId": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
                   }
                 }
               ]
             },
             {
-              "id": "cc97dc07-93dd-419e-8d91-6f2b5b409877",
+              "id": "5bdd5f8e-0143-44a9-832a-0085490634df",
               "name": "STC-PWD-CHANGE-001/B | Change password success",
               "request": {
                 "description": {
@@ -6076,7 +6029,7 @@
                 {
                   "listen": "test",
                   "script": {
-                    "id": "3356b253-a5cf-4832-a2fc-ae8da525599a",
+                    "id": "d0b038fb-c9e8-423d-a6f3-c7ae1faefc49",
                     "type": "text/javascript",
                     "exec": [
                       "// STC: STC-PWD-CHANGE-001/B",
@@ -6094,7 +6047,7 @@
                       "  pm.environment.set('kinePasswordAlternate', a);",
                       "}"
                     ],
-                    "_lastExecutionId": "383ee5b4-1857-41f8-bcc9-f06776afee17"
+                    "_lastExecutionId": "ce73a39a-c9fd-4873-a67d-03bf9b84c2f4"
                   }
                 }
               ]
@@ -6103,14 +6056,543 @@
           "event": []
         },
         "cursor": {
-          "ref": "9e69c29a-a9fa-47e0-9826-3eda80b2fd36",
+          "ref": "d3a24539-9e14-4c60-9f7b-2a024368071b",
+          "length": 11,
+          "cycles": 1,
+          "position": 8,
+          "iteration": 0,
+          "httpRequestId": "ea6bed5f-3165-46ca-99f9-a1501df2885a",
+          "scriptId": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
+          "execution": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
+        }
+      },
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 2,
+          "test": "[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code",
+          "message": "expected [ Array(2) ] to include 'TOKEN_INVALID'",
+          "stack": "AssertionError: expected [ Array(2) ] to include 'TOKEN_INVALID'\n   at Object.eval sandbox-script.js:3:9)",
+          "checksum": "fd4e7aaf8909f4e00b7074a4bc25ef86",
+          "id": "e5dac107-0a4e-4977-82ed-3269fae52711",
+          "timestamp": 1780853893072,
+          "stacktrace": [
+            {
+              "fileName": "sandbox-script.js",
+              "lineNumber": 3,
+              "functionName": "Object.eval",
+              "typeName": "Object",
+              "methodName": "eval",
+              "columnNumber": 9,
+              "native": false
+            }
+          ]
+        },
+        "at": "assertion:2 in test-script",
+        "source": {
+          "id": "44d3f93d-9b3a-4a23-81a2-5a84e43ca081",
+          "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "change-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPassword\": \"{{kinePassword}}\",\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPasswordConfirmation\": \"{{kinePassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-CHANGE-002/B",
+                  "pm.test('[STC-PWD-CHANGE-002/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-CHANGE-002/B] status 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "pm.test('[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code', function () {",
+                  "  if (json && json.code != null && json.code !== '') {",
+                  "    pm.expect(['PASSWORD_SAME_AS_OLD', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                  "  }",
+                  "});"
+                ],
+                "_lastExecutionId": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
+              }
+            }
+          ]
+        },
+        "parent": {
+          "id": "51706cc7-f662-4bce-8335-58ea72c12496",
+          "name": "Password Change",
+          "item": [
+            {
+              "id": "44d3f93d-9b3a-4a23-81a2-5a84e43ca081",
+              "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
+              "request": {
+                "description": {
+                  "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kine",
+                    "auth",
+                    "change-password"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{kineToken}}"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"newPassword\": \"{{kinePassword}}\",\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPasswordConfirmation\": \"{{kinePassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
+                    "type": "text/javascript",
+                    "exec": [
+                      "// STC: STC-PWD-CHANGE-002/B",
+                      "pm.test('[STC-PWD-CHANGE-002/B] response time OK', function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                      "});",
+                      "pm.test('[STC-PWD-CHANGE-002/B] status 400', function () {",
+                      "  pm.response.to.have.status(400);",
+                      "});",
+                      "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                      "pm.test('[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code', function () {",
+                      "  if (json && json.code != null && json.code !== '') {",
+                      "    pm.expect(['PASSWORD_SAME_AS_OLD', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                      "  }",
+                      "});"
+                    ],
+                    "_lastExecutionId": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "5bdd5f8e-0143-44a9-832a-0085490634df",
+              "name": "STC-PWD-CHANGE-001/B | Change password success",
+              "request": {
+                "description": {
+                  "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kine",
+                    "auth",
+                    "change-password"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{kineToken}}"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "d0b038fb-c9e8-423d-a6f3-c7ae1faefc49",
+                    "type": "text/javascript",
+                    "exec": [
+                      "// STC: STC-PWD-CHANGE-001/B",
+                      "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                      "});",
+                      "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                      "if (pm.response.code === 200) {",
+                      "  var a = pm.environment.get('kinePassword');",
+                      "  var b = pm.environment.get('kinePasswordAlternate');",
+                      "  pm.environment.set('kinePassword', b);",
+                      "  pm.environment.set('kinePasswordAlternate', a);",
+                      "}"
+                    ],
+                    "_lastExecutionId": "ce73a39a-c9fd-4873-a67d-03bf9b84c2f4"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": []
+        },
+        "cursor": {
+          "ref": "d3a24539-9e14-4c60-9f7b-2a024368071b",
+          "length": 11,
+          "cycles": 1,
+          "position": 8,
+          "iteration": 0,
+          "httpRequestId": "ea6bed5f-3165-46ca-99f9-a1501df2885a",
+          "scriptId": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
+          "execution": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
+        }
+      },
+      {
+        "error": {
+          "name": "AssertionError",
+          "index": 1,
+          "test": "[STC-PWD-CHANGE-001/B] status 200",
+          "message": "expected response to have status code 200 but got 401",
+          "stack": "AssertionError: expected response to have status code 200 but got 401\n   at Object.eval sandbox-script.js:2:10)",
+          "checksum": "e05bb80fd187f9fe43330d3d7ff4ae29",
+          "id": "9ca2d397-75fa-4f36-9f7f-98df597f7178",
+          "timestamp": 1780853893699,
+          "stacktrace": [
+            {
+              "fileName": "sandbox-script.js",
+              "lineNumber": 2,
+              "functionName": "Object.eval",
+              "typeName": "Object",
+              "methodName": "eval",
+              "columnNumber": 10,
+              "native": false
+            }
+          ]
+        },
+        "at": "assertion:1 in test-script",
+        "source": {
+          "id": "5bdd5f8e-0143-44a9-832a-0085490634df",
+          "name": "STC-PWD-CHANGE-001/B | Change password success",
+          "request": {
+            "description": {
+              "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "kine",
+                "auth",
+                "change-password"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{kineToken}}"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d0b038fb-c9e8-423d-a6f3-c7ae1faefc49",
+                "type": "text/javascript",
+                "exec": [
+                  "// STC: STC-PWD-CHANGE-001/B",
+                  "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                  "});",
+                  "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                  "if (pm.response.code === 200) {",
+                  "  var a = pm.environment.get('kinePassword');",
+                  "  var b = pm.environment.get('kinePasswordAlternate');",
+                  "  pm.environment.set('kinePassword', b);",
+                  "  pm.environment.set('kinePasswordAlternate', a);",
+                  "}"
+                ],
+                "_lastExecutionId": "ce73a39a-c9fd-4873-a67d-03bf9b84c2f4"
+              }
+            }
+          ]
+        },
+        "parent": {
+          "id": "51706cc7-f662-4bce-8335-58ea72c12496",
+          "name": "Password Change",
+          "item": [
+            {
+              "id": "44d3f93d-9b3a-4a23-81a2-5a84e43ca081",
+              "name": "STC-PWD-CHANGE-002/B | Change password same as old 400",
+              "request": {
+                "description": {
+                  "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchangé",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kine",
+                    "auth",
+                    "change-password"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{kineToken}}"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"newPassword\": \"{{kinePassword}}\",\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPasswordConfirmation\": \"{{kinePassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "00813e36-5072-449b-88aa-f0f2ec1f84e5",
+                    "type": "text/javascript",
+                    "exec": [
+                      "// STC: STC-PWD-CHANGE-002/B",
+                      "pm.test('[STC-PWD-CHANGE-002/B] response time OK', function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                      "});",
+                      "pm.test('[STC-PWD-CHANGE-002/B] status 400', function () {",
+                      "  pm.response.to.have.status(400);",
+                      "});",
+                      "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                      "pm.test('[STC-PWD-CHANGE-002/B] error code PASSWORD_SAME_AS_OLD or VALIDATION_FAILED if body exposes code', function () {",
+                      "  if (json && json.code != null && json.code !== '') {",
+                      "    pm.expect(['PASSWORD_SAME_AS_OLD', 'VALIDATION_FAILED']).to.include(String(json.code));",
+                      "  }",
+                      "});"
+                    ],
+                    "_lastExecutionId": "1d9d3aa9-7917-429a-8008-a38b20fb381a"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "5bdd5f8e-0143-44a9-832a-0085490634df",
+              "name": "STC-PWD-CHANGE-001/B | Change password success",
+              "request": {
+                "description": {
+                  "content": "**ClickUp:** BE-X16-01\n**User Story:** X-16\n**Expected (sheet):** 200 OK or contract success response; password updated; refresh tokens rotated; old password no longer valid.",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "kine",
+                    "auth",
+                    "change-password"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{kineToken}}"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"currentPassword\": \"{{kinePassword}}\",\n  \"newPassword\": \"{{kinePasswordAlternate}}\",\n  \"newPasswordConfirmation\": \"{{kinePasswordAlternate}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "id": "d0b038fb-c9e8-423d-a6f3-c7ae1faefc49",
+                    "type": "text/javascript",
+                    "exec": [
+                      "// STC: STC-PWD-CHANGE-001/B",
+                      "pm.test('[STC-PWD-CHANGE-001/B] response time OK', function () {",
+                      "  pm.expect(pm.response.responseTime).to.be.below(60000);",
+                      "});",
+                      "pm.test('[STC-PWD-CHANGE-001/B] status 200', function () {",
+                      "  pm.response.to.have.status(200);",
+                      "});",
+                      "var json = {}; try { json = pm.response.json(); } catch (e) {}",
+                      "if (pm.response.code === 200) {",
+                      "  var a = pm.environment.get('kinePassword');",
+                      "  var b = pm.environment.get('kinePasswordAlternate');",
+                      "  pm.environment.set('kinePassword', b);",
+                      "  pm.environment.set('kinePasswordAlternate', a);",
+                      "}"
+                    ],
+                    "_lastExecutionId": "ce73a39a-c9fd-4873-a67d-03bf9b84c2f4"
+                  }
+                }
+              ]
+            }
+          ],
+          "event": []
+        },
+        "cursor": {
+          "ref": "5a2a6471-c9dc-4624-80cb-91b11e5c15ff",
           "length": 11,
           "cycles": 1,
           "position": 9,
           "iteration": 0,
-          "httpRequestId": "38ea9f1a-e031-4609-ab3a-43835aec36ff",
-          "scriptId": "3356b253-a5cf-4832-a2fc-ae8da525599a",
-          "execution": "383ee5b4-1857-41f8-bcc9-f06776afee17"
+          "httpRequestId": "2c8c1cd1-84d7-451c-b563-9ddccbceac8c",
+          "scriptId": "d0b038fb-c9e8-423d-a6f3-c7ae1faefc49",
+          "execution": "ce73a39a-c9fd-4873-a67d-03bf9b84c2f4"
         }
       }
     ],

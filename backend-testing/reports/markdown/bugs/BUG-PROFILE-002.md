@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-PROFILE-002 |
 | **Title** | STC-PROFILE-SELECT-005B: POST — Select invalid profileId 400 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-PROFILE-SELECT-005/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-PROFILE-SELECT-005/B \| Select invalid profileId 400".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/select-profile with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PROFILE_ID_INVALID' } Allowed HTTP status (execution sheet): {400}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 67 ms. 1 failed, 2 passed. expected 'VALIDATION_FAILED' to deeply equal 'PROFILE_ID_INVALID' — expected 'VALIDATION_FAILED' to deeply equal 'PROFILE_ID_INVALID' |
+| **Actual Result** | 400 Bad Request in 154 ms. 1 failed, 2 passed. expected 'VALIDATION_FAILED' to deeply equal 'PROFILE_ID_INVALID' — expected 'VALIDATION_FAILED' to deeply equal 'PROFILE_ID_INVALID' |
 
 ---
 

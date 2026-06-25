@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-INVIT-007 |
 | **Title** | STC-INVIT-ATTACH-001B: POST — Attach existing user to cabinet |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-INVIT-ATTACH-001/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-ATTACH-001/B \| Attach existing user to cabinet".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/attach with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | Cas nominal validé selon les AC du ticket : • POST /invitations/attach accepte {invitationToken, password} • Vérification password contre le Compte kine existant • Création d'un nouveau Profil MEMBER with cabinetId de l'inviteur • Le Profil hérite du roleId=KI... Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 401 Unauthorized in 63 ms. 1 failed, 1 passed. expected [ 201, 409 ] to include 401 — expected [ 201, 409 ] to include 401 |
+| **Actual Result** | 401 Unauthorized in 154 ms. 1 failed, 1 passed. expected [ 201, 409 ] to include 401 — expected [ 201, 409 ] to include 401 |
 
 ---
 

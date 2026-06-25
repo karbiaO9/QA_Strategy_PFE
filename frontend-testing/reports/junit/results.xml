@@ -1,0 +1,28 @@
+<testsuites id="" name="" tests="2" failures="0" skipped="0" errors="0" time="8.401323">
+<testsuite name="smoke/auth.smoke.spec.ts" timestamp="2026-06-07T17:38:00.402Z" hostname="chromium-guest" tests="2" failures="0" skipped="0" time="4.611" errors="0">
+<testcase name="Smoke � Authentication routes › Smoke � login page loads @smoke @auth" classname="smoke/auth.smoke.spec.ts" time="2.858">
+<properties>
+<property name="stc" value="STC-SMOKE-AUTH-001">
+</property>
+<property name="module" value="Authentication � Smoke">
+</property>
+<property name="priority" value="P0">
+</property>
+<property name="testType" value="Smoke">
+</property>
+</properties>
+</testcase>
+<testcase name="Smoke � Authentication routes › Smoke � forgot-password route loads @smoke @auth" classname="smoke/auth.smoke.spec.ts" time="1.753">
+<properties>
+<property name="stc" value="STC-SMOKE-AUTH-002">
+</property>
+<property name="module" value="Authentication � Smoke">
+</property>
+<property name="priority" value="P1">
+</property>
+<property name="testType" value="Smoke">
+</property>
+</properties>
+</testcase>
+</testsuite>
+</testsuites>

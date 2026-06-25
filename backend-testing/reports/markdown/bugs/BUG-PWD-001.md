@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-PWD-001 |
 | **Title** | STC-PWD-FORGOT-003B: POST — Forgot password unknown email 200 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-PWD-FORGOT-003/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-PWD-FORGOT-003/B \| Forgot password unknown email 200".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/forgot-password with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | • HTTP 200 OK (toujours) • Body: { message: 'Si un account existe, un code a été envoyé.' } • Email INEXISTANT : aucun email envoyé • Email EXISTANT : email envoyé silencieusement • Impossibilité d'énumérer les emails existants Allowed HTTP status (execution sheet): {200}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 404 Not Found in 261 ms. 1 failed, 1 passed. expected response to have status code 200 but got 404 — expected response to have status code 200 but got 404 |
+| **Actual Result** | 404 Not Found in 480 ms. 1 failed, 1 passed. expected response to have status code 200 but got 404 — expected response to have status code 200 but got 404 |
 
 ---
 

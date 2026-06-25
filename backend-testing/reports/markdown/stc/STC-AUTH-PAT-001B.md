@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 7, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | HIGH | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-AUTH-PAT-001B (STC-AUTH-PAT-001/B \| Patient login nominal) | POST https://identity.physio.agregatech.com/api/v1/patient/auth/login \| Body: { "password": "Patient123!", "email": "marie.durand@patient.fr" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/v1/patient/auth/login accepte {emailOrPhone, password} • Recherche flexible (email ou téléphone) • Retour accessToken + refreshToken + profilee (un seul, pas de Layer 2 for les patients) • Rate limiting a... Newman: expect HTTP 200. | 200 OK in 416 ms 2 assertion(s) passed. Body keys: accessToken: [redacted]; refreshToken: [redacted]; user: {…}; permissions: {…} | • POST /api/v1/patient/auth/login accepte {emailOrPhone, password} • Recherche flexible (email ou téléphone) • Retour accessToken + refreshToken + profile (un seul, pas de Layer 2 pour les patients) • HTTP 401 message générique si credentials invalides • Rate limiting appliqué | PASS |  |  |
+| 1 | Execute POST request for STC-AUTH-PAT-001B (STC-AUTH-PAT-001/B \| Patient login nominal) | POST https://identity.physio.agregatech.com/api/v1/patient/auth/login \| Body: { "password": "Patient123!", "email": "marie.durand@patient.fr" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/v1/patient/auth/login accepte {emailOrPhone, password} • Recherche flexible (email ou téléphone) • Retour accessToken + refreshToken + profilee (un seul, pas de Layer 2 for les patients) • Rate limiting a... Newman: expect HTTP 200. | 200 OK in 841 ms 2 assertion(s) passed. Body keys: accessToken: [redacted]; refreshToken: [redacted]; user: {…}; permissions: {…} | • POST /api/v1/patient/auth/login accepte {emailOrPhone, password} • Recherche flexible (email ou téléphone) • Retour accessToken + refreshToken + profile (un seul, pas de Layer 2 pour les patients) • HTTP 401 message générique si credentials invalides • Rate limiting appliqué | PASS |  |  |
 

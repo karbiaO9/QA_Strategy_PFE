@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 7, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | MEDIUM | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-PWD-FORGOT-001B (STC-PWD-FORGOT-001/B \| Forgot password existing email) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/forgot-password \| Body: { "email": "sophie.martin@cabinet-paris.fr" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /auth/forgot-password accepte {email} • Génération code 6 chiffres • Hash bcrypt du code stocké en Redis with TTL 10 min (RESET_CODE_TTL_SECONDS=600) • Email envoyé via MailerService (driver log Sprint 1, SMTP... Newman: expect HTTP 200. | 200 OK in 657 ms 2 assertion(s) passed. Body keys: success: true; message: … | • POST /auth/forgot-password accepte {email} • Génération code 6 chiffres • Hash bcrypt du code stocké en Redis avec TTL 10 min (RESET_CODE_TTL_SECONDS=600) • Email envoyé via MailerService (driver log Sprint 1, SMTP Sprint 2) • HTTP 200 message générique (même si email inexistant) • Rate limit 5/email/heure (RATE_LIM… | PASS |  |  |
+| 1 | Execute POST request for STC-PWD-FORGOT-001B (STC-PWD-FORGOT-001/B \| Forgot password existing email) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/forgot-password \| Body: { "email": "sophie.martin@cabinet-paris.fr" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /auth/forgot-password accepte {email} • Génération code 6 chiffres • Hash bcrypt du code stocké en Redis with TTL 10 min (RESET_CODE_TTL_SECONDS=600) • Email envoyé via MailerService (driver log Sprint 1, SMTP... Newman: expect HTTP 200. | 200 OK in 873 ms 2 assertion(s) passed. Body keys: success: true; message: … | • POST /auth/forgot-password accepte {email} • Génération code 6 chiffres • Hash bcrypt du code stocké en Redis avec TTL 10 min (RESET_CODE_TTL_SECONDS=600) • Email envoyé via MailerService (driver log Sprint 1, SMTP Sprint 2) • HTTP 200 message générique (même si email inexistant) • Rate limit 5/email/heure (RATE_LIM… | PASS |  |  |
 

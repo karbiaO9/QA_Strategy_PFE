@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-PWD-002 |
 | **Title** | STC-PWD-FORGOT-004B: POST — Forgot password rate limit 429 |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-PWD-FORGOT-004/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-PWD-FORGOT-004/B \| Forgot password rate limit 429".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/forgot-password with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | • Appels 1-5 : HTTP 200 OK • Appel 6+ : HTTP 429 Too Many Requests • Body: { statusCode: 429, code: 'RATE_LIMIT_EXCEEDED' } • Reset après 1h Allowed HTTP status (execution sheet): {200, 429}. Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 404 Not Found in 102 ms. 1 failed, 1 passed. expected [ 200, 429 ] to include 404 — expected [ 200, 429 ] to include 404 |
+| **Actual Result** | 404 Not Found in 156 ms. 1 failed, 1 passed. expected [ 200, 429 ] to include 404 — expected [ 200, 429 ] to include 404 |
 
 ---
 

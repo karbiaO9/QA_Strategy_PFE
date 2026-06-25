@@ -13,13 +13,11 @@ dist/
 /playwright/.auth/*.json
 !/playwright/.auth/.gitkeep
 
-# Reports (generated artifacts)
-/reports/html/
-/reports/allure-results/
+# Reports — archived CI snapshots committed for pipeline demo
+# /reports/html/
+# /reports/allure-results/
+# /reports/junit/
 /reports/allure-report/
-/reports/junit/
-/reports/markdown/*.md
-!/reports/markdown/.gitkeep
 
 # Evidence
 /screenshots/*

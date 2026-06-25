@@ -5,11 +5,11 @@
     },
     "item": [
       {
-        "id": "123f8619-76be-464e-a822-1e429c81ee9b",
+        "id": "0e374443-b8f1-4455-9fb5-f8fde93f04c6",
         "name": "Auth",
         "item": [
           {
-            "id": "e0affc0a-ff34-4e32-b254-26325e8b379d",
+            "id": "39056ea9-87cb-4ea5-ac65-286f6df88f5e",
             "name": "STC-AUTH-PAT-001/B | Patient login nominal",
             "request": {
               "description": {
@@ -56,7 +56,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "1b0d4c10-e4b5-45eb-949a-d6a405996eec",
+                  "id": "e99ab967-54eb-42ac-90d9-4d04bc8f8378",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-AUTH-PAT-001/B",
@@ -76,13 +76,13 @@
                     "  if (rt) pm.environment.set('refreshToken', rt);",
                     "}"
                   ],
-                  "_lastExecutionId": "1b39e0ca-bca1-4b76-bb42-9dd2a90dc66a"
+                  "_lastExecutionId": "14c2ecd2-9325-4246-8241-a4ccd202c676"
                 }
               }
             ]
           },
           {
-            "id": "419b26b5-d022-412d-a90b-267ae78e0d96",
+            "id": "e3d05b99-f5ef-43e2-8813-2b4763b6f862",
             "name": "STC-AUTH-PAT-002/B | Patient login wrong password 401",
             "request": {
               "description": {
@@ -129,7 +129,7 @@
               {
                 "listen": "test",
                 "script": {
-                  "id": "d9d1440b-6b72-424d-9a15-2c201cd1d05a",
+                  "id": "a6a714df-6a8b-401f-a205-fe1f3b6076b1",
                   "type": "text/javascript",
                   "exec": [
                     "// STC: STC-AUTH-PAT-002/B",
@@ -141,7 +141,7 @@
                     "});",
                     "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                   ],
-                  "_lastExecutionId": "a2799d19-37d2-4dcd-89d7-12aea8780df6"
+                  "_lastExecutionId": "f86f2580-f79b-4758-aed3-a1a4e3b80404"
                 }
               }
             ]
@@ -165,7 +165,7 @@
   "environment": {
     "_": {
       "postman_variable_scope": "environment",
-      "postman_exported_at": "2026-06-06T13:59:13.818Z",
+      "postman_exported_at": "2026-06-07T17:38:02.292Z",
       "postman_exported_using": "Newman/4.6.1"
     },
     "id": "physio-backend-exec-env",
@@ -253,17 +253,17 @@
       },
       {
         "type": "any",
-        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NWIiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6OCwiaWF0IjoxNzgwNzU3OTQwLCJleHAiOjE3ODA4NDQzNDB9.Csf6OQ3d1VMpoTTV4qHv-Y6JfNfSmJNhlIQrB3Su0r4",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NWIiLCJlbWFpbCI6ImFkbWluQHBoeXNpb2Nvbm5lY3QuY29tIiwidHlwZSI6ImFkbWluIiwiY2FiaW5ldElkIjoicGxhdGZvcm0iLCJyb2xlU2x1ZyI6IlNVUEVSX0FETUlOIiwidiI6MTIsImlhdCI6MTc4MDg1Mzg1MywiZXhwIjoxNzgwOTQwMjUzfQ.SsWKgM7Tpcu4uDfQ1QIlHGnSO4sRUMSlFWcbc_8FAyw",
         "key": "adminToken"
       },
       {
         "type": "any",
-        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjEiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjIwLCJpYXQiOjE3ODA3NTc5NTAsImV4cCI6MTc4MDg0NDM1MH0.-aHvd_1XlotlYD92wHNZYy0BS2mQ_yhpIA7WjhaaSwg",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjEiLCJlbWFpbCI6InNvcGhpZS5tYXJ0aW5AY2FiaW5ldC1wYXJpcy5mciIsInR5cGUiOiJraW5lIiwiY2FiaW5ldElkIjpudWxsLCJyb2xlU2x1ZyI6IiIsInYiOjMxLCJpYXQiOjE3ODA4NTM4NjEsImV4cCI6MTc4MDk0MDI2MX0.uoxmG5ptGVPMwynTwuPTd4aelqelC3LnA9ZSyo3uZkA",
         "key": "kineToken"
       },
       {
         "type": "any",
-        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc1MDczNzk3YTYzYTRhYzg0YjYiLCJlbWFpbCI6Im1hcmllLmR1cmFuZEBwYXRpZW50LmZyIiwidHlwZSI6InBhdGllbnQiLCJjYWJpbmV0SWQiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjQiLCJyb2xlU2x1ZyI6IlBBVElFTlQiLCJ2IjoxMSwiaWF0IjoxNzgwNzU3OTc0LCJleHAiOjE3ODA4NDQzNzR9.gjc_vkqaF77v2vys4xMYuzQ7lrdQUMKGw5_woxDiBhA",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTBlMTc1MDczNzk3YTYzYTRhYzg0YjYiLCJlbWFpbCI6Im1hcmllLmR1cmFuZEBwYXRpZW50LmZyIiwidHlwZSI6InBhdGllbnQiLCJjYWJpbmV0SWQiOiI2YTBlMTc0ZTczNzk3YTYzYTRhYzg0NjQiLCJyb2xlU2x1ZyI6IlBBVElFTlQiLCJ2IjoxNSwiaWF0IjoxNzgwODUzODg0LCJleHAiOjE3ODA5NDAyODR9.gqvlzg8nACV0AOd86FNUCj1Ca5H6J_FztE0R8vPP4jU",
         "key": "patientToken"
       },
       {
@@ -273,7 +273,7 @@
       },
       {
         "type": "any",
-        "value": "9adc20e4210898bb5190c98c916f57d48e8985f9815389fcbef7eb7f5efbacf0",
+        "value": "913948a49d86007b000482603ae522fdd6c26d7b490292eaaa9eefcef37b311e",
         "key": "refreshToken"
       },
       {
@@ -649,7 +649,7 @@
     ]
   },
   "globals": {
-    "id": "30bba887-6891-4f12-8047-b807190cb74c",
+    "id": "7ca426f0-63a5-437d-b918-04d4b0da22c0",
     "values": []
   },
   "run": {
@@ -701,10 +701,10 @@
       }
     },
     "timings": {
-      "responseAverage": 346,
-      "responseMin": 276,
-      "responseMax": 416,
-      "responseSd": 70,
+      "responseAverage": 601.5,
+      "responseMin": 362,
+      "responseMax": 841,
+      "responseSd": 239.5,
       "dnsAverage": 0,
       "dnsMin": 0,
       "dnsMax": 0,
@@ -713,8 +713,8 @@
       "firstByteMin": 0,
       "firstByteMax": 0,
       "firstByteSd": 0,
-      "started": 1780754356081,
-      "completed": 1780754357922
+      "started": 1780853883198,
+      "completed": 1780853885375
     },
     "executions": [
       {
@@ -727,11 +727,11 @@
           "eof": false,
           "bof": true,
           "cr": false,
-          "ref": "d250deb9-fa20-49ba-a779-bd9c5c7f1d63",
-          "httpRequestId": "91b22784-08c8-4ee1-a851-0fb8a90bcba0"
+          "ref": "abf09a9d-94fa-49c0-9e5f-afabb1aff699",
+          "httpRequestId": "3041a2d8-4ad0-4269-8914-eefa34357520"
         },
         "item": {
-          "id": "e0affc0a-ff34-4e32-b254-26325e8b379d",
+          "id": "39056ea9-87cb-4ea5-ac65-286f6df88f5e",
           "name": "STC-AUTH-PAT-001/B | Patient login nominal",
           "request": {
             "description": {
@@ -778,7 +778,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "1b0d4c10-e4b5-45eb-949a-d6a405996eec",
+                "id": "e99ab967-54eb-42ac-90d9-4d04bc8f8378",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-AUTH-PAT-001/B",
@@ -798,7 +798,7 @@
                   "  if (rt) pm.environment.set('refreshToken', rt);",
                   "}"
                 ],
-                "_lastExecutionId": "1b39e0ca-bca1-4b76-bb42-9dd2a90dc66a"
+                "_lastExecutionId": "14c2ecd2-9325-4246-8241-a4ccd202c676"
               }
             }
           ]
@@ -847,7 +847,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "e090f7c2-aa0f-4e53-b9ef-77c9cd338d7f",
+              "value": "d82ed1d3-86e3-4123-9e07-e3989a42785c",
               "system": true
             },
             {
@@ -883,7 +883,7 @@
           }
         },
         "response": {
-          "id": "ebf22566-06e7-4859-8043-66592324f5b4",
+          "id": "09454bbe-b282-41de-a67a-4b9efd71d039",
           "status": "OK",
           "code": 200,
           "header": [
@@ -901,11 +901,11 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:34 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:04 GMT"
             },
             {
               "key": "Etag",
-              "value": "W/\"7fa-iA4XRnMnyvgSARzZV8An9vAFKL4\""
+              "value": "W/\"7fa-AxbcWhPEehua+dfaIPTtl3H60hA\""
             },
             {
               "key": "X-Powered-By",
@@ -1168,7 +1168,7 @@
               106,
               111,
               120,
-              77,
+              78,
               83,
               119,
               105,
@@ -1184,13 +1184,13 @@
               122,
               103,
               119,
-              78,
-              122,
-              85,
-              51,
               79,
-              84,
-              99,
+              68,
+              85,
+              122,
+              79,
+              68,
+              103,
               48,
               76,
               67,
@@ -1207,59 +1207,59 @@
               79,
               68,
               65,
-              52,
+              53,
               78,
               68,
-              81,
-              122,
-              78,
-              122,
+              65,
+              121,
+              79,
+              68,
               82,
               57,
               46,
               103,
-              106,
-              99,
-              95,
-              118,
-              107,
               113,
-              97,
-              70,
-              55,
-              55,
               118,
-              50,
-              118,
-              121,
-              115,
-              52,
-              120,
-              77,
-              89,
-              117,
-              122,
-              81,
-              55,
               108,
-              114,
-              100,
-              81,
-              85,
-              77,
-              75,
-              71,
-              119,
-              53,
-              95,
-              119,
-              111,
-              120,
-              68,
-              105,
-              66,
-              104,
+              122,
+              103,
+              56,
+              110,
               65,
+              67,
+              86,
+              48,
+              65,
+              79,
+              100,
+              56,
+              54,
+              70,
+              78,
+              85,
+              67,
+              106,
+              49,
+              67,
+              97,
+              53,
+              72,
+              54,
+              74,
+              95,
+              70,
+              122,
+              116,
+              69,
+              48,
+              82,
+              56,
+              118,
+              80,
+              80,
+              52,
+              106,
+              85,
               34,
               44,
               34,
@@ -1279,69 +1279,69 @@
               58,
               34,
               57,
-              97,
-              100,
-              99,
-              50,
-              48,
-              101,
-              52,
-              50,
               49,
-              48,
-              56,
-              57,
-              56,
-              98,
-              98,
-              53,
-              49,
-              57,
-              48,
-              99,
-              57,
-              56,
-              99,
-              57,
-              49,
-              54,
-              102,
-              53,
-              55,
-              100,
-              52,
-              56,
-              101,
-              56,
-              57,
-              56,
-              53,
-              102,
-              57,
-              56,
-              49,
-              53,
               51,
-              56,
               57,
-              102,
-              99,
-              98,
-              101,
-              102,
-              55,
-              101,
-              98,
-              55,
-              102,
-              53,
-              101,
-              102,
-              98,
+              52,
+              56,
               97,
-              99,
-              102,
+              52,
+              57,
+              100,
+              56,
+              54,
               48,
+              48,
+              55,
+              98,
+              48,
+              48,
+              48,
+              52,
+              56,
+              50,
+              54,
+              48,
+              51,
+              97,
+              101,
+              53,
+              50,
+              50,
+              102,
+              100,
+              100,
+              54,
+              99,
+              50,
+              54,
+              100,
+              55,
+              98,
+              52,
+              57,
+              48,
+              50,
+              57,
+              50,
+              101,
+              97,
+              97,
+              97,
+              57,
+              101,
+              101,
+              102,
+              99,
+              101,
+              102,
+              51,
+              55,
+              98,
+              51,
+              49,
+              49,
+              101,
               34,
               44,
               34,
@@ -2960,10 +2960,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 416,
+          "responseTime": 841,
           "responseSize": 2042
         },
-        "id": "e0affc0a-ff34-4e32-b254-26325e8b379d",
+        "id": "39056ea9-87cb-4ea5-ac65-286f6df88f5e",
         "assertions": [
           {
             "assertion": "[STC-AUTH-PAT-001/B] response time OK",
@@ -2977,15 +2977,15 @@
       },
       {
         "cursor": {
-          "ref": "afeb6c43-6d75-4bbb-98fd-4ccd8a2c17cc",
+          "ref": "8eb40860-039c-45da-aca9-bc24b2778619",
           "length": 2,
           "cycles": 1,
           "position": 1,
           "iteration": 0,
-          "httpRequestId": "932bfc14-5fbe-4fd0-851b-bb68a00946ed"
+          "httpRequestId": "fc159a99-2f9a-4726-a1db-ef2cfebd76d6"
         },
         "item": {
-          "id": "419b26b5-d022-412d-a90b-267ae78e0d96",
+          "id": "e3d05b99-f5ef-43e2-8813-2b4763b6f862",
           "name": "STC-AUTH-PAT-002/B | Patient login wrong password 401",
           "request": {
             "description": {
@@ -3032,7 +3032,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "d9d1440b-6b72-424d-9a15-2c201cd1d05a",
+                "id": "a6a714df-6a8b-401f-a205-fe1f3b6076b1",
                 "type": "text/javascript",
                 "exec": [
                   "// STC: STC-AUTH-PAT-002/B",
@@ -3044,7 +3044,7 @@
                   "});",
                   "var json = {}; try { json = pm.response.json(); } catch (e) {}"
                 ],
-                "_lastExecutionId": "a2799d19-37d2-4dcd-89d7-12aea8780df6"
+                "_lastExecutionId": "f86f2580-f79b-4758-aed3-a1a4e3b80404"
               }
             }
           ]
@@ -3093,7 +3093,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "6b9bdea0-6528-40ca-b0c4-22aa26addab7",
+              "value": "8c52e9ec-5b87-4e76-b7a8-57f24b3332aa",
               "system": true
             },
             {
@@ -3129,7 +3129,7 @@
           }
         },
         "response": {
-          "id": "37037cd2-bb43-4e12-92fe-778f3e32289f",
+          "id": "e7ac8926-46da-4185-b492-0f2b4ae2ca0c",
           "status": "Unauthorized",
           "code": 401,
           "header": [
@@ -3147,7 +3147,7 @@
             },
             {
               "key": "Date",
-              "value": "Sat, 06 Jun 2026 14:59:35 GMT"
+              "value": "Sun, 07 Jun 2026 17:38:05 GMT"
             },
             {
               "key": "Etag",
@@ -3276,10 +3276,10 @@
             ]
           },
           "cookie": [],
-          "responseTime": 276,
+          "responseTime": 362,
           "responseSize": 112
         },
-        "id": "419b26b5-d022-412d-a90b-267ae78e0d96",
+        "id": "e3d05b99-f5ef-43e2-8813-2b4763b6f862",
         "assertions": [
           {
             "assertion": "[STC-AUTH-PAT-002/B] response time OK",

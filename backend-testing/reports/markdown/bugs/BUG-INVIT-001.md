@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-INVIT-001 |
 | **Title** | STC-INVIT-GEN-001B: POST — Generate MEMBER invitation |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-INVIT-GEN-001/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-GEN-001/B \| Generate MEMBER invitation".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/auth/invitations accepte {email, role, cabinetId} dans le payload • Token JWT généré with jti unique (anti-replay) • TTL JWT_INVITATION_TTL configurable (défaut 7 jours) • jti stocké en Redis for ... Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 67 ms. 1 failed, 1 passed. expected [ 200, 201 ] to include 400 — expected [ 200, 201 ] to include 400 |
+| **Actual Result** | 400 Bad Request in 154 ms. 1 failed, 1 passed. expected [ 200, 201 ] to include 400 — expected [ 200, 201 ] to include 400 |
 
 ---
 

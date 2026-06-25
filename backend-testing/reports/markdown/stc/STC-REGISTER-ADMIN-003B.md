@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 7, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | HIGH | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-REGISTER-ADMIN-003B (STC-REGISTER-ADMIN-003/B \| Register admin missing RPPS 400) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/register \| Body: { "email": "jean.nouveau.member@testmail.fr", "password": "KineAdmin123!", "firstName": "Pierre", "lastName": "Martin", "raisonSociale": "Cabinet SARL", "siret": "12345678901234", "cguAccepted": true } \| Headers: Content-Type: application/json | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PROFESSIONAL_NUMBER_REQUIRED' } Execution sheet: HTTP ∈ {400}. Newman: expect HTTP 400. | 400 Bad Request in 93 ms 1 failed, 2 passed. expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' | Le numéro professionnel est requis pour Admin Cabinet de groupe | FAIL | BUG-REGISTER-001 | Medium |
+| 1 | Execute POST request for STC-REGISTER-ADMIN-003B (STC-REGISTER-ADMIN-003/B \| Register admin missing RPPS 400) | POST https://identity.physio.agregatech.com/api/v1/kine/auth/register \| Body: { "email": "jean.nouveau.member@testmail.fr", "password": "KineAdmin123!", "firstName": "Pierre", "lastName": "Martin", "raisonSociale": "Cabinet SARL", "siret": "12345678901234", "cguAccepted": true } \| Headers: Content-Type: application/json | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PROFESSIONAL_NUMBER_REQUIRED' } Execution sheet: HTTP ∈ {400}. Newman: expect HTTP 400. | 400 Bad Request in 155 ms 1 failed, 2 passed. expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException expected [ Array(2) ] to include 'FIELD_NOT_APPLICABLE' | Le numéro professionnel est requis pour Admin Cabinet de groupe | FAIL | BUG-REGISTER-001 | Medium |
 

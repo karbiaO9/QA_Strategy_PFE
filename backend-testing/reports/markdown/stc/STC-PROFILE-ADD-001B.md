@@ -19,7 +19,7 @@
 | *Test Run Information*| Value |  *Test Environment:* | Value |
 |------|--------|------|--------|
 | Tester Name | Oussema Karbia  | Application Version |  |
-| Date(s) of Test | Jun 6, 2026 |Browser | N/A - API testing with Postman/Newman |
+| Date(s) of Test | Jun 7, 2026 |Browser | N/A - API testing with Postman/Newman |
 | Test Type | API Automated Test - Postman/Newman |Database | N/A - not directly exposed during API testing |
 | Priority | MEDIUM | OS | Windows 10 |
 |  | |Server | identity.physio.agregatech.com |
@@ -40,5 +40,5 @@
 
 | ID | ACTION / TEST STEP | TEST DATA | EXPECTED RESULTS | ACTUAL RESULTS | ACCEPTANCE CRITERIA | PASS/FAIL | BUG ID | SEVERITY |
 |----|--------------------|-----------|------------------|----------------|------------------------|-----------|--------|----------|
-| 1 | Execute POST request for STC-PROFILE-ADD-001B (STC-PROFILE-ADD-001/B \| Add STUDENT profile) | POST https://identity.physio.agregatech.com/api/v1/kine/profiles \| Body: { "profileType": "STUDENT", "schoolIfmk": "IFMK Lyon", "academicYear": "2024-2025" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/profilees accepte un payload selon profileeType • Profil créé with profileeType demandé (SOLO, ADMIN_GROUP, STUDENT, etc.) • Si profile clinique et number pro déjà sur le Compte : réutilisation • ... | 400 Bad Request in 71 ms 2 assertion(s) passed. Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException | • POST /api/v1/kine/profiles accepte un payload selon profileType • Profil créé avec profileType demandé (SOLO, ADMIN_GROUP, STUDENT, etc.) • Si profil clinique et numéro pro déjà sur le Compte : réutilisation • Cache CASL du Compte invalidé • HTTP 201 avec le profil créé • HTTP 409 si freemium en cours pour ce type | PASS |  |  |
+| 1 | Execute POST request for STC-PROFILE-ADD-001B (STC-PROFILE-ADD-001/B \| Add STUDENT profile) | POST https://identity.physio.agregatech.com/api/v1/kine/profiles \| Body: { "profileType": "STUDENT", "schoolIfmk": "IFMK Lyon", "academicYear": "2024-2025" } \| Headers: Content-Type: application/json | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/profilees accepte un payload selon profileeType • Profil créé with profileeType demandé (SOLO, ADMIN_GROUP, STUDENT, etc.) • Si profile clinique et number pro déjà sur le Compte : réutilisation • ... | 400 Bad Request in 155 ms 2 assertion(s) passed. Body keys: code: FIELD_NOT_APPLICABLE; message: …; fields: {…}; statusCode: 400; error: BadRequestException | • POST /api/v1/kine/profiles accepte un payload selon profileType • Profil créé avec profileType demandé (SOLO, ADMIN_GROUP, STUDENT, etc.) • Si profil clinique et numéro pro déjà sur le Compte : réutilisation • Cache CASL du Compte invalidé • HTTP 201 avec le profil créé • HTTP 409 si freemium en cours pour ce type | PASS |  |  |
 

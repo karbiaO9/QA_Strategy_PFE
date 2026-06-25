@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-INVIT-002 |
 | **Title** | STC-INVIT-ASST-001B: POST — Invite ASSISTANT |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-INVIT-ASST-001/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-ASST-001/B \| Invite ASSISTANT".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | Cas nominal validé selon les AC du ticket : • Le payload d'invitation accepte role=ASSISTANT • Profil créé with profileeType=ASSISTANT (verrouillé dans l'enum côté backend) • Aucune permission clinique accordée par défaut • Pas de champ number professionnel ex... Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 64 ms. 1 failed, 1 passed. expected response to have status code 201 but got 400 — expected response to have status code 201 but got 400 |
+| **Actual Result** | 400 Bad Request in 156 ms. 1 failed, 1 passed. expected response to have status code 201 but got 400 — expected response to have status code 201 but got 400 |
 
 ---
 

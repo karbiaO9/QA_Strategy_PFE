@@ -7,7 +7,7 @@
 | **ID Number#** | BUG-INVIT-003 |
 | **Title** | STC-INVIT-GEN-002B: POST — Preview invitation token |
 | **Reporter** | Oussema Karbia |
-| **Submit Date** | Jun 6, 2026 |
+| **Submit Date** | Jun 7, 2026 |
 | **Verifier** |  |
 
 ---
@@ -40,7 +40,7 @@
 | **Precondition** | STC STC-INVIT-GEN-002/B mapped to this request; authenticated context per collection (tokens as saved in environment). |
 | **Steps to Reproduce** | 1. Configure environment: base URL https://identity.physio.agregatech.com.<br>2. In Postman/Newman, open the request named "STC-INVIT-GEN-002/B \| Preview invitation token".<br>3. Send POST to https://identity.physio.agregatech.com/api/v1/kine/auth/invitations/preview with the collection's body and headers.<br>4. Observe HTTP status, response body, and Newman test assertions. |
 | **Expected Result** | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/auth/invitations/preview accepte {invitationToken} • Vérification validité token (signature, jti, TTL) • Retourne accountExists=true si email correspond à un Compte kine existant • Retourne accoun... Align API with spreadsheet specification or adjust Newman tests after agreement. |
-| **Actual Result** | 400 Bad Request in 82 ms. 1 failed, 1 passed. expected response to have status code 200 but got 400 — expected response to have status code 200 but got 400 |
+| **Actual Result** | 400 Bad Request in 155 ms. 1 failed, 1 passed. expected response to have status code 200 but got 400 — expected response to have status code 200 but got 400 |
 
 ---
 

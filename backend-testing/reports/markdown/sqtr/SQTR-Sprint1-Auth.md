@@ -14,10 +14,10 @@
 | **Project** | XXX&Connect | **Operating System** | Windows 10 |
 | **Sprint** | Sprint 1 | **Location/Server** | identity.physio.agregatech.com |
 | **Raised By** | Oussema Karbia | **Closed By** |  |
-| **Raised On** | Jun 6, 2026 | **Closed On** |  |
+| **Raised On** | Jun 7, 2026 | **Closed On** |  |
 | **Test Environment** | Backend API | **Release Decision** |  |
-| **Executed Tests** | 57 | **Passed** | 38 |
-| **Failed** | 19 | **Blocked** | 0 |
+| **Executed Tests** | 57 | **Passed** | 34 |
+| **Failed** | 23 | **Blocked** | 0 |
 | **Total** | 57 |  |  |
 
 ## 2. Test Performed
@@ -63,11 +63,11 @@
 | STC-PROFILE-ADD-001/B | Cas nominal validé selon les AC du ticket : • POST /api/v1/kine/profilees accepte un payload selon profileeType • Profi… | All mapped requests passed | PASSED |  | No blocking issue observed. |
 | STC-PROFILE-ADD-010/B | • Profil LIBERAL créé • Aucun patient fictif cloné • La méthode cloneFictifTemplatesForStudent N'EST PAS appelée | All mapped requests passed | PASSED |  | No blocking issue observed. |
 | STC-PROFILE-ADD-004/B | • Response status code : HTTP 409 • Body contains : { "statusCode": 409, "error": "...", "code": "Conflict (doublon, ét… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PROFILE-004 | Review linked bug report(s). |
-| STC-PROFILE-ADD-009/B | • Profil STUDENT créé • N patients fictifs créés (1 par template) • Chaque clone : source=fictif, isTemplate=false, own… | All mapped requests passed | PASSED |  | No blocking issue observed. |
-| STC-PROFILE-UPDATE-001/B | Cas nominal validé selon les AC du ticket : • PATCH /api/v1/kine/profilees/:profileeId scoped au Compte authentifié • W… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PROFILE-005 | Review linked bug report(s). |
+| STC-PROFILE-ADD-009/B | • Profil STUDENT créé • N patients fictifs créés (1 par template) • Chaque clone : source=fictif, isTemplate=false, own… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PROFILE-005 | Review linked bug report(s). |
+| STC-PROFILE-UPDATE-001/B | Cas nominal validé selon les AC du ticket : • PATCH /api/v1/kine/profilees/:profileeId scoped au Compte authentifié • W… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PROFILE-006 | Review linked bug report(s). |
 | STC-PROFILE-UPDATE-002/B | • Response status code : HTTP 404 • Body contains : { "statusCode": 404, "error": "...", "code": "PROFILE_NOT_FOUND" }… | All mapped requests passed | PASSED |  | No blocking issue observed. |
-| STC-PROFILE-UPDATE-003/B | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "PROFILE_ACTIVATION_AD… | All mapped requests passed | PASSED |  | No blocking issue observed. |
-| STC-PROFILE-UPDATE-004/B | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "FIELD_NOT_APPLICABLE"… | All mapped requests passed | PASSED |  | No blocking issue observed. |
+| STC-PROFILE-UPDATE-003/B | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "PROFILE_ACTIVATION_AD… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PROFILE-007 | Review linked bug report(s). |
+| STC-PROFILE-UPDATE-004/B | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "FIELD_NOT_APPLICABLE"… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PROFILE-008 | Review linked bug report(s). |
 | STC-AUTH-PAT-001/B | Cas nominal validé selon les AC du ticket : • POST /api/v1/patient/auth/login accepte {emailOrPhone, password} • Recher… | All mapped requests passed | PASSED |  | No blocking issue observed. |
 | STC-AUTH-PAT-002/B | • Response status code : HTTP 401 • Body contains : { "statusCode": 401, "error": "...", "code": "Unauthorized (token i… | All mapped requests passed | PASSED |  | No blocking issue observed. |
 | STC-PWD-FORGOT-003/B | • HTTP 200 OK (toujours) • Body: { message: 'Si un account existe, un code a été envoyé.' } • Email INEXISTANT : aucun… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PWD-001 | Review linked bug report(s). |
@@ -78,8 +78,8 @@
 | STC-PWD-VERIFY-004/B | • Response status code : HTTP 400 • Body contains : { "statusCode": 400, "error": "...", "code": "CODE_EXPIRED" } • No… | All mapped requests passed | PASSED |  | No blocking issue observed. |
 | STC-PWD-VERIFY-005/B | • Tentatives 1-3 : HTTP 400 CODE_INVALID + incrément attempts • Tentative 4+ : HTTP 400 CODE_TOO_MANY_ATTEMPTS • Code i… | All mapped requests passed | PASSED |  | No blocking issue observed. |
 | STC-PWD-RESET-001/B | Cas nominal validé selon les AC du ticket : • POST /auth/reset-password accepte {resetToken, newPassword} • Validation… | All mapped requests passed | PASSED |  | No blocking issue observed. |
-| STC-PWD-CHANGE-002/B | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchan… | All mapped requests passed | PASSED |  | No blocking issue observed. |
-| STC-PWD-CHANGE-001/B | Cas nominal validé selon les AC du ticket : • POST /auth/change-password : ancien + nouveau password • Application robu… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PWD-003 | Review linked bug report(s). |
+| STC-PWD-CHANGE-002/B | • HTTP 400 Bad Request • Body: { statusCode: 400, code: 'PASSWORD_SAME_AS_OLD' } • Le password in database reste inchan… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PWD-003 | Review linked bug report(s). |
+| STC-PWD-CHANGE-001/B | Cas nominal validé selon les AC du ticket : • POST /auth/change-password : ancien + nouveau password • Application robu… | At least one assertion failed or Excel status mismatch | FAILED | BUG-PWD-004 | Review linked bug report(s). |
 | STC-HEALTHZ-001/B | Cas nominal validé selon les AC du ticket : • Toutes les configs critiques en variables d'env • Validation des env vars… | All mapped requests passed | PASSED |  | No blocking issue observed. |
 
 ## 3. Testing Methodology
