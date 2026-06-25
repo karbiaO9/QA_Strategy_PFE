@@ -164,7 +164,7 @@ jobs:
       - name: Job summary
         if: always()
         run: |
-          echo "## Backend QA summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Backend QA  summary" >> "$GITHUB_STEP_SUMMARY"
           echo "- Newman chain: ${{ steps.newman.outcome }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- Reports: committed archive under backend-testing/reports/markdown" >> "$GITHUB_STEP_SUMMARY"
           echo "- n8n webhook: ${{ steps.webhook.outcome }}" >> "$GITHUB_STEP_SUMMARY"
